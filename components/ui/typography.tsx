@@ -29,12 +29,12 @@ interface TypographyProps
     extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof typographyVariants> {
     as?: React.ElementType
-    [key: string]: any
+    [key: string]: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     ({ className, variant, as, ...props }, ref) => {
-        const Component = as || (variant && ["h1", "h2", "h3", "h4"].includes(variant) ? (variant as any) : (variant === "p" ? "p" : (variant === "inlineCode" ? "code" : (variant === "blockquote" ? "blockquote" : (variant === "ul" ? "ul" : "div")))))
+        const Component = as || (variant && ["h1", "h2", "h3", "h4"].includes(variant) ? (variant as unknown as React.ElementType) : (variant === "p" ? "p" : (variant === "inlineCode" ? "code" : (variant === "blockquote" ? "blockquote" : (variant === "ul" ? "ul" : "div")))))
 
         return (
             <Component

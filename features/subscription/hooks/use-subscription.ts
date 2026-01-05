@@ -24,8 +24,8 @@ import { useMemo } from 'react';
  */
 export function useSubscription(organisationId: Id<"organisations"> | undefined) {
     const subscription = useQuery(
-        api["subscription-queries"].getSubscriptionByOrganisation,
-        organisationId ? { organisationId } : 'skip'
+      api.subscriptions.getSubscriptionByOrganisation,
+      organisationId ? { organisationId } : "skip",
     );
 
     return subscription;
@@ -35,7 +35,7 @@ export function useSubscription(organisationId: Id<"organisations"> | undefined)
  * Get current user's subscription
  */
 export function useCurrentUserSubscription() {
-    const subscription = useQuery(api["subscription-queries"].getCurrentUserSubscription);
+    const subscription = useQuery(api.subscriptions.getCurrentUserSubscription);
     return subscription;
 }
 
@@ -44,7 +44,7 @@ export function useCurrentUserSubscription() {
  */
 export function useUsageStats(organisationId: Id<"organisations"> | undefined) {
     const rawUsage = useQuery(
-        api["subscription-queries"].getSubscriptionUsage,
+        api.subscriptions.getSubscriptionUsage,
         organisationId ? { organisationId } : 'skip'
     );
 
@@ -104,7 +104,7 @@ export function useCanPerformAction(
 ): ActionValidationResult {
     const subscription = useSubscription(organisationId);
     const rawUsage = useQuery(
-        api["subscription-queries"].getSubscriptionUsage,
+        api.subscriptions.getSubscriptionUsage,
         organisationId ? { organisationId } : 'skip'
     );
 

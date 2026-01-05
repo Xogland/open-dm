@@ -3,7 +3,7 @@
 import { APP_NAME } from "@/data/constants";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { Twitter, Github, Linkedin, Mail } from "lucide-react";
+import { Twitter, Github, Linkedin } from "lucide-react";
 
 export default function Footer() {
     return (

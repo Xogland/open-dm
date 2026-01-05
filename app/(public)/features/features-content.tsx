@@ -6,7 +6,6 @@ import {
     DollarSign,
     UserSquare2,
     Globe,
-    Settings2,
     Zap,
     ShieldCheck,
     Target,
@@ -121,7 +120,7 @@ export function FeaturesContent() {
                                 Features Built for Serious Professionals
                             </Typography>
                             <Typography variant="lead" className="text-lg md:text-xl text-muted-foreground mb-10">
-                                OpenDM is more than a contact form. It's an intelligent intake layer that qualifies, routes, and monetizes your inbound conversations.
+                                OpenDM is more than a contact form. It&apos;s an intelligent intake layer that qualifies, routes, and monetizes your inbound conversations.
                             </Typography>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <Button size="lg" asChild className="rounded-full px-8">
@@ -195,7 +194,7 @@ export function FeaturesContent() {
                                 Everything You Need for Global Outreach
                             </Typography>
                             <Typography variant="lead" className="max-w-2xl mx-auto">
-                                We've thought of everything to make your professional communication seamless and secure.
+                                We&apos;ve thought of everything to make your professional communication seamless and secure.
                             </Typography>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -230,7 +229,7 @@ export function FeaturesContent() {
                                     Embed Anywhere, Scale Everywhere
                                 </Typography>
                                 <Typography className="text-lg text-muted-foreground">
-                                    Your professional contact gateway isn't just a link. It's a component you can take with you across the entire web.
+                                    Your professional contact gateway isn&apos;t just a link. It&apos;s a component you can take with you across the entire web.
                                 </Typography>
                                 <div className="space-y-6">
                                     <div className="p-6 rounded-2xl bg-background/50 border border-border/50">

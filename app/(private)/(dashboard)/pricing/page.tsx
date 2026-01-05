@@ -36,7 +36,7 @@ export default function PricingPage() {
         ) : (
           <SubscriptionPlans
             organisationId={organisationId}
-            currentPlan={currentPlan as any}
+            currentPlan={currentPlan as any} // eslint-disable-line @typescript-eslint/no-explicit-any
             debugMode={debugMode}
           />
         )}

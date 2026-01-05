@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Lemon Squeezy Webhook Handler
  * 
@@ -132,7 +133,7 @@ async function handleSubscriptionCreated(event: any, organisationId: string) {
     // Determine plan ID from variant or product name
     const planId = determinePlanId(subscription.variant_name);
 
-    await convex.mutation(api["subscription-mutations"].upsertSubscription, {
+    await convex.mutation((api as any)["subscription-mutations"].upsertSubscription, {
         organisationId: organisationId as Id<"organisations">,
         lemonSqueezyId: event.data.id,
         lemonSqueezyCustomerId: subscription.customer_id.toString(),
@@ -161,7 +162,7 @@ async function handleSubscriptionUpdated(event: any) {
     const subscription = event.data.attributes;
     const planId = determinePlanId(subscription.variant_name);
 
-    await convex.mutation(api["subscription-mutations"].upsertSubscription, {
+    await convex.mutation((api as any)["subscription-mutations"].upsertSubscription, {
         organisationId: event.meta.custom_data.organisation_id as Id<"organisations">,
         lemonSqueezyId: event.data.id,
         lemonSqueezyCustomerId: subscription.customer_id.toString(),
@@ -189,7 +190,7 @@ async function handleSubscriptionUpdated(event: any) {
 async function handleSubscriptionCancelled(event: any) {
     const subscription = event.data.attributes;
 
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: 'cancelled',
         endsAt: subscription.ends_at ? new Date(subscription.ends_at).getTime() : undefined,
@@ -204,7 +205,7 @@ async function handleSubscriptionCancelled(event: any) {
 async function handleSubscriptionResumed(event: any) {
     const subscription = event.data.attributes;
 
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: 'active',
         renewsAt: subscription.renews_at ? new Date(subscription.renews_at).getTime() : undefined,
@@ -220,7 +221,7 @@ async function handleSubscriptionResumed(event: any) {
 async function handleSubscriptionExpired(event: any) {
     const subscription = event.data.attributes;
 
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: 'expired',
         endsAt: subscription.ends_at ? new Date(subscription.ends_at).getTime() : undefined,
@@ -235,7 +236,7 @@ async function handleSubscriptionExpired(event: any) {
 async function handleSubscriptionPauseChange(event: any) {
     const subscription = event.data.attributes;
 
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: subscription.status,
         renewsAt: subscription.renews_at ? new Date(subscription.renews_at).getTime() : undefined,
@@ -250,7 +251,7 @@ async function handleSubscriptionPauseChange(event: any) {
 async function handlePaymentSuccess(event: any) {
     const subscription = event.data.attributes;
 
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: 'active',
         renewsAt: subscription.renews_at ? new Date(subscription.renews_at).getTime() : undefined,
@@ -263,7 +264,7 @@ async function handlePaymentSuccess(event: any) {
  * Handle payment_failed event
  */
 async function handlePaymentFailed(event: any) {
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: 'past_due',
     });
@@ -277,7 +278,7 @@ async function handlePaymentFailed(event: any) {
 async function handlePaymentRecovered(event: any) {
     const subscription = event.data.attributes;
 
-    await convex.mutation(api["subscription-mutations"].updateSubscriptionStatus, {
+    await convex.mutation((api as any)["subscription-mutations"].updateSubscriptionStatus, {
         lemonSqueezyId: event.data.id,
         status: 'active',
         renewsAt: subscription.renews_at ? new Date(subscription.renews_at).getTime() : undefined,

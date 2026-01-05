@@ -7,7 +7,7 @@ export default function ContactPage() {
         <div className="container px-4 py-24 mx-auto max-w-2xl text-center">
             <h1 className="text-4xl font-bold mb-6">Contact Us</h1>
             <p className="text-xl text-muted-foreground mb-12">
-                Have questions or need help? Reach out to us and we'll get back to you as soon as possible.
+                Have questions or need help? Reach out to us and we&apos;ll get back to you as soon as possible.
             </p>
 
             <form className="space-y-6 text-left border border-border p-8 rounded-3xl bg-card">

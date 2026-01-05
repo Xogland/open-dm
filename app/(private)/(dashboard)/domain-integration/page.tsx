@@ -85,15 +85,15 @@ export default function DomainIntegrationPage() {
                             <div className="flex items-center gap-2 p-4 rounded-xl bg-muted/40 border group-hover:border-primary/30 transition-all">
                                 <code className="text-[13px] font-mono truncate flex-1 text-primary font-medium tracking-tight">
                                     {redirectUrl}
-                                codes>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={copyToClipboard}
-                                        className="h-9 w-9 hover:bg-primary/10 hover:text-primary transition-colors"
-                                    >
-                                        <Copy className="w-4 h-4" />
-                                    </Button>
+                                </code>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={copyToClipboard}
+                                    className="h-9 w-9 hover:bg-primary/10 hover:text-primary transition-colors"
+                                >
+                                    <Copy className="w-4 h-4" />
+                                </Button>
                             </div>
                             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-primary/5 border border-primary/10 text-xs text-muted-foreground italic">
                                 <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -111,7 +111,7 @@ export default function DomainIntegrationPage() {
                                 2. DNS Forwarding
                             </CardTitle>
                             <Typography variant="muted" as="p" className="mt-2">
-                                Configure the redirect in your domain registrar's panel.
+                                Configure the redirect in your domain registrar&apos;s panel.
                             </Typography>
                         </CardHeader>
                         <CardContent className="space-y-4">

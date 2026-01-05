@@ -7,7 +7,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import Progress from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useUsageStats, useCurrentPlan } from '../hooks/use-subscription';
 import { Id } from '@/convex/_generated/dataModel';
@@ -106,7 +106,7 @@ export function UsageWidget({ organisationId, compact = false }: UsageWidgetProp
                         <div className="flex items-start gap-2 mb-3">
                             <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5" />
                             <p className="text-sm text-muted-foreground">
-                                You're approaching your plan limits. Upgrade for more capacity.
+                                You&#39;re approaching your plan limits. Upgrade for more capacity.
                             </p>
                         </div>
                         <Link href="/pricing">
@@ -148,7 +148,6 @@ function UsageItem({ label, current, limit, percentage, formatter }: UsageItemPr
                 <Progress
                     value={percentage}
                     className="h-2"
-                    indicatorClassName={isNearLimit ? 'bg-orange-500' : undefined}
                 />
             )}
         </div>

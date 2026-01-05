@@ -31,7 +31,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
             setTimeout(() => {
                 router.push('/dashboard');
             }, 1500);
-        } catch (error: any) {
+        } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             toast.error(error.message || 'Failed to accept invite');
             setIsAccepting(false);
         }
@@ -148,7 +148,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                         </Avatar>
                     </div>
                     <div className="text-center space-y-2">
-                        <Typography variant="h3" as="h1">You're Invited!</Typography>
+                        <Typography variant="h3" as="h1">You&apos;re Invited!</Typography>
                         <Typography variant="muted" as="p">
                             {invite.inviterName} has invited you to join{' '}
                             <span className="font-semibold text-foreground">{invite.organisation.name}</span>
@@ -194,7 +194,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                     <div className="flex items-start space-x-2">
                         <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-green-500" />
                         <Typography variant="small" className="text-muted-foreground">
-                            By accepting this invite, you'll get access to the organization based on your assigned role.
+                            By accepting this invite, you&apos;ll get access to the organization based on your assigned role.
                         </Typography>
                     </div>
                 </CardContent>

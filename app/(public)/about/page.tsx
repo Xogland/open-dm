@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "About Us | OpenDM.io",
@@ -17,7 +18,7 @@ export default function AboutPage() {
                 <section className="space-y-6">
                     <h2 className="text-3xl font-bold text-foreground">Our Mission</h2>
                     <p>
-                        OpenDM was built with a clear purpose: to bridge the gap between high-volume inbound communication and meaningful human connection. We believe that professionals, creators, and businesses deserve a "front door" that works for them, not against them.
+                        OpenDM was built with a clear purpose: to bridge the gap between high-volume inbound communication and meaningful human connection. We believe that professionals, creators, and businesses deserve a &quot;front door&quot; that works for them, not against them.
                     </p>
                     <p>
                         In an era of endless noise, OpenDM provides the signal. Our platform empowers you to structure inquiries, qualify leads, and protect your most valuable asset—your time.
@@ -29,11 +30,11 @@ export default function AboutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <h3 className="text-lg font-semibold text-foreground mb-2">The Noise Problem</h3>
-                            <p className="text-base text-muted-foreground">Unstructured DMs and emails lead to "hey" messages without context, wasting hours of your week.</p>
+                            <p className="text-base text-muted-foreground">Unstructured DMs and emails lead to &#34;hey&#34; messages without context, wasting hours of your week.</p>
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-foreground mb-2">The Value Gap</h3>
-                            <p className="text-base text-muted-foreground">Professionals often give away their expertise for free because there's no easy way to gate their time.</p>
+                            <p className="text-base text-muted-foreground">Professionals often give away their expertise for free because there&apos;s no easy way to gate their time.</p>
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-foreground mb-2">Spam & Bots</h3>
@@ -73,7 +74,7 @@ export default function AboutPage() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-foreground">Fair Value</h3>
-                                <p>We believe in the value of your expertise. That's why we take 0% platform fees on your paid messages.</p>
+                                <p>We believe in the value of your expertise. That&apos;s why we take 0% platform fees on your paid messages.</p>
                             </div>
                         </div>
                     </div>
@@ -83,12 +84,12 @@ export default function AboutPage() {
                     <h2 className="text-2xl font-bold text-foreground mb-4">Ready to reclaim your inbox?</h2>
                     <p className="mb-8 font-medium">Join thousands of professionals who trust OpenDM.</p>
                     <div className="flex justify-center gap-4">
-                        <a href="/sign-up" className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-bold hover:opacity-90 transition-opacity">
+                        <Link href="/sign-up" className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-bold hover:opacity-90 transition-opacity">
                             Get Started
-                        </a>
-                        <a href="/features" className="px-8 py-3 bg-muted text-foreground rounded-full font-bold hover:bg-muted/80 transition-colors">
+                        </Link>
+                        <Link href="/features" className="px-8 py-3 bg-muted text-foreground rounded-full font-bold hover:bg-muted/80 transition-colors">
                             Explore Features
-                        </a>
+                        </Link>
                     </div>
                 </section>
             </div>

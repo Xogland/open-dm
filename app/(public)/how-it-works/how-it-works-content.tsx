@@ -8,9 +8,7 @@ import {
     CheckCircle2,
     ArrowRight,
     Search,
-    MessageSquare,
     Zap,
-    Users,
     Globe
 } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
@@ -98,7 +96,7 @@ export function HowItWorksContent() {
                                 From First Impression to Final Agreement
                             </Typography>
                             <Typography variant="lead" className="text-lg md:text-xl text-muted-foreground mb-10">
-                                OpenDM redefines how you handle inbound communication. It's a three-step journey to a cleaner, more profitable inbox.
+                                OpenDM redefines how you handle inbound communication. It&apos;s a three-step journey to a cleaner, more profitable inbox.
                             </Typography>
                         </motion.div>
                     </div>

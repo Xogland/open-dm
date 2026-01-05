@@ -1,12 +1,13 @@
 "use client";
 
 import { FAQAccordion } from "@/features/landing/components/faq-accordion";
-import { FAQ_METADATA, SUPPORT_CONTENT } from "@/features/landing/constants/faq-page-content";
+import { SUPPORT_CONTENT } from "@/features/landing/constants/faq-page-content";
 import { SectionWrapper, SectionHeader } from "@/features/landing/components/section-wrapper";
 import { FinalCTA } from "@/features/landing/components/final-cta";
 import Link from "next/link";
-import { HelpCircle, ArrowRight, MessageSquare } from "lucide-react";
+import { HelpCircle, MessageSquare } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
+import Image from "next/image";
 
 export default function FaqPage() {
     return (
@@ -28,8 +29,13 @@ export default function FaqPage() {
                 <div className="flex items-center justify-center gap-2 mt-8 py-2 px-6 rounded-full bg-background border shadow-sm w-fit mx-auto">
                     <div className="flex -space-x-2">
                         {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden">
-                                <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" />
+                            <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-muted overflow-hidden relative">
+                                <Image
+                                    src={`https://i.pravatar.cc/100?img=${i + 10}`}
+                                    alt="User"
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
                         ))}
                     </div>
