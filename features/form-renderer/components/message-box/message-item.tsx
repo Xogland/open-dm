@@ -1,0 +1,558 @@
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, CheckCircle2Icon, Upload, AlertCircle } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import {
+  ChatMessage,
+  isServiceSelectionMessage,
+  isTextInputMessage,
+  isEmailInputMessage,
+  isPhoneInputMessage,
+  isAddressInputMessage,
+  isWebsiteInputMessage,
+  isNumberInputMessage,
+  isMultipleChoiceMessage,
+  isDateInputMessage,
+  isFileUploadMessage,
+  isUserResponseMessage,
+  isSystemInfoMessage,
+  isTypingMessage,
+  isEndScreenMessage,
+  isExternalBrowserMessage,
+  validateFileUpload,
+  MultipleChoiceOption
+} from "@/lib/message-types";
+import {
+  StarIcon, HeartIcon, TrophyIcon, ThumbsUpIcon, SmileIcon,
+  ShoppingBagIcon, GiftIcon, CrownIcon, TargetIcon, RocketIcon,
+  LightbulbIcon, FlagIcon, MusicIcon, CameraIcon, VideoIcon,
+  MicIcon, BriefcaseIcon, CoffeeIcon, BeerIcon, ZapIcon
+} from "lucide-react";
+
+const ICON_MAP: Record<string, React.ElementType> = {
+  Star: StarIcon,
+  Heart: HeartIcon,
+  Trophy: TrophyIcon,
+  ThumbsUp: ThumbsUpIcon,
+  Smile: SmileIcon,
+  ShoppingBag: ShoppingBagIcon,
+  Gift: GiftIcon,
+  Crown: CrownIcon,
+  Target: TargetIcon,
+  Rocket: RocketIcon,
+  Lightbulb: LightbulbIcon,
+  Flag: FlagIcon,
+  Music: MusicIcon,
+  Camera: CameraIcon,
+  Video: VideoIcon,
+  Mic: MicIcon,
+  Briefcase: BriefcaseIcon,
+  Coffee: CoffeeIcon,
+  Beer: BeerIcon,
+  Zap: ZapIcon
+};
+
+// ============= System Message (Bot) =============
+function SystemMessageBubble({ text }: { text: string }) {
+  return (
+    <div className="flex justify-start mb-3 animate-in fade-in slide-in-from-left-2 duration-300">
+      <div className="p-3 max-w-[85%] rounded-2xl rounded-tl-none bg-black/20 text-gray-50 shadow-sm">
+        <p className="text-sm leading-relaxed">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+// ============= User Response Bubble =============
+function UserResponseBubble({ value }: { value: string | number | Date | File | string[] | MultipleChoiceOption | MultipleChoiceOption[] }) {
+  let displayValue: string;
+
+  if (value instanceof Date) {
+    displayValue = format(value, "PPP");
+  } else if (value instanceof File) {
+    displayValue = `📎 ${value.name}`;
+  } else if (Array.isArray(value)) {
+    // Check if array of objects
+    if (value.length > 0 && typeof value[0] === 'object' && value[0] !== null) {
+      displayValue = (value as MultipleChoiceOption[]).map(v => v.title).join(', ');
+    } else {
+      displayValue = (value as string[]).join(', ');
+    }
+  } else if (typeof value === 'object' && value !== null && 'title' in value) {
+    displayValue = (value as MultipleChoiceOption).title;
+  } else {
+    displayValue = String(value);
+  }
+
+  return (
+    <div className="flex justify-end mb-3 animate-in fade-in slide-in-from-right-2 duration-300">
+      <div className="p-3 max-w-[85%] rounded-2xl rounded-br-none bg-white text-gray-900 shadow-md">
+        <p className="text-sm leading-relaxed font-medium">{displayValue}</p>
+      </div>
+    </div>
+  );
+}
+
+// ============= Service Selection =============
+interface ServiceSelectionProps {
+  question: string;
+  services: Array<{ id: string; title: string }>;
+  onSelect: (serviceId: string, serviceTitle: string) => void;
+  disabled?: boolean;
+}
+
+function ServiceSelectionMessage({
+  question,
+  services,
+  onSelect,
+  disabled = false,
+}: ServiceSelectionProps) {
+  return (
+    <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
+      <div className="max-w-[90%]">
+        <p className="font-semibold text-white mb-3 text-lg">{question}</p>
+        <div className="flex flex-wrap gap-2">
+          {services.map((service) => (
+            <Button
+              key={service.id}
+              variant="secondary"
+              onClick={() => onSelect(service.id, service.title)}
+              disabled={disabled}
+              className="bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto py-4 px-6 text-base rounded-xl transition-all duration-200 hover:scale-[1.02]"
+            >
+              {service.title}
+            </Button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============= Multiple Choice =============
+interface MultipleChoiceProps {
+  question: string;
+  options: MultipleChoiceOption[];
+  onSelect: (option: MultipleChoiceOption | MultipleChoiceOption[] | string | string[]) => void;
+  disabled?: boolean;
+  multiple?: boolean;
+}
+
+function MultipleChoiceMessage({
+  question,
+  options,
+  onSelect,
+  disabled = false,
+  multiple = false,
+}: MultipleChoiceProps) {
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+
+  const toggleOption = (index: number) => {
+    if (disabled) return;
+    setSelectedIndices(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const handleSelectSingle = (index: number) => {
+    // Find the actual option object
+    const option = options[index];
+    // If legacy string, return string. Else return object.
+    // Actually, to support rich inbox, we should convert legacy string to object on the fly?
+    // Or just pass what we have.
+    // But chat-form-view expects consistency?
+    // Let's pass the option as is from the 'options' prop.
+    onSelect(option);
+  }
+
+  const handleConfirm = () => {
+    if (selectedIndices.length > 0) {
+      const selected = selectedIndices.map(i => options[i]);
+      onSelect(selected);
+    }
+  };
+
+  return (
+    <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
+      <div className="max-w-[95%]">
+        <p className="font-semibold text-white mb-3 text-sm">{question}</p>
+        <div className="flex flex-wrap gap-2">
+          {options.map((option, index) => {
+            // Handle fallback for legacy string options
+            const title = typeof option === 'string' ? option : option.title;
+            const description = typeof option === 'object' ? option.description : null;
+            const price = typeof option === 'object' ? option.price : null;
+            // Discount field removed
+            const iconName = typeof option === 'object' ? option.icon : null;
+
+            const isSelected = selectedIndices.includes(index);
+            const Icon = iconName && ICON_MAP[iconName] ? ICON_MAP[iconName] : null;
+
+            return (
+              <Button
+                key={index}
+                variant="secondary"
+                onClick={() => multiple ? toggleOption(index) : handleSelectSingle(index)}
+                disabled={disabled}
+                className={cn(
+                  "border-none justify-start h-auto py-3 px-4 rounded-xl transition-all duration-200 relative overflow-hidden group items-start text-left",
+                  multiple
+                    ? (isSelected ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-black/40 hover:bg-black/60 text-white")
+                    : "bg-black/40 hover:bg-black/60 text-white hover:scale-[1.02]"
+                )}
+              >
+                {/* Selection Indicator (for multiple) */}
+                {multiple && (
+                  <div className={cn(
+                    "w-5 h-5 mr-3 mt-0.5 rounded border flex-shrink-0 flex items-center justify-center transition-colors",
+                    isSelected ? "bg-white border-white text-primary" : "border-white/50 bg-transparent"
+                  )}>
+                    {isSelected && <CheckCircle2Icon className="w-3.5 h-3.5" />}
+                  </div>
+                )}
+
+                {/* Icon */}
+                {Icon && (
+                  <div className={cn("mr-3 mt-1 p-1.5 rounded-md bg-white/10 shrink-0", multiple && "ml-1")}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                )}
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center w-full">
+                    <span className="font-semibold text-sm truncate pr-2">{title}</span>
+                    {price && (
+                      <div className="flex flex-col items-end shrink-0">
+                        <span className="font-bold text-sm">{price}</span>
+                      </div>
+                    )}
+                  </div>
+                  {description && (
+                    <p className={cn("text-xs mt-1 line-clamp-2", isSelected ? "text-primary-foreground/80" : "text-gray-300")}>
+                      {description}
+                    </p>
+                  )}
+                </div>
+              </Button>
+            );
+          })}
+          {multiple && (
+            <Button
+              onClick={handleConfirm}
+              disabled={disabled || selectedIndices.length === 0}
+              className="mt-2 w-full bg-white text-primary hover:bg-white/90 font-semibold"
+            >
+              Confirm Selection {selectedIndices.length > 0 && `(${selectedIndices.length})`}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============= Date Input =============
+interface DateInputProps {
+  question: string;
+  onSelect: (date: Date) => void;
+  disabled?: boolean;
+  minDate?: Date;
+  maxDate?: Date;
+}
+
+function DateInputMessage({
+  question,
+  onSelect,
+  disabled = false,
+  minDate,
+  maxDate,
+}: DateInputProps) {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+  const handleSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      onSelect(date);
+    }
+  };
+
+  return (
+    <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
+      <div className="max-w-[90%]">
+        <p className="font-semibold text-white mb-3 text-sm">{question}</p>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="secondary"
+              disabled={disabled}
+              className={cn(
+                "bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto py-3 px-4 rounded-xl w-full",
+                !selectedDate && "text-white/70"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={handleSelect}
+              disabled={(date) => {
+                if (minDate && date < minDate) return true;
+                if (maxDate && date > maxDate) return true;
+                return false;
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
+  );
+}
+
+// ============= File Upload =============
+interface FileUploadMessageProps {
+  question: string;
+  onUpload: (file: File) => void;
+  disabled?: boolean;
+  acceptedTypes?: string[];
+  maxSize?: number;
+}
+
+function FileUploadMessage({
+  question,
+  onUpload,
+  disabled = false,
+  acceptedTypes,
+  maxSize,
+}: FileUploadMessageProps) {
+  const [error, setError] = useState<string | undefined>();
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validation = validateFileUpload(file, acceptedTypes, maxSize);
+      if (!validation.valid) {
+        setError(validation.error);
+        return;
+      }
+      onUpload(file);
+    }
+  };
+
+  return (
+    <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
+      <div className="max-w-[90%]">
+        <p className="font-semibold text-white mb-3 text-sm">{question}</p>
+        <label>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            disabled={disabled}
+            accept={acceptedTypes?.join(",")}
+            className="hidden"
+          />
+          <Button
+            variant="secondary"
+            disabled={disabled}
+            className="bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto py-3 px-4 rounded-xl w-full cursor-pointer"
+            asChild
+          >
+            <span>
+              <Upload className="mr-2 h-4 w-4" />
+              Choose file
+              {maxSize && (
+                <span className="text-xs ml-2 text-white/70">
+                  (Max: {(maxSize / 1024 / 1024).toFixed(1)}MB)
+                </span>
+              )}
+            </span>
+          </Button>
+        </label>
+        {error && (
+          <div className="flex items-center text-red-400 text-xs mt-2">
+            <AlertCircle className="w-3 h-3 mr-1" />
+            {error}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============= Typing Indicator =============
+export function TypingIndicator() {
+  return (
+    <div className="flex justify-start mb-3 animate-in fade-in duration-300">
+      <div className="p-3 bg-black/20 rounded-2xl rounded-tl-none">
+        <div className="flex items-center space-x-1">
+          <div className="w-2 h-2 bg-gray-100 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+          <div className="w-2 h-2 bg-gray-100 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+          <div className="w-2 h-2 bg-gray-100 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============= End Screen =============
+interface EndScreenProps {
+  title: string;
+  message?: string;
+  onReset?: () => void;
+  showConfetti?: boolean;
+}
+
+function EndScreenMessage({ title, message, onReset, showConfetti }: EndScreenProps) {
+  return (
+    <div className="flex flex-col items-center justify-center text-center space-y-4 py-8 animate-in zoom-in-50 duration-500">
+      <div className="h-16 w-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
+        <CheckCircle2Icon className="h-8 w-8" />
+      </div>
+      <h2 className="text-xl font-bold text-white">{title}</h2>
+      {message && <p className="text-white/80 text-sm whitespace-pre-wrap">{message}</p>}
+      {onReset && (
+        <Button
+          className="mt-6 bg-white text-primary hover:bg-white/90"
+          onClick={onReset}
+        >
+          Submit Another Response
+        </Button>
+      )}
+    </div>
+  );
+}
+
+// ============= External Browser Redirect =============
+interface ExternalBrowserProps {
+  url: string;
+  buttonText?: string;
+}
+
+function ExternalBrowserMessage({ url, buttonText = "Continue" }: ExternalBrowserProps) {
+  const handleRedirect = () => {
+    window.location.href = url;
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center text-center space-y-4 py-8 animate-in zoom-in-50 duration-500">
+      <div className="h-16 w-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
+        <CheckCircle2Icon className="h-8 w-8" />
+      </div>
+      <h2 className="text-xl font-bold text-white">Thank you!</h2>
+      <p className="text-white/80 text-sm">Click the button below to continue.</p>
+      <Button
+        className="mt-6 bg-white text-primary hover:bg-white/90"
+        onClick={handleRedirect}
+      >
+        {buttonText}
+      </Button>
+    </div>
+  );
+}
+
+// ============= Main Message Item Component =============
+interface MessageItemProps {
+  message: ChatMessage;
+  onServiceSelect?: (serviceId: string, serviceTitle: string) => void;
+  onOptionSelect?: (option: MultipleChoiceOption | MultipleChoiceOption[] | string | string[]) => void;
+  onDateSelect?: (date: Date) => void;
+  onFileUpload?: (file: File) => void;
+  onTextSubmit?: (text: string) => void;
+  onReset?: () => void;
+  disabled?: boolean;
+}
+
+export function MessageItem({
+  message,
+  onServiceSelect,
+  onOptionSelect,
+  onDateSelect,
+  onFileUpload,
+  onReset,
+  disabled = false,
+}: MessageItemProps) {
+
+  // Interactive Selection Messages
+  if (isServiceSelectionMessage(message)) {
+    return (
+      <ServiceSelectionMessage
+        question={message.question}
+        services={message.services}
+        onSelect={onServiceSelect || (() => { })}
+        disabled={disabled}
+      />
+    );
+  }
+
+  if (isMultipleChoiceMessage(message)) {
+    return (
+      <MultipleChoiceMessage
+        question={message.question}
+        options={message.options}
+        onSelect={onOptionSelect || (() => { })}
+        disabled={disabled}
+        multiple={message.multiple}
+      />
+    );
+  }
+
+  // Text-based inputs AND Date/File now just render the question bubble
+  // The actual input is handled by the DynamicBottomInput component
+  if (
+    isTextInputMessage(message) ||
+    isEmailInputMessage(message) ||
+    isPhoneInputMessage(message) ||
+    isAddressInputMessage(message) ||
+    isWebsiteInputMessage(message) ||
+    isNumberInputMessage(message) ||
+    isDateInputMessage(message) ||
+    isFileUploadMessage(message)
+  ) {
+    return <SystemMessageBubble text={message.question} />;
+  }
+
+  // Standard Messages
+  if (isUserResponseMessage(message)) {
+    return <UserResponseBubble value={message.value as any} />;
+  }
+
+  if (isSystemInfoMessage(message)) {
+    return <SystemMessageBubble text={message.text} />;
+  }
+
+  if (isTypingMessage(message)) {
+    return <TypingIndicator />;
+  }
+
+  if (isEndScreenMessage(message)) {
+    return (
+      <EndScreenMessage
+        title={message.title}
+        message={message.message}
+        onReset={onReset}
+        showConfetti={message.showConfetti}
+      />
+    );
+  }
+
+  if (isExternalBrowserMessage(message)) {
+    return (
+      <ExternalBrowserMessage
+        url={message.url}
+        buttonText={message.buttonText}
+      />
+    );
+  }
+
+  return null;
+}
