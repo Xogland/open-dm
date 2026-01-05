@@ -11,3 +11,5 @@ env:
     secret: CAPTCHA_SECRET_KEY
   - variable: SEND_GRID_KEY
     secret: SEND_GRID_KEY
+  - variable: SITE_URL
+    value: "https://open-dm--opendm-7affc.us-east4.hosted.app"
