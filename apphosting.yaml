@@ -1,0 +1,13 @@
+kind: "AppStack"
+apiVersion: "v1"
+env:
+  - variable: NEXT_PUBLIC_CONVEX_URL
+    value: "https://doting-lyrebird-777.convex.cloud"
+  - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+    value: "6LeCAAYsAAAAANuS6AfEEITwOU5byI5GzMKyuDCp"
+  - variable: CONVEX_DEPLOYMENT
+    value: "dev:doting-lyrebird-777"
+  - variable: CAPTCHA_SECRET_KEY
+    secret: CAPTCHA_SECRET_KEY
+  - variable: SEND_GRID_KEY
+    secret: SEND_GRID_KEY
