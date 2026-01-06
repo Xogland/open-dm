@@ -15,8 +15,11 @@ env:
     secret: CONVEX_DEPLOY_KEY
   - variable: SITE_URL
     value: "https://open-dm--opendm-7affc.us-east4.hosted.app"
-
+  - variable: HOSTNAME
+    value: "0.0.0.0"
+  - variable: NEXT_TELEMETRY_DISABLED
+    value: "1"
 
 scripts:
-  buildCommand: npx convex deploy --cmd 'npm run build'
+  buildCommand: npx convex deploy --cmd 'npm run build' --yes
   runCommand: npm run start
