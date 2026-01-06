@@ -50,7 +50,7 @@ const ORGANISATION_LIMIT = 15;
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: HomeIcon },
-  { title: "Form Editor", url: "/edit", icon: PencilIcon },
+  { title: "Profile Editor", url: "/edit", icon: PencilIcon },
   { title: "Inbox", url: "/inbox", icon: MailIcon },
   { title: "Client Management", url: "/connections", icon: MdPeopleOutline },
   { title: "Storage", url: "/storage", icon: MdStorage },
