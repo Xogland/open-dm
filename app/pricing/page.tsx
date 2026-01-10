@@ -10,15 +10,9 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery, useConvexAuth } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { SubscriptionPlans } from '@/features/subscription/components/subscription-plans';
 import { PricingModern } from '@/features/landing/components/pricing';
-import { PageHeader } from '@/components/page-header';
-import { PageShell } from '@/components/page-shell';
 import { Loader2 } from 'lucide-react';
 import { Id } from '@/convex/_generated/dataModel';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Typography } from '@/components/ui/typography';
 import Header from '@/components/layout/header';
 
 export default function PricingPage() {

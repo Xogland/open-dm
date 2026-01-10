@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useUserData } from '@/features/organization/providers/user-data-provider';
 import { cn } from '@/lib/utils';
 import { Suspense } from 'react';
+import { SubscriptionPlan } from '@/features/subscription/types/subscription-types';
 
 export default function BillingPage() {
     return (
@@ -64,7 +65,7 @@ function BillingContent() {
                                 Welcome to Open DM!
                             </div>
                             <Typography variant="h1" className="text-4xl md:text-5xl lg:text-6xl mb-6">
-                                Let's supercharge <span className="text-primary">{targetOrg.name}</span>
+                                Let&apos;s supercharge <span className="text-primary">{targetOrg.name}</span>
                             </Typography>
                             <Typography variant="lead" className="text-muted-foreground mb-10">
                                 Your organization is set up and ready to go. Choose a plan to unlock premium features, or continue to your dashboard to start exploring.
@@ -110,7 +111,7 @@ function BillingContent() {
                 )}>
                     <SubscriptionPlans
                         organisationId={targetOrg._id}
-                        currentPlan={targetOrg.plan as any}
+                        currentPlan={targetOrg.plan as SubscriptionPlan}
                         debugMode={targetOrg.debugMode}
                     />
                 </div>
@@ -122,7 +123,7 @@ function BillingContent() {
                             className="text-muted-foreground hover:text-primary transition-colors"
                             onClick={() => router.push('/dashboard')}
                         >
-                            I'll decide later, take me to my dashboard
+                            I&apos;ll decide later, take me to my dashboard
                         </Button>
                     </div>
                 )}

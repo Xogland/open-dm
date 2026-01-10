@@ -9,7 +9,6 @@ import {
     Mail,
     Zap,
     MessageSquare,
-    Search,
     ArrowRight
 } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
@@ -100,7 +99,7 @@ export function AboutContent() {
                                 <span className="text-primary">Handles Inbound Communication</span>
                             </Typography>
                             <Typography variant="lead" className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-                                We're on a mission to bridge the gap between high-volume inbound communication and meaningful human connection.
+                                We&apos;re on a mission to bridge the gap between high-volume inbound communication and meaningful human connection.
                             </Typography>
                         </motion.div>
                     </div>
@@ -119,7 +118,7 @@ export function AboutContent() {
                                 <Typography variant="h2" className="text-3xl md:text-4xl mb-6 border-none">Our Mission</Typography>
                                 <div className="space-y-6 text-lg text-muted-foreground">
                                     <p>
-                                        OpenDM was built with a clear purpose: to bridge the gap between high-volume inbound communication and meaningful human connection. We believe that professionals, creators, and businesses deserve a "front door" that works for them, not against them.
+                                        OpenDM was built with a clear purpose: to bridge the gap between high-volume inbound communication and meaningful human connection. We believe that professionals, creators, and businesses deserve a &quot;front door&quot; that works for them, not against them.
                                     </p>
                                     <p>
                                         In an era of endless noise, OpenDM provides the signal. Our platform empowers you to structure inquiries, qualify leads, and protect your most valuable asset—your time.

@@ -1,6 +1,5 @@
 "use client";
 import { APP_NAME } from "@/data/constants";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";

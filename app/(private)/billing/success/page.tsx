@@ -15,11 +15,6 @@ export default function BillingSuccessPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const organisationId = searchParams.get('organisation_id') as Id<'organisations'> | null;
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     const organisation = useQuery(
         api.organisation.getOrganisation,
@@ -36,7 +31,7 @@ export default function BillingSuccessPage() {
             <PageShell className="flex items-center justify-center min-h-[70vh]">
                 <div className="text-center space-y-4">
                     <Typography variant="h2">Something went wrong</Typography>
-                    <Typography variant="body">We couldn't find your organization details.</Typography>
+                    <Typography variant="body">We couldn&apos;t find your organization details.</Typography>
                     <Button onClick={() => router.push('/dashboard')}>Go to Dashboard</Button>
                 </div>
             </PageShell>
