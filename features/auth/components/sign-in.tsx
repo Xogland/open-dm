@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { APP_NAME } from "@/data/constants";
 import { useSearchParams } from "next/navigation";
+import { Typography } from "@/components/ui/typography";
 
 export function SignIn() {
     const [loading, setLoading] = useState(false);
@@ -40,11 +41,11 @@ export function SignIn() {
             >
                 {/* Header */}
                 <div className="text-center space-y-2">
-                    <h2 className="font-extrabold drop-shadow-md">{APP_NAME}</h2>
-                    <h1 className="text-4xl font-extrabold drop-shadow-md">
+                    <Typography variant="subheading" as="h2" className="font-extrabold drop-shadow-md">{APP_NAME}</Typography>
+                    <Typography variant="heading" as="h1" className="drop-shadow-md">
                         Welcome back!
-                    </h1>
-                    <p className="text-center text-xs text-gray-500 mt-4">
+                    </Typography>
+                    <Typography variant="caption" as="p" className="text-center mt-4">
                         {`New to ${APP_NAME}? `}
                         <Link
                             replace={true}
@@ -53,7 +54,7 @@ export function SignIn() {
                         >
                             Sign up.
                         </Link>
-                    </p>
+                    </Typography>
                 </div>
                 {/* Google Signup */}
                 <motion.div whileTap={{ scale: 0.97 }}>
@@ -61,7 +62,7 @@ export function SignIn() {
                         type="button"
                         variant="outline"
                         disabled={loading}
-                        className="w-full mt-6 font-medium shadow-md transition flex items-center justify-center py-3"
+                        className="w-full mt-6 shadow-md transition flex items-center justify-center py-3"
                         onClick={handleGoogleSignIn}
                     >
                         <FcGoogle className="w-6 h-6 mr-2" />

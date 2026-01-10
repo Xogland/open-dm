@@ -13,7 +13,7 @@ export default function PrivacyPage() {
     return (
         <div className="container px-4 py-24 mx-auto max-w-4xl">
             <div className="mb-12">
-                <Typography variant="h1" className="mb-4 text-4xl font-black uppercase tracking-tight">Privacy Policy</Typography>
+                <Typography variant="h1" className="mb-4 text-4xl">Privacy Policy</Typography>
                 <div className="p-4 bg-muted/50 border-l-4 border-primary mb-8">
                     <Typography variant="p" className="text-sm italic">
                         The last update to this Privacy Policy was made on {lastUpdated}. We reserve the right to modify this policy at our sole discretion. Your continued use of the OpenDM platform after any such changes constitutes your binding acceptance of the updated policy. This document is a legally binding agreement between you and OpenDM regarding your data privacy.
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
 
             <div className="space-y-12 text-foreground/90 leading-[1.8] text-sm md:text-base">
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">1. OVERVIEW AND AGREEMENT TO TERMS</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">1. OVERVIEW AND AGREEMENT TO TERMS</Typography>
                     <Typography>
                         OpenDM (&quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is dedicated to the protection of your privacy and the security of your personal information. This Privacy Policy (&quot;Policy&quot;) explains the depth and breadth of our practices regarding the collection, use, maintenance, and disclosure of information that we obtain from and about you during your interaction with our website (opendm.io), our software applications, our web-based platform, and any ancillary services we provide (collectively, the &quot;Service&quot;). We operate with a policy of transparency, ensuring that you remain informed about how your data influences the Service we provide.
                     </Typography>
@@ -33,17 +33,17 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">2. THE ROLE OF THE MERCHANT OF RECORD (LEMON SQUEEZY)</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">2. THE ROLE OF THE MERCHANT OF RECORD (LEMON SQUEEZY)</Typography>
                     <Typography>
                         A critical component of our Service delivery involves financial transactions and subscription management. To ensure the highest level of security and global compliance, we utilize <strong>Lemon Squeezy, LLC</strong> as our online reseller and official Merchant of Record. This means that when you purchase a subscription or provide payment information, Lemon Squeezy is the legal entity responsible for the sale, financial processing, and tax collection. They handle the complexities of global sales tax, VAT, and PCI-DSS compliance on our behalf, providing a secure environment for your financial identifiers.
                     </Typography>
                     <Typography className="mt-4">
-                        Consequently, any data you provide during the checkout process is initially collected and processed by Lemon Squeezy under their own privacy standards and security protocols. We receive only the necessary metadata—such as your subscription status, the specific plan tier you have selected, and non-sensitive billing tokens—to facilitate your access to our premium features. We do not store full credit card numbers or sensitive CVV codes on our servers. We strongly advise you to consult Lemon Squeezy’s Privacy Policy at <Link href="https://www.lemonsqueezy.com/privacy" className="text-primary hover:underline font-bold">lemonsqueezy.com/privacy</Link> to fully understand their processing activities.
+                        Consequently, any data you provide during the checkout process is initially collected and processed by Lemon Squeezy under their own privacy standards and security protocols. We receive only the necessary metadata—such as your subscription status, the specific plan tier you have selected, and non-sensitive billing tokens—to facilitate your access to our premium features. We do not store full credit card numbers or sensitive CVV codes on our servers. We strongly advise you to consult Lemon Squeezy’s Privacy Policy at <Link href="https://www.lemonsqueezy.com/privacy" className="text-primary hover:underline">lemonsqueezy.com/privacy</Link> to fully understand their processing activities.
                     </Typography>
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">3. CATEGORIES OF PERSONAL DATA COLLECTED</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">3. CATEGORIES OF PERSONAL DATA COLLECTED</Typography>
                     <Typography>
                         We collect information that identifies, relates to, describes, or could reasonably be linked with you. This data collection is categorized into several streams. First, &quot;Account Identifiers&quot; include your full name, email address, and any profile imagery you provide through third-party authentication services like Google or GitHub. These are essential for establishing your identity within our ecosystem. Second, &quot;Service Engagement Data&quot; includes the names of organizations you create, the custom handles you claim, and the logical configuration of the intake forms you build.
                     </Typography>
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">4. METHODS OF DIRECT DATA COLLECTION</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">4. METHODS OF DIRECT DATA COLLECTION</Typography>
                     <Typography>
                         Data collection occurs most prominently when you interact directly with the platform interface. When you register for an account, we capture the data sent to us via secure OAuth protocols. When you build a form, we store the specific field types, labels, and validation rules you define. This data is necessary for the platform to render your forms and process incoming submissions correctly. We also collect information when you participate in surveys, sign up for waitlists, or download marketing collateral. Each action you take that involves inputting text or uploading files is a point of direct collection.
                     </Typography>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">5. AUTOMATED DATA COLLECTION AND TRACKING</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">5. AUTOMATED DATA COLLECTION AND TRACKING</Typography>
                     <Typography>
                         As is standard practice for modern web applications, our servers automatically log certain technical information whenever you visit our site or use the platform. This &quot;Log Data&quot; includes your IP address, browser type, operating system version, the referring web page, and the specific pages you visit on our site. This information is primarily used for security monitoring, load balancing, and diagnostic purposes. It allows us to identify malicious traffic patterns and ensure that our infrastructure remains resilient against unauthorized access attempts or distributed denial-of-service (DDoS) attacks.
                     </Typography>
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">6. THIRD-PARTY DATA SOURCES</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">6. THIRD-PARTY DATA SOURCES</Typography>
                     <Typography>
                         Beyond the information you provide and what we collect automatically, we receive data from third-party partners. Most significantly, as previously mentioned, we receive transaction and customer data from Lemon Squeezy. This synchronization ensures that your account status (e.g., active, past due, or canceled) is always reflected accurately within your dashboard. We also receive information from identity providers like Clerk or similar authentication services that manage the secure login flow and password security for our platform.
                     </Typography>
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">7. PURPOSES FOR PROCESSING PERSONAL DATA</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">7. PURPOSES FOR PROCESSING PERSONAL DATA</Typography>
                     <Typography>
                         Our processing of your data is strictly governed by the need to provide and improve the Service. The primary purpose is &#34;Service Delivery,&#34; which includes account creation, management, and the execution of the core form-building and workflow automation features. Without your data, we cannot route submissions to your inbox or customize the handles that represent your professional brand. We also process data for &#34;Technical Maintenance,&#34; which involves monitoring system performance, identifying and fixing software bugs, and optimizing our database queries for faster response times.
                     </Typography>
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">8. LEGAL BASES FOR DATA PROCESSING</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">8. LEGAL BASES FOR DATA PROCESSING</Typography>
                     <Typography>
                         Under the General Data Protection Regulation (GDPR), we must define the legal grounds upon which we process your data. The most common ground is &#34;Contractual Necessity,&#34; where data processing is required to fulfill our obligations under our Terms of Service (e.g., providing the account you signed up for). The second ground is &#34;Legitimate Interests,&#34; where processing is necessary for our business operations and does not override your fundamental rights (e.g., improving platform security or performing basic product analytics).
                     </Typography>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">9. DATA RETENTION AND ARCHIVAL POLICIES</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">9. DATA RETENTION AND ARCHIVAL POLICIES</Typography>
                     <Typography>
                         Our retention policy is designed to keep your personal data only for as long as it is necessary to provide the Service and fulfill the purposes described in this Policy. For &#34;Account Data,&#34; we retain your information as long as your account remains active. If you choose to delete your account, we trigger a deletion process that removes your personal identifiers from our primary databases within a reasonable timeframe, typically within 60 days, unless a longer retention period is required by law.
                     </Typography>
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">10. INTERNAL DATA SECURITY ARCHITECTURE</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">10. INTERNAL DATA SECURITY ARCHITECTURE</Typography>
                     <Typography>
                         We take the security of your data seriously and have implemented a multi-layered security architecture. All data transmitted between your browser and our servers is protected using Transport Layer Security (TLS) encryption. At the database level, sensitive information is encrypted at rest using industry-standard AES-256 protocols. We leverage the infrastructure of specialized providers like Convex and Vercel, who maintain rigorous security certifications and world-class physical security for their data centers.
                     </Typography>
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">11. EXTERNAL DATA SHARING AND SUB-PROCESSORS</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">11. EXTERNAL DATA SHARING AND SUB-PROCESSORS</Typography>
                     <Typography>
                         We do not sell your personal data to advertisers or third-party data brokers. We share your information only with trusted &#34;Sub-processors&#34; who are essential to our Service&#39;s operation. These include: <strong>Convex, Inc.</strong> (our backend database provider), <strong>Vercel, Inc.</strong> (our hosting and edge network provider), <strong>Lemon Squeezy, LLC</strong> (our payments partner), and <strong>Clerk</strong> or <strong>Convex Auth</strong> (our identity management partners). Each of these partners is bound by contractual obligations to protect your data and only process it according to our instructions.
                     </Typography>
@@ -133,7 +133,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">12. INTERNATIONAL DATA TRANSFERS (GLOBAL DISCLOSURE)</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">12. INTERNATIONAL DATA TRANSFERS (GLOBAL DISCLOSURE)</Typography>
                     <Typography>
                         OpenDM is a global platform, and your information may be processed and stored in the United States or other countries where our sub-processors maintain operations. These jurisdictions may have data protection laws that differ from those in your home country. By using the Service, you consent to this cross-border transfer of information. We take steps to ensure that your data receives an adequate level of protection regardless of where it is processed. This includes the use of Standard Contractual Clauses (SCCs) approved by the European Commission.
                     </Typography>
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">13. DATA SUBJECT RIGHTS (EEA AND UK USERS)</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">13. DATA SUBJECT RIGHTS (EEA AND UK USERS)</Typography>
                     <Typography>
                         If you are located in the European Economic Area (EEA) or the United Kingdom, you have specific rights under the GDPR. These include the &#34;Right of Access&#34; to request a copy of the data we hold about you and the &#34;Right to Rectification&#34; to have any errors corrected. You also have the &#34;Right to Erasure&#34; (the right to be forgotten), allowing you to request the deletion of your data when it is no longer needed. The &#34;Right to Restrict Processing&#34; allows you to limit how we use your data in certain circumstances.
                     </Typography>
@@ -153,7 +153,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">14. CALIFORNIA PRIVACY RIGHTS (CCPA/CPRA)</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">14. CALIFORNIA PRIVACY RIGHTS (CCPA/CPRA)</Typography>
                     <Typography>
                         California residents have additional rights under the California Consumer Privacy Act (CCPA) and the California Privacy Rights Act (CPRA). You have the right to know what categories of personal information we collect and whether that information is &#34;sold&#34; or &#34;shared&#34; for cross-context behavioral advertising. As stated previously, we do not sell your personal information. You have the right to request the deletion of your personal information and the right to correct inaccurate information. You also have the right to opt-out of the sharing of your data for advertising purposes.
                     </Typography>
@@ -163,7 +163,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">15. CHILDREN’S PRIVACY AND AGE RESTRICTIONS</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">15. CHILDREN’S PRIVACY AND AGE RESTRICTIONS</Typography>
                     <Typography>
                         The Service is intended for professional use by individuals aged 18 and older. We do not knowingly collect personal information from children under the age of 13 (or 16 in certain jurisdictions inside the European Union). Protectively, if we become aware that we have inadvertently collected data from a minor without verifiable parental consent, we will take immediate steps to remove that information from our active and backup systems. Our platform does not contain content directed at children.
                     </Typography>
@@ -173,7 +173,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">16. PRODUCT ANALYTICS AND PERFORMANCE MONITORING</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">16. PRODUCT ANALYTICS AND PERFORMANCE MONITORING</Typography>
                     <Typography>
                         Aggregated data is a vital tool for maintaining a high-quality platform. We use internal tools and occasionally third-party analytics providers (like PostHog or Google Analytics) to monitor user behavior at scale. This data is typically stripped of direct identifiers and used to generate heatmaps, clickstream reports, and funnel analyses. We use this information to understand where users encounter friction and to prioritize the development of new features that solve real-world problems for our community.
                     </Typography>
@@ -183,7 +183,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">17. USER CONTENT AND PRIVACY RESPONSIBILITY</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">17. USER CONTENT AND PRIVACY RESPONSIBILITY</Typography>
                     <Typography>
                         As a platform that enables the creation of intake forms, you (the User) are responsible for the privacy of the data you collect from third parties through OpenDM. We act as a &quot;Data Processor&quot; for the submissions you receive, while you act as the &quot;Data Controller.&quot; This means you are responsible for ensuring that your own use of OpenDM complies with privacy laws, including providing your own privacy notice to your form respondents and obtaining any necessary consents for the data you capture.
                     </Typography>
@@ -193,7 +193,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">18. COOKIE POLICY AND LOCAL STORAGE DISCLOSURE</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">18. COOKIE POLICY AND LOCAL STORAGE DISCLOSURE</Typography>
                     <Typography>
                         We use both cookies and browser &quot;Local Storage&quot; to provide a seamless user experience. Cookies are small data files stored on your hard drive, while Local Storage is a mechanism for storing key-value pairs in the web browser. We use &quot;Necessary Cookies&quot; for core platform functionality, such as security and session management. &quot;Preference Cookies&quot; allow us to remember your settings between visits. &quot;Analytical Cookies&quot; help us understand how users interact with our marketing pages.
                     </Typography>
@@ -203,7 +203,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">19. THIRD-PARTY LINKS AND EXTERNAL SERVICES</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">19. THIRD-PARTY LINKS AND EXTERNAL SERVICES</Typography>
                     <Typography>
                         The Service may contain links to external websites or services that are not operated by OpenDM. Please be aware that we have no control over the content and privacy practices of these third-party sites and cannot accept responsibility or liability for their respective privacy policies. When you click on a link that takes you away from opendm.io, you are subject to the terms and privacy policy of that new site. We encourage you to review the privacy notices of every site you visit.
                     </Typography>
@@ -213,7 +213,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">20. MODIFICATIONS TO THIS PRIVACY POLICY</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">20. MODIFICATIONS TO THIS PRIVACY POLICY</Typography>
                     <Typography>
                         We reserve the right to update or change our Privacy Policy at any time. Any changes will be effective immediately upon posting the revised Policy on our website. If we make material changes to how we treat our users&#39; personal information, we will notify you through a notice on our website&#39;s homepage or via the email address associated with your account. The date the Privacy Policy was last revised is identified at the top of the page. You are responsible for ensuring we have an up-to-date, active, and deliverable email address for you.
                     </Typography>
@@ -223,7 +223,7 @@ export default function PrivacyPage() {
                 </section>
 
                 <section>
-                    <Typography variant="h2" className="text-xl font-bold mb-4 border-b pb-2">21. CONTACT INFORMATION AND GRIEVANCE REDRESSAL</Typography>
+                    <Typography variant="h2" className="text-xl mb-4 border-b pb-2">21. CONTACT INFORMATION AND GRIEVANCE REDRESSAL</Typography>
                     <Typography>
                         If you have any questions, concerns, or complaints about this Privacy Policy or our data handling practices, please do not hesitate to contact our dedicated privacy team. We are committed to resolving any grievances in a timely and transparent manner. You can reach us via email at: <strong>support@opendm.io</strong>. For formal legal inquiries, please address your correspondence to &quot;OpenDM Legal Department&quot; at the same email address.
                     </Typography>

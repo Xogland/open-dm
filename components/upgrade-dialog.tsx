@@ -53,7 +53,7 @@ export function UpgradeDialog({
                 </div>
                 <DialogFooter className="sm:justify-center">
                     <Button asChild className="w-full sm:w-auto">
-                        <Link href="/pricing">View Plans</Link>
+                        <Link href="/settings/billing">View Plans</Link>
                     </Button>
                 </DialogFooter>
             </DialogContent>

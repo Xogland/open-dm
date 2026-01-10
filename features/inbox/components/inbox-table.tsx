@@ -17,6 +17,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Typography } from "@/components/ui/typography";
 
 interface InboxTableProps {
     isLoading: boolean;
@@ -76,14 +77,14 @@ export function InboxTable({
                     <Inbox className="h-10 w-10 text-muted-foreground/40" />
                 </div>
                 <div className="space-y-1">
-                    <h3 className="text-xl font-semibold text-foreground">
+                    <Typography variant="subheading" as="h3">
                         {searchQuery ? "No matching submissions" : "Inbox is empty"}
-                    </h3>
-                    <p className="text-sm text-muted-foreground max-w-[300px] mx-auto">
+                    </Typography>
+                    <Typography variant="body" className="text-sm max-w-[300px] mx-auto">
                         {searchQuery
                             ? "We couldn't find any submissions matching your search criteria."
                             : "New submissions will appear here as soon as they are received."}
-                    </p>
+                    </Typography>
                 </div>
                 {searchQuery && (
                     <Button
@@ -105,7 +106,7 @@ export function InboxTable({
                 <Table>
                     <TableHeader className="bg-muted/30 sticky top-0 z-10">
                         <TableRow className="hover:bg-transparent border-b">
-                            <TableHead className="w-[140px] font-semibold text-foreground whitespace-nowrap hidden md:table-cell">
+                            <TableHead className="w-[140px] text-foreground whitespace-nowrap hidden md:table-cell">
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                                     Time

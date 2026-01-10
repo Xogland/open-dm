@@ -83,7 +83,7 @@ export default function DomainIntegrationPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex items-center gap-2 p-4 rounded-xl bg-muted/40 border group-hover:border-primary/30 transition-all">
-                                <code className="text-[13px] font-mono truncate flex-1 text-primary font-medium tracking-tight">
+                                <code className="text-[13px] font-mono truncate flex-1 text-primary">
                                     {redirectUrl}
                                 </code>
                                 <Button
@@ -97,7 +97,7 @@ export default function DomainIntegrationPage() {
                             </div>
                             <div className="flex items-start gap-3 p-3.5 rounded-xl bg-primary/5 border border-primary/10 text-xs text-muted-foreground italic">
                                 <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                                <Typography variant="small" as="p">Tip: You can use a subdomain like <span className="text-foreground font-semibold">contact.yourdomain.com</span> for a cleaner setup.</Typography>
+                                <Typography variant="small" as="p">Tip: You can use a subdomain like <span className="text-foreground">contact.yourdomain.com</span> for a cleaner setup.</Typography>
                             </div>
                         </CardContent>
                     </Card>
@@ -123,8 +123,8 @@ export default function DomainIntegrationPage() {
                                     "Set to 301 (Permanent) redirect.",
                                     "Save changes (Ready in 24-48 hours)."
                                 ].map((step, i) => (
-                                    <li key={i} className="flex gap-4 text-[13px] text-foreground/80 leading-tight items-start">
-                                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-bold shrink-0 mt-0.5 shadow-sm">
+                                    <li key={i} className="flex gap-4 text-[13px] text-foreground/80 items-start">
+                                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] shrink-0 mt-0.5 shadow-sm">
                                             {i + 1}
                                         </span>
                                         <span className="font-medium">{step}</span>
@@ -167,7 +167,7 @@ export default function DomainIntegrationPage() {
                                         </span>
                                         <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                     </div>
-                                    <div className="mt-3 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-0 group-hover:opacity-100 transition-all transform translate-y-1 group-hover:translate-y-0">
+                                    <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-all transform translate-y-1 group-hover:translate-y-0">
                                         View Guide <ArrowRight className="w-3 h-3" />
                                     </div>
                                 </a>
@@ -179,7 +179,7 @@ export default function DomainIntegrationPage() {
 
             <div className="pt-12 border-t mt-auto text-center shrink-0">
                 <Typography variant="muted" as="p" className="font-medium flex items-center justify-center gap-2">
-                    Need more help? <Button variant="link" className="p-0 h-auto font-bold text-primary">Contact Support</Button>
+                    Need more help? <Button variant="link" className="p-0 h-auto text-primary">Contact Support</Button>
                 </Typography>
             </div>
         </PageShell>

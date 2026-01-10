@@ -11,6 +11,7 @@ export function useOnboarding() {
     const createOrg = useMutation(api.organisation.createOrganisation);
     const addToPreregistration = useMutation(api.preregistration.addToPreregistration);
     const { setSelectedOrganization } = useUserData();
+    const isPreregistered = useQuery(api.preregistration.isPreregistered);
 
     const [step, setStep] = useState(1);
     const [name, setName] = useState("");
@@ -122,7 +123,13 @@ export function useOnboarding() {
 
             toast.success("Organization created successfully!");
             setSelectedOrganization(orgId);
-            router.push("/dashboard");
+
+            // Redirect logic: If preregistered, go to dashboard. If not, go to pricing to encourage upgrade.
+            if (isPreregistered) {
+                router.push("/dashboard");
+            } else {
+                router.push(`/settings/billing?welcome=true&orgId=${orgId}`);
+            }
         } catch (error) {
             toast.error("Failed to create organization");
             console.error(error);

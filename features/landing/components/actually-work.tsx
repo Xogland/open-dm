@@ -55,7 +55,7 @@ export function ActuallyWork() {
 
         {!isAuthenticated && (
           <div className="mt-16 text-center">
-            <Button size="lg" className="h-14 px-8 text-lg font-semibold shadow-lg group" asChild>
+            <Button size="lg" className="h-14 px-8 text-lg shadow-lg group" asChild>
               <Link href="/sign-up">
                 Get started for free <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>

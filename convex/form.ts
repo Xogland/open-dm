@@ -120,12 +120,36 @@ export const getFormWithOrganisationByHandle = query({
 
     if (!form) return null;
 
+    // Check submission limit
+    const planConfig = getPlanConfig(org.plan);
+    const limit = planConfig.limits.submissionsPerMonth;
+    let limitReached = false;
+
+    if (limit !== Infinity) {
+      const now = Date.now();
+      const monthStart = new Date(now);
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
+      const monthStartTs = monthStart.getTime();
+
+      const currentSubmissionsCount = (await ctx.db
+        .query("submissions")
+        .withIndex("organisation", (q) => q.eq("organisation", org._id))
+        .filter((q) => q.gte(q.field("_creationTime"), monthStartTs))
+        .collect()).length;
+
+      if (currentSubmissionsCount >= limit) {
+        limitReached = true;
+      }
+    }
+
     return {
       form,
       organisation: {
         ...org,
         image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
       },
+      limitReached,
     };
   },
 });

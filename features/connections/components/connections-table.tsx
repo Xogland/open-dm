@@ -62,7 +62,7 @@ const StatusBadge = ({
 
     return (
         <div
-            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${classes}`}
+            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${classes}`}
         >
             {icon}
             {text}
@@ -83,10 +83,10 @@ export function ConnectionsTable({
                 <Table>
                     <TableHeader className="bg-muted/50 border-b">
                         <TableRow className="hover:bg-muted/50">
-                            <TableHead className="w-[20%] min-w-[200px] font-bold text-foreground py-4">
+                            <TableHead className="w-[20%] min-w-[200px] text-foreground py-4">
                                 Email
                             </TableHead>
-                            <TableHead className="w-[15%] text-center font-bold text-foreground py-4">
+                            <TableHead className="w-[15%] text-center text-foreground py-4">
                                 Submissions
                             </TableHead>
                         </TableRow>
@@ -105,7 +105,7 @@ export function ConnectionsTable({
         return (
             <div className="flex flex-col items-center justify-center p-12 space-y-4 text-center border rounded-lg shadow-sm min-h-[40vh] bg-card">
                 <Mail className="h-12 w-12 text-muted-foreground/50" />
-                <p className="mt-4 text-xl font-semibold text-foreground">
+                <p className="mt-4 text-xl text-foreground">
                     {searchQuery
                         ? "No matching clients found."
                         : "No clients found yet."}
@@ -123,10 +123,10 @@ export function ConnectionsTable({
             <Table>
                 <TableHeader className="bg-muted/50 border-b">
                     <TableRow className="hover:bg-muted/50">
-                        <TableHead className="w-[20%] min-w-[200px] font-bold text-foreground py-4">
+                        <TableHead className="w-[20%] min-w-[200px] text-foreground py-4">
                             Email
                         </TableHead>
-                        <TableHead className="w-[15%] text-center font-bold text-foreground py-4">
+                        <TableHead className="w-[15%] text-center text-foreground py-4">
                             Submissions
                         </TableHead>
                     </TableRow>
@@ -142,7 +142,7 @@ export function ConnectionsTable({
                                 <IoIosContact className="h-4 w-4 text-foreground" />{" "}
                                 {connection.email.length === 0 ? "Unknown" : connection.email}
                             </TableCell>
-                            <TableCell className="text-center text-base font-bold text-foreground">
+                            <TableCell className="text-center text-base text-foreground">
                                 {connection.submissionCount ?? 0}
                             </TableCell>
                         </TableRow>

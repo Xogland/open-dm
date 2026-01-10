@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import ChatFormView from "./chat-form-view";
+import { Typography } from "@/components/ui/typography";
 
 export default function FormView({
   onSubmitted,
@@ -135,7 +136,7 @@ export default function FormView({
     );
   }
 
-  const { form, organisation } = formWithOrg;
+  const { form, organisation, limitReached } = formWithOrg;
 
   return (
     <div

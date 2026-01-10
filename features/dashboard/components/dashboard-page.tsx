@@ -8,10 +8,7 @@ import { ServiceChart } from "./service-chart";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/page-header";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowUpRight, Copy, ExternalLink, ShieldCheck } from "lucide-react";
 import { useUserData } from "@/features/organization/providers/user-data-provider";
@@ -24,9 +21,18 @@ import { toast } from "sonner";
 import { PageShell } from "@/components/page-shell";
 import { Typography } from "@/components/ui/typography";
 
+import { UsageStats } from "./usage-stats";
+
 export default function DashboardPage() {
-  const { stats, recentSubmissions, isLoading, trends, navigateToInbox, dailyStats, serviceDistribution } =
-    useDashboard();
+  const {
+    stats,
+    recentSubmissions,
+    isLoading,
+    trends,
+    navigateToInbox,
+    dailyStats,
+    serviceDistribution,
+  } = useDashboard();
 
   const { selectedOrganization } = useUserData();
 
@@ -78,32 +84,50 @@ export default function DashboardPage() {
       {/* Header */}
       <PageHeader
         title="Overview"
-        description={`Welcome back! Here's what's happening with ${selectedOrganization?.name || 'your organization'}.`}
+        description={`Welcome back! Here's what's happening with ${selectedOrganization?.name || "your organization"}.`}
       >
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 p-1.5 px-3 bg-muted/50 rounded-lg border border-border/50">
             <code className="text-[11px] font-mono text-muted-foreground">
               @{selectedOrganization.handle}
             </code>
-            <Button variant="ghost" size="icon" className="h-6 w-6 hover:bg-muted" onClick={copyHandle}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 hover:bg-muted"
+              onClick={copyHandle}
+            >
               <Copy className="w-3.5 h-3.5" />
             </Button>
           </div>
 
-          <Badge variant="outline" className="h-9 px-4 text-xs font-bold border-primary/20 bg-primary/5 text-primary rounded-lg hidden sm:flex">
+          <Badge
+            variant="outline"
+            className="h-9 px-4 text-xs border-primary/20 bg-primary/5 text-primary rounded-lg hidden sm:flex capitalize"
+          >
             <ShieldCheck className="w-3.5 h-3.5 mr-2" />
-            {selectedOrganization.plan.toUpperCase()} PLAN
+            {selectedOrganization.plan} Plan
           </Badge>
 
-          <div className="h-9 w-[1px] bg-border mx-1 hidden md:block" />
+          <div className="h-9 w-px bg-border mx-1 hidden md:block" />
 
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline" size="sm" className="h-10 px-4 rounded-lg">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="h-10 px-4 rounded-lg"
+            >
               <Link href={`/${selectedOrganization.handle}`} target="_blank">
-                <span className="hidden sm:inline">Live Page</span> <ExternalLink className="sm:ml-2 w-4 h-4" />
+                <span className="hidden sm:inline">Live Page</span>{" "}
+                <ExternalLink className="sm:ml-2 w-4 h-4" />
               </Link>
             </Button>
-            <Button onClick={navigateToInbox} size="sm" className="h-10 px-4 rounded-lg bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-semibold">
+            <Button
+              onClick={navigateToInbox}
+              size="sm"
+              className="h-10 px-4 rounded-lg bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+            >
               Inbox
             </Button>
           </div>
@@ -131,10 +155,19 @@ export default function DashboardPage() {
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
             <CardContent className="p-4 flex items-center justify-between">
               <div className="space-y-1">
-                <Typography variant="small" as="h4" className="font-bold">Customize your service workflow</Typography>
-                <Typography variant="muted" as="p" className="text-xs">Add steps, logic or style your chat flows in the editor.</Typography>
+                <Typography variant="small" as="h4" className="font-bold">
+                  Customize your service workflow
+                </Typography>
+                <Typography variant="muted" as="p" className="text-xs">
+                  Add steps, logic or style your chat flows in the editor.
+                </Typography>
               </div>
-              <Button asChild size="sm" variant="outline" className="h-9 group-hover:bg-primary group-hover:text-white transition-all">
+              <Button
+                asChild
+                size="sm"
+                variant="outline"
+                className="h-9 group-hover:bg-primary group-hover:text-white transition-all"
+              >
                 <Link href="/edit">
                   Editor <ArrowUpRight className="ml-2 w-3.5 h-3.5" />
                 </Link>
@@ -149,19 +182,10 @@ export default function DashboardPage() {
             <ServiceChart data={serviceDistribution} />
           </div>
 
-          <div className="flex-1 min-h-[300px] flex flex-col">
-            <RecentActivity
-              className="flex-1 shadow-sm border bg-card"
-              activities={recentSubmissions.map((sub) => ({
-                id: sub._id,
-                email: sub.email,
-                serviceName: sub.service || "General Inquiry",
-                creationTime: sub._creationTime,
-              }))}
-            />
-          </div>
+          <UsageStats className="shadow-sm border bg-card" />
         </div>
       </div>
     </PageShell>
   );
 }
+

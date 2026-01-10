@@ -16,25 +16,16 @@ export function HeroModern() {
 
   return (
     <section className="relative w-full py-20 sm:py-32 flex flex-col items-center justify-center overflow-hidden min-h-[80vh]">
-      <div className="absolute inset-0 z-0">
-        <Hyperspeed />
-      </div>
-      {/* Seamless blend gradients */}
-      <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-background via-background/80 to-transparent z-[1] pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-muted/40 via-muted/10 to-transparent z-[2] pointer-events-none" />
-
       <div className="container px-4 md:px-6 lg:px-8 mx-auto max-w-7xl relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid lg:grid-cols-3 gap-12 lg:gap-20 items-center">
           {/* Content Left */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
+          <div className="flex flex-col col-span-2 items-start text-left space-y-8">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Typography variant="h1" className="md:text-6xl text-4xl">
-                {HERO_CONTENT.title}
-              </Typography>
+              <Typography variant="heading">{HERO_CONTENT.title}</Typography>
             </motion.div>
 
             <Typography
@@ -42,37 +33,37 @@ export function HeroModern() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              variant="lead"
-              className="max-w-2xl text-lg sm:text-xl"
+              variant="subheading"
+              className="max-w-2xl text-muted-foreground text-2xl md:text-3xl"
             >
-              {HERO_CONTENT.description}
+              Share one link everywhere to{" "}
+              <span className="font-bold">capture</span> inquiries,{" "}
+              <span className="font-bold">route</span> them to your inbox, block
+              spam, and enable <span className="font-bold">paid DMs</span> for
+              priority access.
             </Typography>
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="w-full"
+              className="w-full col-span-1"
             >
               {isAuthenticated ? (
-                <Button
-                  size="lg"
-                  className="h-14 px-8 text-lg font-semibold"
-                  asChild
-                >
+                <Button size="lg" className="h-14 px-8 text-lg" asChild>
                   <Link href="/dashboard">
                     Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
               ) : (
-                <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:max-w-md mx-auto lg:mx-0">
-                  <div className="relative flex-1 w-full">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
+                <div className="flex w-full lg:max-w-md mx-auto lg:mx-0 bg-muted/50 border border-border rounded-full focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                  <div className="relative flex-1 flex items-center">
+                    <span className="pl-4 text-muted-foreground whitespace-nowrap">
                       opendm.io/
                     </span>
                     <input
-                      placeholder="yourname"
-                      className="h-14 w-full pl-24 pr-4 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-lg font-medium"
+                      placeholder="handle"
+                      className="h-12 w-full pl-1 bg-transparent border-none focus:ring-0 focus:outline-none text-lg"
                       value={handle}
                       onChange={(e) =>
                         setHandle(
@@ -83,14 +74,15 @@ export function HeroModern() {
                       }
                     />
                   </div>
+
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto h-14 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+                    className="h-12 px-8 text-lg rounded-full shadow-sm transition-all shrink-0"
                     disabled={isLoading}
                     asChild
                   >
                     <Link href={`/sign-up?handle=${handle}`}>
-                      {isLoading ? "Loading..." : HERO_CONTENT.cta}{" "}
+                      {isLoading ? "Loading..." : HERO_CONTENT.cta}
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>

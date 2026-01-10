@@ -16,7 +16,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
         return (
             <div className="bg-background border border-border p-3 rounded-lg shadow-xl backdrop-blur-sm bg-opacity-95">
-                <p className="text-sm font-bold mb-2 text-foreground">{label}</p>
+                <p className="text-sm mb-2 text-foreground">{label}</p>
                 {payload.map((entry: any, index: number) => (
                     <div key={index} className="flex items-center gap-2 text-sm py-1">
                         <div
@@ -24,7 +24,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                             style={{ backgroundColor: entry.color }}
                         />
                         <span className="text-muted-foreground">{entry.name}:</span>
-                        <span className="font-mono font-medium text-foreground">{entry.value}</span>
+                        <span className="font-mono text-foreground">{entry.value}</span>
                     </div>
                 ))}
                 {payload.length >= 2 && payload[1].value > 0 && (

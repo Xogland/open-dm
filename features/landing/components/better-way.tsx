@@ -58,7 +58,7 @@ export function BetterWay() {
                 {feature.useCases && (
                   <div className="flex flex-wrap gap-2 mt-auto">
                     {feature.useCases.map((useCase, i) => (
-                      <span key={i} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">
+                      <span key={i} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
                         {useCase}
                       </span>
                     ))}
@@ -71,7 +71,7 @@ export function BetterWay() {
 
         {!isAuthenticated && (
           <div className="mt-20 text-center">
-            <Button size="lg" className="h-14 px-8 text-lg font-semibold shadow-lg group" asChild>
+            <Button size="lg" className="h-14 px-8 text-lg shadow-lg group" asChild>
               <Link href="/sign-up">
                 Claim your name <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>

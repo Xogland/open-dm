@@ -65,7 +65,7 @@ export function OneSystem() {
                                         </ul>
 
                                         <div className="pt-8 border-t border-border">
-                                            <Typography variant="muted" className="text-sm font-semibold italic">
+                                            <Typography variant="muted" className="text-sm italic">
                                                 {option.footer}
                                             </Typography>
                                         </div>

@@ -105,7 +105,7 @@ const SidebarNav = ({ items, activeKey, onSelect }: {
           key={item.key}
           // Use a button instead of an anchor tag since we're using React state
           onClick={() => onSelect(item.key)}
-          className={`flex items-center px-3 py-2 text-sm font-medium rounded-md text-left transition-colors 
+          className={`flex items-center px-3 py-2 text-sm rounded-md text-left transition-colors 
                                 ${item.key === activeKey
               ? "bg-muted hover:bg-muted" // Active style
               : "hover:bg-accent hover:text-accent-foreground" // Inactive style

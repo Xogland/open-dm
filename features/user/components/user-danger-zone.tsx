@@ -73,7 +73,7 @@ export function UserDangerZone() {
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This will permanently delete your profile and <span className="text-destructive font-bold">ALL</span> organizations you own.
+                                    This will permanently delete your profile and <span className="text-destructive">ALL</span> organizations you own.
                                     You will lose access to all your data and forms.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>

@@ -16,7 +16,7 @@ export function ServiceChart({
     return (
         <Card className="flex flex-col shadow-sm border-0 bg-secondary/5 h-full">
             <CardHeader className="flex flex-row items-center justify-between pb-2 shrink-0 space-y-0">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Service Mix</CardTitle>
+                <CardTitle className="text-xs text-muted-foreground">Service Mix</CardTitle>
                 <Badge variant="secondary" className="text-[10px] font-mono">{total} Total</Badge>
             </CardHeader>
             <CardContent className="flex-1 pb-2 min-h-0 relative flex flex-col">
@@ -44,8 +44,8 @@ export function ServiceChart({
 
                     {/* Center Text for Donut */}
                     <div className="absolute inset-x-0 top-[calc(50%+10px)] -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-xl font-bold leading-none">{total}</span>
-                        <span className="text-[10px] text-muted-foreground uppercase">Leads</span>
+                        <span className="text-xl leading-none">{total}</span>
+                        <span className="text-[10px] text-muted-foreground">Leads</span>
                     </div>
                 </div>
 

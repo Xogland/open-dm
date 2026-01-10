@@ -7,14 +7,13 @@ import { internal } from "./_generated/api";
 
 // import { RESERVED_HANDLES } from "./reserved-handles"; // Removed
 
-
 // Organization creation limit per user
 const ORGANISATION_LIMIT = 15;
 
 export const Role = v.union(
   v.literal("owner"),
   v.literal("editor"),
-  v.literal("viewer")
+  v.literal("viewer"),
 );
 
 export const organisations = defineTable({
@@ -23,8 +22,8 @@ export const organisations = defineTable({
   owner: v.id("users"),
   formId: v.id("forms"), // Required - each organisation has exactly one form
   image: v.optional(v.string()),
-  plan: v.string(), // 'free', 'pro', 'business'
-  subscriptionStatus: v.optional(v.string()), // 'active', 'inactive', 'past_due'
+  plan: v.string(), // 'free', 'beginner', 'pro', 'max'
+  subscriptionStatus: v.optional(v.string()), // 'on_trial', 'active', 'paused', 'past_due', 'unpaid', 'cancelled', 'expired'
   category: v.optional(v.string()),
   businessType: v.optional(v.string()),
   statuses: v.optional(
@@ -34,12 +33,13 @@ export const organisations = defineTable({
         label: v.string(),
         color: v.string(),
         isDefault: v.boolean(),
-      })
-    )
+      }),
+    ),
   ),
   views: v.optional(v.number()),
   debugMode: v.optional(v.boolean()),
-}).index("owner", ["owner"])
+})
+  .index("owner", ["owner"])
   .index("handle", ["handle"]);
 
 export const incrementView = mutation({
@@ -95,7 +95,8 @@ export const checkOrganisationHandle = query({
             .unique();
 
           if (keyRecord) {
-            const isValid = reserved.type === "official" ? keyRecord.type === "master" : true;
+            const isValid =
+              reserved.type === "official" ? keyRecord.type === "master" : true;
             if (isValid) {
               return { status: "available" };
             }
@@ -105,9 +106,10 @@ export const checkOrganisationHandle = query({
         return {
           status: "reserved",
           type: reserved.type,
-          message: reserved.type === "official"
-            ? "This handle is not available."
-            : "This handle is reserved. Please contact support to acquire it."
+          message:
+            reserved.type === "official"
+              ? "This handle is not available."
+              : "This handle is reserved. Please contact support to acquire it.",
         };
       }
     }
@@ -135,7 +137,7 @@ export const getReservedHandles = query({
     // For now, we'll just return it as requested.
     // Return all reserved handles from DB
     const reserved = await ctx.db.query("reservedHandles").collect();
-    return reserved.map(r => r.handle);
+    return reserved.map((r) => r.handle);
   },
 });
 
@@ -170,7 +172,7 @@ export const updateOrganisationStatuses = mutation({
         label: v.string(),
         color: v.string(),
         isDefault: v.boolean(),
-      })
+      }),
     ),
   },
   handler: async (ctx, args) => {
@@ -183,7 +185,7 @@ export const updateOrganisationStatuses = mutation({
     const membership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", userId).eq("organisationId", args.organisationId)
+        q.eq("userId", userId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -219,7 +221,11 @@ export const updateOrganisationImage = mutation({
 
     // Delete old image if it exists and is different from new one
     if (organisation.image && organisation.image !== args.storageId) {
-      await ctx.storage.delete(organisation.image as Id<"_storage">);
+      try {
+        await ctx.storage.delete(organisation.image as Id<"_storage">);
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     await ctx.db.patch(args.organisationId, {
@@ -275,7 +281,9 @@ export const createOrganisation = mutation({
       .collect();
 
     if (ownedOrganisations.length >= ORGANISATION_LIMIT) {
-      throw new Error(`You have reached the maximum limit of ${ORGANISATION_LIMIT} organizations. Please contact us if you need more.`);
+      throw new Error(
+        `You have reached the maximum limit of ${ORGANISATION_LIMIT} organizations. Please contact us if you need more.`,
+      );
     }
 
     // Check handle uniqueness and reservation
@@ -295,9 +303,11 @@ export const createOrganisation = mutation({
       if (reserved) {
         // Redmeption Logic
         if (!args.redemptionKey) {
-          throw new Error(reserved.type === "official"
-            ? "This handle is not available."
-            : "This handle is reserved. You need a redemption key to use it.");
+          throw new Error(
+            reserved.type === "official"
+              ? "This handle is not available."
+              : "This handle is reserved. You need a redemption key to use it.",
+          );
         }
 
         const keyRecord = await ctx.db
@@ -325,7 +335,7 @@ export const createOrganisation = mutation({
     }
 
     // If reserved and valid key passed (logic above would throw otherwise), cleanup reservation
-    // Re-fetch reserved to be safe in transaction or reuse if simpler? 
+    // Re-fetch reserved to be safe in transaction or reuse if simpler?
     // We can just rely on the fact we passed the check.
     // However, to do the transaction updates:
     if (!isBypass) {
@@ -346,7 +356,11 @@ export const createOrganisation = mutation({
 
         if (keyRecord && keyRecord.type === "standard") {
           await ctx.db.delete(keyRecord._id);
-          await ctx.scheduler.runAfter(0, (internal as any).reserved_handles.replenishKeys, {});
+          await ctx.scheduler.runAfter(
+            0,
+            (internal as any).reserved_handles.replenishKeys,
+            {},
+          );
         }
 
         // 3. We don't have orgId yet, so we insert into acquiredHandles AFTER creating org
@@ -364,9 +378,7 @@ export const createOrganisation = mutation({
           email: "",
         },
       },
-      services: [
-        { id: "1", title: "General Inquiry" },
-      ],
+      services: [{ id: "1", title: "General Inquiry" }],
       workflows: {},
     });
 
@@ -382,9 +394,19 @@ export const createOrganisation = mutation({
       businessType: args.businessType,
       statuses: [
         { id: "new", label: "New", color: "#64748b", isDefault: true },
-        { id: "review", label: "In Review", color: "#6366f1", isDefault: false },
+        {
+          id: "review",
+          label: "In Review",
+          color: "#6366f1",
+          isDefault: false,
+        },
         { id: "working", label: "Working", color: "#3b82f6", isDefault: false },
-        { id: "completed", label: "Completed", color: "#22c55e", isDefault: false },
+        {
+          id: "completed",
+          label: "Completed",
+          color: "#22c55e",
+          isDefault: false,
+        },
       ],
     });
 
@@ -402,7 +424,7 @@ export const createOrganisation = mutation({
     if (!isBypass && args.redemptionKey) {
       // We essentially duplicate the "acquiredHandles" logic here since we didn't call the mutation
       // But we need to ensure we only do this if it was actually reserved.
-      // Re-check not needed as we acquired it by deleting the reservation above? 
+      // Re-check not needed as we acquired it by deleting the reservation above?
       // Yes, we deleted reserved handle above. Ideally we record it in acquiredHandles now.
       await ctx.db.insert("acquiredHandles", {
         handle: handle,
@@ -515,14 +537,18 @@ export const deleteOrganisation = mutation({
     // 2. Delete all submissions
     const submissions = await ctx.db
       .query("submissions")
-      .withIndex("organisation", (q) => q.eq("organisation", args.organisationId))
+      .withIndex("organisation", (q) =>
+        q.eq("organisation", args.organisationId),
+      )
       .collect();
     await Promise.all(submissions.map((s) => ctx.db.delete(s._id)));
 
     // 3. Delete all connections
     const connections = await ctx.db
       .query("connections")
-      .withIndex("organisation", (q) => q.eq("organisation", args.organisationId))
+      .withIndex("organisation", (q) =>
+        q.eq("organisation", args.organisationId),
+      )
       .collect();
     await Promise.all(connections.map((c) => ctx.db.delete(c._id)));
 
@@ -534,7 +560,9 @@ export const deleteOrganisation = mutation({
     // 6. Delete team invites
     const invites = await ctx.db
       .query("teamInvites")
-      .withIndex("by_organisation", (q) => q.eq("organisationId", args.organisationId))
+      .withIndex("by_organisation", (q) =>
+        q.eq("organisationId", args.organisationId),
+      )
       .collect();
     await Promise.all(invites.map((i) => ctx.db.delete(i._id)));
 
@@ -548,7 +576,9 @@ export const deleteOrganisation = mutation({
     // 8. Delete subscriptions
     const subs = await ctx.db
       .query("subscriptions")
-      .withIndex("by_organisation", (q) => q.eq("organisationId", args.organisationId))
+      .withIndex("by_organisation", (q) =>
+        q.eq("organisationId", args.organisationId),
+      )
       .collect();
     await Promise.all(subs.map((s) => ctx.db.delete(s._id)));
 
@@ -576,8 +606,8 @@ export const deleteOrganisation = mutation({
       .collect();
     await Promise.all(
       usersWithSelected.map((u) =>
-        ctx.db.patch(u._id, { selectedOrganisation: undefined })
-      )
+        ctx.db.patch(u._id, { selectedOrganisation: undefined }),
+      ),
     );
 
     // 12. Finally, delete the organisation
@@ -676,7 +706,8 @@ export const getAllUserOrganisations = query({
     );
 
     const validMemberOrgs = memberOrganisations.filter(
-      (org): org is Doc<"organisations"> => org !== null && org.owner !== userId,
+      (org): org is Doc<"organisations"> =>
+        org !== null && org.owner !== userId,
     );
 
     // Combine and deduplicate
@@ -726,7 +757,7 @@ export const getOrganisationMembers = query({
     const isMember = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", userId).eq("organisationId", args.organisation)
+        q.eq("userId", userId).eq("organisationId", args.organisation),
       )
       .first();
 
@@ -812,7 +843,6 @@ export const getOrganisationByHandle = query({
   },
 });
 
-
 // Team Management Mutations
 
 export const removeTeamMember = mutation({
@@ -840,7 +870,7 @@ export const removeTeamMember = mutation({
     const membership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", args.userId).eq("organisationId", args.organisationId)
+        q.eq("userId", args.userId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -860,10 +890,7 @@ export const updateTeamMemberRole = mutation({
   args: {
     organisationId: v.id("organisations"),
     userId: v.id("users"),
-    role: v.union(
-      v.literal("editor"),
-      v.literal("viewer")
-    ),
+    role: v.union(v.literal("editor"), v.literal("viewer")),
   },
   handler: async (ctx, args) => {
     const currentUserId = await getAuthUserId(ctx);
@@ -876,7 +903,7 @@ export const updateTeamMemberRole = mutation({
     const currentMembership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", currentUserId).eq("organisationId", args.organisationId)
+        q.eq("userId", currentUserId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -895,7 +922,7 @@ export const updateTeamMemberRole = mutation({
     const membership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", args.userId).eq("organisationId", args.organisationId)
+        q.eq("userId", args.userId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -919,7 +946,7 @@ export const getOrganisationMembersForService = query({
     const memberships = await ctx.db
       .query("organisationMembers")
       .withIndex("by_organisation_id", (q) =>
-        q.eq("organisationId", args.organisationId)
+        q.eq("organisationId", args.organisationId),
       )
       .collect();
 
@@ -928,7 +955,8 @@ export const getOrganisationMembersForService = query({
         const user = await ctx.db.get(membership.userId);
         if (!user) return null;
 
-        const isAssigned = membership.role === "owner" ||
+        const isAssigned =
+          membership.role === "owner" ||
           membership.role === "editor" ||
           membership.allowedServices === undefined ||
           membership.allowedServices.includes(args.serviceId);
@@ -943,10 +971,12 @@ export const getOrganisationMembersForService = query({
           isAssigned,
           isRestricted: membership.allowedServices !== undefined,
         };
-      })
+      }),
     );
 
-    return membersWithDetails.filter((m): m is NonNullable<typeof m> => m !== null);
+    return membersWithDetails.filter(
+      (m): m is NonNullable<typeof m> => m !== null,
+    );
   },
 });
 
@@ -968,7 +998,7 @@ export const toggleServiceUserAssignment = mutation({
     const currentMembership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", currentUserId).eq("organisationId", args.organisationId)
+        q.eq("userId", currentUserId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -982,7 +1012,7 @@ export const toggleServiceUserAssignment = mutation({
     const membership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", args.userId).eq("organisationId", args.organisationId)
+        q.eq("userId", args.userId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -1002,15 +1032,15 @@ export const toggleServiceUserAssignment = mutation({
       if (args.isAssigned) return; // Already assigned (All access)
 
       const form = await ctx.db.get(organisation.formId);
-      const allServiceIds = form?.services.map(s => s.id) || [];
-      allowedServices = allServiceIds.filter(id => id !== args.serviceId);
+      const allServiceIds = form?.services.map((s) => s.id) || [];
+      allowedServices = allServiceIds.filter((id) => id !== args.serviceId);
     } else {
       if (args.isAssigned) {
         if (!allowedServices.includes(args.serviceId)) {
           allowedServices = [...allowedServices, args.serviceId];
         }
       } else {
-        allowedServices = allowedServices.filter(id => id !== args.serviceId);
+        allowedServices = allowedServices.filter((id) => id !== args.serviceId);
       }
     }
 
@@ -1032,7 +1062,7 @@ export const deactivateTeamMembersOnExpiry = mutation({
     const memberships = await ctx.db
       .query("organisationMembers")
       .withIndex("by_organisation_id", (q) =>
-        q.eq("organisationId", args.organisationId)
+        q.eq("organisationId", args.organisationId),
       )
       .collect();
 
@@ -1040,7 +1070,7 @@ export const deactivateTeamMembersOnExpiry = mutation({
     await Promise.all(
       memberships
         .filter((m) => m.userId !== organisation.owner)
-        .map((m) => ctx.db.patch(m._id, { status: "inactive" }))
+        .map((m) => ctx.db.patch(m._id, { status: "inactive" })),
     );
   },
 });
@@ -1057,7 +1087,7 @@ export const reactivateTeamMembersOnRenewal = mutation({
     const memberships = await ctx.db
       .query("organisationMembers")
       .withIndex("by_organisation_id", (q) =>
-        q.eq("organisationId", args.organisationId)
+        q.eq("organisationId", args.organisationId),
       )
       .collect();
 
@@ -1065,7 +1095,7 @@ export const reactivateTeamMembersOnRenewal = mutation({
     await Promise.all(
       memberships
         .filter((m) => m.status === "inactive")
-        .map((m) => ctx.db.patch(m._id, { status: "active" }))
+        .map((m) => ctx.db.patch(m._id, { status: "active" })),
     );
   },
 });
@@ -1098,7 +1128,7 @@ export const checkUserAccess = query({
     const membership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", userId).eq("organisationId", args.organisationId)
+        q.eq("userId", userId).eq("organisationId", args.organisationId),
       )
       .first();
 
@@ -1142,7 +1172,7 @@ export const getOrganisationMembersForRouting = query({
     const memberships = await ctx.db
       .query("organisationMembers")
       .withIndex("by_organisation_id", (q) =>
-        q.eq("organisationId", args.organisationId)
+        q.eq("organisationId", args.organisationId),
       )
       .collect();
 
@@ -1161,10 +1191,12 @@ export const getOrganisationMembersForRouting = query({
           allowedServices: membership.allowedServices, // undefined means ALL
           serviceEscalation: membership.serviceEscalation || {},
         };
-      })
+      }),
     );
 
-    return membersWithDetails.filter((m): m is NonNullable<typeof m> => m !== null);
+    return membersWithDetails.filter(
+      (m): m is NonNullable<typeof m> => m !== null,
+    );
   },
 });
 
@@ -1188,16 +1220,20 @@ export const updateMemberEscalation = mutation({
     const requesterMembership = await ctx.db
       .query("organisationMembers")
       .withIndex("user_org_index", (q) =>
-        q.eq("userId", userId).eq("organisationId", membership.organisationId)
+        q.eq("userId", userId).eq("organisationId", membership.organisationId),
       )
       .first();
 
-    if (organisation.owner !== userId && requesterMembership?.role !== "editor") {
+    if (
+      organisation.owner !== userId &&
+      requesterMembership?.role !== "editor"
+    ) {
       throw new Error("Only owners and editors can update routing settings");
     }
 
     const updates: any = {};
-    if (args.serviceEscalation !== undefined) updates.serviceEscalation = args.serviceEscalation;
+    if (args.serviceEscalation !== undefined)
+      updates.serviceEscalation = args.serviceEscalation;
     if (args.allowedServices !== undefined) {
       // Allow restricting ANY role, including owner/editor if the UI allows it.
       // The user wants full control over inbox access per service.
@@ -1259,7 +1295,9 @@ export const fakeUpdatePlan = mutation({
     // Also upsert a fake subscription record if needed
     const existing = await ctx.db
       .query("subscriptions")
-      .withIndex("by_organisation", (q) => q.eq("organisationId", args.organisationId))
+      .withIndex("by_organisation", (q) =>
+        q.eq("organisationId", args.organisationId),
+      )
       .first();
 
     const fakeSubData = {
@@ -1281,4 +1319,3 @@ export const fakeUpdatePlan = mutation({
     }
   },
 });
-

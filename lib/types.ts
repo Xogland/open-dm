@@ -146,6 +146,7 @@ export interface SocialLinks {
 // Form properties
 export interface FormProperties {
     description?: string;
+    title?: string;
     contactInfo?: ContactInfo;
     tags?: string[];
     socialLinks?: SocialLinks;

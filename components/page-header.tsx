@@ -11,11 +11,11 @@ export function PageHeader({ title, description, children }: PageHeaderProps) {
     return (
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <Typography variant="h3" as="h1" className="font-bold tracking-tight">
+                <Typography variant="subheading" as="h1" className="font-bold">
                     {title}
                 </Typography>
                 {description && (
-                    <Typography variant="muted" as="p" className="mt-1">
+                    <Typography variant="caption" as="p" className="mt-1">
                         {description}
                     </Typography>
                 )}

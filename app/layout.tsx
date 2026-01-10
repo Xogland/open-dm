@@ -18,7 +18,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Open DM",
+  title: {
+    default: "OpenDM",
+    template: "%s | OpenDM",
+  },
   description: "Open DM app",
   icons: ["/logo.png"],
 };

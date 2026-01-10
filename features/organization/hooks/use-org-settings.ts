@@ -54,15 +54,37 @@ export function useOrgSettings() {
         }
     };
 
+    const generateUploadUrl = useMutation(api.attachment.generateUploadUrl);
+    const updateOrganisationImage = useMutation(api.organisation.updateOrganisationImage);
+
     const handleImageUpload = async (file: File) => {
-        // Assuming file upload logic involving generation of upload URL
-        // This is a placeholder for the actual upload logic integration
+        if (!selectedOrganization) return;
         setIsUploading(true);
         try {
-            // ... upload logic ...
-            toast.info("Image upload coming soon (Logic to be integrated)");
+            // 1. Get upload URL
+            const postUrl = await generateUploadUrl();
+
+            // 2. Upload file
+            const result = await fetch(postUrl, {
+                method: "POST",
+                headers: { "Content-Type": file.type },
+                body: file,
+            });
+
+            if (!result.ok) throw new Error("Upload failed");
+
+            const { storageId } = await result.json();
+
+            // 3. Update organization
+            await updateOrganisationImage({
+                organisationId: selectedOrganization._id,
+                storageId: storageId,
+            });
+
+            toast.success("Image updated successfully");
         } catch (error) {
-            toast.error("Failed to upload image");
+            console.error(error);
+            toast.error("Failed to update image");
         } finally {
             setIsUploading(false);
         }

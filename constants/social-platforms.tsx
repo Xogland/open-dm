@@ -4,7 +4,7 @@ import {
     CalendarDaysIcon,
     Mail,
     Phone,
-    UserIcon,
+    Share2,
 } from "lucide-react";
 import {
     TbBrandGithub,
@@ -57,7 +57,7 @@ import {
  * Used in chat view and preview components.
  */
 export const CONTACT_ICONS = {
-    profile: UserIcon,
+    profile: Share2,
     phone: Phone,
     email: Mail,
     website: GlobeIcon,

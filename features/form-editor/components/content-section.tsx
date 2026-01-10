@@ -6,8 +6,8 @@ import {
   PhoneCallIcon,
   PlusIcon,
   Trash2Icon,
-  UserIcon,
   AlertCircle,
+  Share2,
 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -43,6 +43,7 @@ import {
 import { SOCIAL_PLATFORMS, CALENDAR_PLATFORMS, getCalendarIcon } from "@/constants/social-platforms";
 import { getPlanConfig } from "@/features/subscription/config/plan-config";
 export type FormContentData = {
+  title?: string;
   description: string;
   contactType: string;
   phone: string;
@@ -330,15 +331,16 @@ export default function ContentSection({
   };
 
   return (
-    <div className="w-full h-full flex flex-row gap-6 pt-4 overflow-hidden">
+    <div className="w-full h-full flex flex-row gap-6 overflow-hidden">
       {/* Preview Section - Left, Centralised */}
-      <div className="flex-1 h-full min-w-0 flex justify-center items-start overflow-hidden rounded-2xl">
+      <div className="flex-1 h-full min-w-0 flex justify-center items-start overflow-hidden">
         <PreviewBox
           orgName={orgName}
           orgImage={orgImage || undefined}
           focusedField={focusedField}
           formData={{
             properties: {
+              title: properties.title,
               description: properties.description,
               contactInfo: {
                 profile: properties.profile,
@@ -361,23 +363,28 @@ export default function ContentSection({
 
       {/* Properties Section - Right, 1/3 width */}
       <div className="w-1/3 h-full overflow-y-auto custom-scrollbar bg-card p-4 rounded-2xl flex-shrink-0">
-
         {/* --- LEFT SIDEBAR CONTENT (Core properties) --- */}
         <div className="space-y-6">
-
           {/* Organisation Image */}
           <div className="flex items-center gap-4 p-4 bg-muted/10 border border-border rounded-xl">
             <Avatar className="w-16 h-16 border-2 border-background shadow-sm">
-              <AvatarImage src={orgImage || undefined} className="object-cover" />
+              <AvatarImage
+                src={orgImage || undefined}
+                className="object-cover"
+              />
               <AvatarFallback className="text-lg bg-primary text-primary-foreground">
-                {orgName.charAt(0).toUpperCase()}
+                {orgName.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex flex-col gap-2 flex-1">
               <div className="flex flex-col">
-                <span className="font-semibold text-sm">Organisation Avatar</span>
-                <span className="text-xs text-muted-foreground">Appears in chat & preview</span>
+                <span className="font-semibold text-sm">
+                  Organisation Avatar
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Appears in chat & preview
+                </span>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -411,7 +418,25 @@ export default function ContentSection({
             </div>
           </div>
 
-          <Typography variant="h4" as="h2">Description</Typography>
+          <Typography variant="h4" as="h2">
+            Title
+          </Typography>
+          <Input
+            placeholder="Enter a title (e.g. Senior Product Designer)"
+            value={properties.title || ""}
+            onChange={(e) =>
+              handleStateChange("title", e.target.value.substring(0, 50))
+            }
+            onFocus={() => setFocusedField("title")}
+            onBlur={() => setFocusedField(null)}
+            maxLength={50}
+            className="bg-muted/30 border-input text-foreground mb-4"
+            disabled={readOnly}
+          />
+
+          <Typography variant="h4" as="h2">
+            Description
+          </Typography>
           <Textarea
             placeholder="Enter a short description (max 200 chars)"
             value={properties.description}
@@ -430,7 +455,9 @@ export default function ContentSection({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Typography variant="h4" as="h2">Tags</Typography>
+              <Typography variant="h4" as="h2">
+                Tags
+              </Typography>
               <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-full">
                 {properties.tags?.length || 0}/2
               </span>
@@ -446,14 +473,16 @@ export default function ContentSection({
                 maxLength={16}
                 className="bg-muted/30 border-input"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleAddTag();
+                  if (e.key === "Enter") handleAddTag();
                 }}
                 disabled={(properties.tags?.length || 0) >= 2 || readOnly}
               />
               <Button
                 variant="secondary"
                 onClick={handleAddTag}
-                disabled={!newTag || (properties.tags?.length || 0) >= 2 || readOnly}
+                disabled={
+                  !newTag || (properties.tags?.length || 0) >= 2 || readOnly
+                }
               >
                 <PlusIcon className="w-4 h-4" />
               </Button>
@@ -461,7 +490,10 @@ export default function ContentSection({
 
             <div className="flex flex-wrap gap-2 mt-2">
               {properties.tags?.map((tag, index) => (
-                <div key={index} className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                <div
+                  key={index}
+                  className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
+                >
                   <span>{tag}</span>
                   <button
                     onClick={() => handleRemoveTag(index)}
@@ -476,7 +508,9 @@ export default function ContentSection({
           </div>
 
           <div className="flex items-center justify-between">
-            <Typography variant="h4" as="h2">Contact Methods</Typography>
+            <Typography variant="h4" as="h2">
+              Contact Methods
+            </Typography>
             <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-full">
               {enabledContacts.length}/2 Active
             </span>
@@ -485,23 +519,43 @@ export default function ContentSection({
           <Card className="p-4 bg-muted/10 border-border">
             <div className="space-y-4">
               {[
-                { id: "profile", label: "Profile Link", icon: UserIcon },
+                { id: "profile", label: "Share Link", icon: Share2 },
                 { id: "phone", label: "Phone Number", icon: PhoneCallIcon },
                 { id: "website", label: "Website", icon: GlobeIcon },
-                { id: "calendarLink", label: "Scheduling (Calendar)", icon: CalendarDaysIcon },
+                {
+                  id: "calendarLink",
+                  label: "Scheduling (Calendar)",
+                  icon: CalendarDaysIcon,
+                },
               ].map((item) => {
-                const calendarInfo = item.id === 'calendarLink' ? getCalendarInfo(properties.calendarLink) : null;
-                const Icon = item.id === 'calendarLink' ? getCalendarIcon(properties.calendarLink) : item.icon;
-                const isProfileForceEnabled = item.id === 'profile' &&
-                  enabledContacts.includes('profile') &&
-                  !enabledContacts.some(id => id !== 'profile' && (properties[id as keyof FormContentData] as string)?.trim());
+                const calendarInfo =
+                  item.id === "calendarLink"
+                    ? getCalendarInfo(properties.calendarLink)
+                    : null;
+                const Icon =
+                  item.id === "calendarLink"
+                    ? getCalendarIcon(properties.calendarLink)
+                    : item.icon;
+                const isProfileForceEnabled =
+                  item.id === "profile" &&
+                  enabledContacts.includes("profile") &&
+                  !enabledContacts.some(
+                    (id) =>
+                      id !== "profile" &&
+                      (
+                        properties[id as keyof FormContentData] as string
+                      )?.trim(),
+                  );
 
                 return (
                   <div key={item.id} className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Icon className="h-4 w-4 text-muted-foreground" />
-                        <Label htmlFor={`switch-${item.id}`} className="cursor-pointer">
+                        <Label
+                          htmlFor={`switch-${item.id}`}
+                          className="cursor-pointer"
+                        >
                           {item.label}
                         </Label>
                       </div>
@@ -512,8 +566,10 @@ export default function ContentSection({
                         onFocus={() => setFocusedField(`contact-${item.id}`)}
                         onBlur={() => setFocusedField(null)}
                         disabled={
-                          (!enabledContacts.includes(item.id) && enabledContacts.length >= 2) ||
-                          isProfileForceEnabled || readOnly
+                          (!enabledContacts.includes(item.id) &&
+                            enabledContacts.length >= 2) ||
+                          isProfileForceEnabled ||
+                          readOnly
                         }
                       />
                     </div>
@@ -522,30 +578,45 @@ export default function ContentSection({
                       <div className="pl-6 animate-in fade-in slide-in-from-top-1 duration-200">
                         <div className="relative">
                           <Input
-                            placeholder={item.id === 'profile' ? "Profile Link" : `Enter ${item.label.toLowerCase()}...`}
-                            value={properties[item.id as keyof FormContentData] as string}
-                            onChange={(e) => handleStateChange(item.id, e.target.value)}
-                            onFocus={() => setFocusedField(`contact-${item.id}`)}
+                            placeholder={
+                              item.id === "profile"
+                                ? "Profile Link"
+                                : `Enter ${item.label.toLowerCase()}...`
+                            }
+                            value={
+                              properties[
+                              item.id as keyof FormContentData
+                              ] as string
+                            }
+                            onChange={(e) =>
+                              handleStateChange(item.id, e.target.value)
+                            }
+                            onFocus={() =>
+                              setFocusedField(`contact-${item.id}`)
+                            }
                             onBlur={() => setFocusedField(null)}
-                            className={`bg-background/50 border-input h-9 ${item.id === 'calendarLink' && properties.calendarLink && !calendarInfo ? 'border-destructive/50' : ''}`}
-                            disabled={item.id === 'profile' || readOnly}
-                            readOnly={item.id === 'profile'}
+                            className={`bg-background/50 border-input h-9 ${item.id === "calendarLink" && properties.calendarLink && !calendarInfo ? "border-destructive/50" : ""}`}
+                            disabled={item.id === "profile" || readOnly}
+                            readOnly={item.id === "profile"}
                           />
-                          {item.id === 'calendarLink' && properties.calendarLink && (
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                              {calendarInfo ? (
-                                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              ) : (
-                                <AlertCircle className="w-4 h-4 text-destructive" />
-                              )}
-                            </div>
-                          )}
+                          {item.id === "calendarLink" &&
+                            properties.calendarLink && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                {calendarInfo ? (
+                                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                ) : (
+                                  <AlertCircle className="w-4 h-4 text-destructive" />
+                                )}
+                              </div>
+                            )}
                         </div>
-                        {item.id === 'calendarLink' && properties.calendarLink && !calendarInfo && (
-                          <p className="text-[10px] text-destructive mt-1 flex items-center gap-1">
-                            Use Calendly, Google, Zoho, or Zoom links
-                          </p>
-                        )}
+                        {item.id === "calendarLink" &&
+                          properties.calendarLink &&
+                          !calendarInfo && (
+                            <p className="text-[10px] text-destructive mt-1 flex items-center gap-1">
+                              Use Calendly, Google, Zoho, or Zoom links
+                            </p>
+                          )}
                       </div>
                     )}
                   </div>
@@ -559,63 +630,84 @@ export default function ContentSection({
 
         {/* --- RIGHT SIDEBAR CONTENT (Secondary properties) --- */}
         <div className="space-y-6">
-          <CardTitle className="text-lg font-semibold">Social Profiles</CardTitle>
+          <CardTitle className="text-lg">Social Profiles</CardTitle>
 
           <div className="flex flex-col gap-3">
             {/* Active Social Links List */}
             <div className="space-y-2">
-              {Object.entries(properties.socialLinks).map(([platform, link]) => {
-                const platformInfo = SOCIAL_PLATFORMS.find(p => p.name === platform) || {
-                  name: platform,
-                  label: platform.charAt(0).toUpperCase() + platform.slice(1),
-                  icon: <GlobeIcon className="w-4 h-4" />
-                };
+              {Object.entries(properties.socialLinks).map(
+                ([platform, link]) => {
+                  const platformInfo = SOCIAL_PLATFORMS.find(
+                    (p) => p.name === platform,
+                  ) || {
+                    name: platform,
+                    label: platform.charAt(0) + platform.slice(1),
+                    icon: <GlobeIcon className="w-4 h-4" />,
+                  };
 
-                return (
-                  <div key={platform} className="flex items-center gap-2 group bg-muted/20 p-2 rounded-md border border-transparent hover:border-border transition-all">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <div className="flex-shrink-0 text-muted-foreground">
-                        {platformInfo.icon}
-                      </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-sm font-medium leading-none truncate capitalize">{platformInfo.label}</span>
-                        <span className="text-xs text-muted-foreground truncate">{link}</span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleSocialLinkRemove(platform)}
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      disabled={readOnly}
+                  return (
+                    <div
+                      key={platform}
+                      className="flex items-center gap-2 group bg-muted/20 p-2 rounded-md border border-transparent hover:border-border transition-all"
                     >
-                      <Trash2Icon className="h-4 w-4" />
-                    </Button>
-                  </div>
-                );
-              })}
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div className="flex-shrink-0 text-muted-foreground">
+                          {platformInfo.icon}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm leading-none truncate capitalize">
+                            {platformInfo.label}
+                          </span>
+                          <span className="text-xs text-muted-foreground truncate">
+                            {link}
+                          </span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleSocialLinkRemove(platform)}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                        disabled={readOnly}
+                      >
+                        <Trash2Icon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  );
+                },
+              )}
             </div>
 
             {/* Add New Social Link */}
             <div className="flex flex-col gap-2 pt-2 border-t mt-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Add New Profile</span>
+                <span className="text-sm text-muted-foreground">
+                  Add New Profile
+                </span>
                 <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-full">
                   {Object.keys(properties.socialLinks).length}/7
                 </span>
               </div>
               <div className="flex gap-2">
-                <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+                <Select
+                  value={selectedPlatform}
+                  onValueChange={setSelectedPlatform}
+                >
                   <SelectTrigger
                     className="w-[140px] bg-muted/30"
                     onFocus={() => setFocusedField("socialLinks")}
                     onBlur={() => setFocusedField(null)}
-                    disabled={readOnly || Object.keys(properties.socialLinks).length >= 7}
+                    disabled={
+                      readOnly ||
+                      Object.keys(properties.socialLinks).length >= 7
+                    }
                   >
                     <SelectValue placeholder="Platform" />
                   </SelectTrigger>
                   <SelectContent>
-                    {SOCIAL_PLATFORMS.filter(p => !properties.socialLinks[p.name]).map((platform) => (
+                    {SOCIAL_PLATFORMS.filter(
+                      (p) => !properties.socialLinks[p.name],
+                    ).map((platform) => (
                       <SelectItem key={platform.name} value={platform.name}>
                         <div className="flex items-center gap-2">
                           {platform.icon}
@@ -633,15 +725,22 @@ export default function ContentSection({
                   onBlur={() => setFocusedField(null)}
                   className="flex-1 bg-muted/30"
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSocialLinkAdd();
+                    if (e.key === "Enter") handleSocialLinkAdd();
                   }}
-                  disabled={readOnly || Object.keys(properties.socialLinks).length >= 7}
+                  disabled={
+                    readOnly || Object.keys(properties.socialLinks).length >= 7
+                  }
                 />
               </div>
               <Button
                 variant="secondary"
                 onClick={handleSocialLinkAdd}
-                disabled={!selectedPlatform || !newSocialLink || readOnly || Object.keys(properties.socialLinks).length >= 7}
+                disabled={
+                  !selectedPlatform ||
+                  !newSocialLink ||
+                  readOnly ||
+                  Object.keys(properties.socialLinks).length >= 7
+                }
                 className="w-full"
               >
                 <PlusIcon className="w-4 h-4 mr-2" /> Add Profile
@@ -651,7 +750,7 @@ export default function ContentSection({
 
           <div className="my-6 border-t" />
 
-          <CardTitle className="text-lg font-semibold">Service Options</CardTitle>
+          <CardTitle className="text-lg">Enquiry Subjects</CardTitle>
           {properties.services.map((service, index) => (
             <div key={service.id} className="flex items-center gap-2">
               <Input
@@ -694,23 +793,33 @@ export default function ContentSection({
         </div>
       </div>
 
-      <AlertDialog open={deletingServiceIndex !== null} onOpenChange={(open) => !open && setDeletingServiceIndex(null)}>
+      <AlertDialog
+        open={deletingServiceIndex !== null}
+        onOpenChange={(open) => !open && setDeletingServiceIndex(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the service &quot;{deletingServiceIndex !== null ? properties.services[deletingServiceIndex].title : ''}&quot;
-              and its <strong>entire associated workflow</strong>. This action cannot be undone.
+              This will permanently delete the service &quot;
+              {deletingServiceIndex !== null
+                ? properties.services[deletingServiceIndex].title
+                : ""}
+              &quot; and its <strong>entire associated workflow</strong>. This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteService} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={confirmDeleteService}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete Service & Workflow
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div >
+    </div>
   );
 }

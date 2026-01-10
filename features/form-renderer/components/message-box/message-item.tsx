@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, CheckCircle2Icon, Upload, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 import {
   ChatMessage,
   isServiceSelectionMessage,
@@ -62,7 +63,9 @@ function SystemMessageBubble({ text }: { text: string }) {
   return (
     <div className="flex justify-start mb-3 animate-in fade-in slide-in-from-left-2 duration-300">
       <div className="p-3 max-w-[85%] rounded-2xl rounded-tl-none bg-black/20 text-gray-50 shadow-sm">
-        <p className="text-sm leading-relaxed">{text}</p>
+        <Typography variant="body" className="text-sm">
+          {text}
+        </Typography>
       </div>
     </div>
   );
@@ -92,7 +95,9 @@ function UserResponseBubble({ value }: { value: string | number | Date | File | 
   return (
     <div className="flex justify-end mb-3 animate-in fade-in slide-in-from-right-2 duration-300">
       <div className="p-3 max-w-[85%] rounded-2xl rounded-br-none bg-white text-gray-900 shadow-md">
-        <p className="text-sm leading-relaxed font-medium">{displayValue}</p>
+        <Typography variant="body" className="text-sm text-gray-900">
+          {displayValue}
+        </Typography>
       </div>
     </div>
   );
@@ -115,7 +120,7 @@ function ServiceSelectionMessage({
   return (
     <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
       <div className="max-w-[90%]">
-        <p className="font-semibold text-white mb-3 text-lg">{question}</p>
+        <Typography variant="body" className="font-semibold text-white mb-3 text-lg">{question}</Typography>
         <div className="flex flex-wrap gap-2">
           {services.map((service) => (
             <Button
@@ -123,7 +128,7 @@ function ServiceSelectionMessage({
               variant="secondary"
               onClick={() => onSelect(service.id, service.title)}
               disabled={disabled}
-              className="bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto py-4 px-6 text-base rounded-xl transition-all duration-200 hover:scale-[1.02]"
+              className="bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto w-auto py-3 px-5 text-[16px] font-medium rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-98 disabled:opacity-100"
             >
               {service.title}
             </Button>
@@ -182,7 +187,7 @@ function MultipleChoiceMessage({
   return (
     <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
       <div className="max-w-[95%]">
-        <p className="font-semibold text-white mb-3 text-sm">{question}</p>
+        <Typography variant="body" className="font-semibold text-white mb-3 text-sm">{question}</Typography>
         <div className="flex flex-wrap gap-2">
           {options.map((option, index) => {
             // Handle fallback for legacy string options
@@ -202,9 +207,9 @@ function MultipleChoiceMessage({
                 onClick={() => multiple ? toggleOption(index) : handleSelectSingle(index)}
                 disabled={disabled}
                 className={cn(
-                  "border-none justify-start h-auto py-3 px-4 rounded-xl transition-all duration-200 relative overflow-hidden group items-start text-left",
+                  "border-none justify-start h-auto w-auto py-3 px-5 rounded-2xl transition-all duration-200 relative overflow-hidden group items-start text-left active:scale-98 max-w-full",
                   multiple
-                    ? (isSelected ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-black/40 hover:bg-black/60 text-white")
+                    ? (isSelected ? "bg-white text-black hover:bg-white/90 shadow-lg" : "bg-black/40 hover:bg-black/60 text-white")
                     : "bg-black/40 hover:bg-black/60 text-white hover:scale-[1.02]"
                 )}
               >
@@ -247,7 +252,7 @@ function MultipleChoiceMessage({
             <Button
               onClick={handleConfirm}
               disabled={disabled || selectedIndices.length === 0}
-              className="mt-2 w-full bg-white text-primary hover:bg-white/90 font-semibold"
+              className="mt-3 w-auto px-8 h-12 rounded-2xl bg-white text-black font-semibold text-[17px] hover:bg-gray-100 shadow-lg transition-transform active:scale-95"
             >
               Confirm Selection {selectedIndices.length > 0 && `(${selectedIndices.length})`}
             </Button>
@@ -286,14 +291,14 @@ function DateInputMessage({
   return (
     <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
       <div className="max-w-[90%]">
-        <p className="font-semibold text-white mb-3 text-sm">{question}</p>
+        <Typography variant="body" className="font-semibold text-white mb-3 text-sm">{question}</Typography>
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="secondary"
               disabled={disabled}
               className={cn(
-                "bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto py-3 px-4 rounded-xl w-full",
+                "bg-black/40 hover:bg-black/60 text-white border-none justify-start h-12 px-5 text-[17px] rounded-2xl w-auto font-medium transition-all active:scale-98",
                 !selectedDate && "text-white/70"
               )}
             >
@@ -352,7 +357,7 @@ function FileUploadMessage({
   return (
     <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
       <div className="max-w-[90%]">
-        <p className="font-semibold text-white mb-3 text-sm">{question}</p>
+        <Typography variant="body" className="font-semibold text-white mb-3 text-sm">{question}</Typography>
         <label>
           <input
             type="file"
@@ -364,7 +369,7 @@ function FileUploadMessage({
           <Button
             variant="secondary"
             disabled={disabled}
-            className="bg-black/40 hover:bg-black/60 text-white border-none justify-start h-auto py-3 px-4 rounded-xl w-full cursor-pointer"
+            className="bg-black/40 hover:bg-black/60 text-white border-none justify-start h-12 px-5 text-[17px] rounded-2xl w-auto font-medium transition-all active:scale-98 cursor-pointer"
             asChild
           >
             <span>
@@ -418,8 +423,8 @@ function EndScreenMessage({ title, message, onReset, showConfetti }: EndScreenPr
       <div className="h-16 w-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
         <CheckCircle2Icon className="h-8 w-8" />
       </div>
-      <h2 className="text-xl font-bold text-white">{title}</h2>
-      {message && <p className="text-white/80 text-sm whitespace-pre-wrap">{message}</p>}
+      <Typography variant="subheading" className="text-white">{title}</Typography>
+      {message && <Typography variant="caption" className="text-white/80 whitespace-pre-wrap">{message}</Typography>}
       {onReset && (
         <Button
           className="mt-6 bg-white text-primary hover:bg-white/90"
@@ -448,8 +453,8 @@ function ExternalBrowserMessage({ url, buttonText = "Continue" }: ExternalBrowse
       <div className="h-16 w-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
         <CheckCircle2Icon className="h-8 w-8" />
       </div>
-      <h2 className="text-xl font-bold text-white">Thank you!</h2>
-      <p className="text-white/80 text-sm">Click the button below to continue.</p>
+      <Typography variant="subheading" className="text-white">Thank you!</Typography>
+      <Typography variant="caption" className="text-white/80">Click the button below to continue.</Typography>
       <Button
         className="mt-6 bg-white text-primary hover:bg-white/90"
         onClick={handleRedirect}

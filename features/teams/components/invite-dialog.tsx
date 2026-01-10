@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import { Service } from "@/lib/types";
+import { Typography } from "@/components/ui/typography";
 
 interface InviteDialogProps {
   open: boolean;
@@ -118,25 +119,27 @@ export function InviteDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px] p-8">
         <DialogHeader className="space-y-3">
-          <DialogTitle className="text-2xl">Invite Team Member</DialogTitle>
-          <DialogDescription className="text-base">
-            {inviteToken
-              ? "Your invite link is ready. Share it with your colleague."
-              : "Grant access to your organization by selecting a role below."}
+          <DialogTitle><Typography variant="subheading">Invite Team Member</Typography></DialogTitle>
+          <DialogDescription>
+            <Typography variant="body" className="text-base">
+              {inviteToken
+                ? "Your invite link is ready. Share it with your colleague."
+                : "Grant access to your organization by selecting a role below."}
+            </Typography>
           </DialogDescription>
         </DialogHeader>
 
         {!inviteToken ? (
           <div className="space-y-6 py-6">
-            {isLimitReached && <LimitReached limit={limit} currentCount={currentCount}/>}
+            {isLimitReached && <LimitReached limit={limit} currentCount={currentCount} />}
 
             <div className="space-y-3">
-              <Label htmlFor="role" className="text-sm font-medium ml-1">
+              <Label htmlFor="role" className="text-sm ml-1">
                 Member Role
               </Label>
               <Select value={role} onValueChange={(v: any) => setRole(v)}>
                 <SelectTrigger id="role" className="w-full py-4 h-20 text-left">
-                  <p className="text-sm font-bold">
+                  <p className="text-sm">
                     {role === "editor" ? "Editor" : "Viewer"}
                   </p>
                 </SelectTrigger>
@@ -162,7 +165,7 @@ export function InviteDialog({
         ) : (
           <div className="space-y-6 py-6">
             <div className="space-y-2">
-              <Label className="text-sm font-medium ml-1">Invite Link</Label>
+              <Label className="text-sm ml-1">Invite Link</Label>
               <div className="p-4 bg-muted border rounded-lg break-all text-sm font-mono flex items-center justify-between gap-4">
                 <span className="truncate">{getInviteUrl()}</span>
               </div>
@@ -249,14 +252,14 @@ const LimitReached = ({
       </div>
 
       <div className="text-center space-y-1.5 mb-6">
-        <h3 className="text-sm font-semibold text-red-400 dark:text-red-700">
+        <Typography variant="caption" className="text-red-400 dark:text-red-700">
           Team capacity reached
-        </h3>
-        <p className="text-[13px] text-muted-foreground max-w-[260px] mx-auto leading-relaxed">
+        </Typography>
+        <Typography variant="body" className="text-[13px] text-muted-foreground max-w-[260px] mx-auto leading-relaxed">
           You have filled all{" "}
-          <span className="text-foreground font-medium">{limit} seats</span>{" "}
+          <span className="text-foreground">{limit} seats</span>{" "}
           included in your plan.
-        </p>
+        </Typography>
       </div>
     </div>
   );

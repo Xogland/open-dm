@@ -188,6 +188,12 @@ export class LemonSqueezyClient {
                         checkout_data: {
                             custom: customData,
                         },
+                        product_options: {
+                            redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/billing/success?organisation_id=${customData.organisation_id}`,
+                        },
+                        checkout_options: {
+                            embed: false,
+                        },
                     },
                     relationships: {
                         store: {

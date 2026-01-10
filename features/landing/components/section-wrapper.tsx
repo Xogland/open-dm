@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 
 interface SectionWrapperProps {
     children: ReactNode;
@@ -66,16 +67,16 @@ export function SectionHeader({
             {badge && (
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
                     {BadgeIcon && <BadgeIcon className="w-4 h-4 text-primary" />}
-                    <span className="text-sm font-semibold text-primary">{badge}</span>
+                    <span className="text-sm text-primary">{badge}</span>
                 </div>
             )}
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
+            <Typography variant="heading" className="mb-6">
                 {title}
-            </h2>
+            </Typography>
             {description && (
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                <Typography variant="lead" className="max-w-3xl mx-auto">
                     {description}
-                </p>
+                </Typography>
             )}
         </motion.div>
     );

@@ -9,6 +9,7 @@ import Link from "next/link";
 import HandleInput, { HandleState } from "@/features/organization/components/handle-input";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { APP_NAME } from "@/data/constants";
+import { Typography } from "@/components/ui/typography";
 
 export function SignUp() {
     const [loading, setLoading] = useState(false);
@@ -45,13 +46,13 @@ export function SignUp() {
             >
                 {/* Header */}
                 <div className="text-center space-y-2">
-                    <h2 className="text-4xl font-extrabold drop-shadow-md">
+                    <Typography variant="heading" className="text-4xl drop-shadow-md">
                         {`Sign up to ${APP_NAME}`}
-                    </h2>
-                    <p className="text-gray-500 text-sm">
+                    </Typography>
+                    <Typography variant="body" className="text-gray-500 text-sm">
                         Get a Link in bio, Website, Online Store, Email Marketing, Media Kit
                         and more for free.
-                    </p>
+                    </Typography>
                 </div>
 
                 {/* Handle Input */}
@@ -71,7 +72,7 @@ export function SignUp() {
                         type="button"
                         variant="outline"
                         disabled={loading || status !== "available"}
-                        className="w-full mt-6 font-medium shadow-md transition flex items-center justify-center py-3 disabled:opacity-50"
+                        className="w-full mt-6 shadow-md transition flex items-center justify-center py-3 disabled:opacity-50"
                         onClick={handleGoogleSignIn}
                     >
                         {loading ? (
@@ -83,7 +84,7 @@ export function SignUp() {
                     </Button>
                 </motion.div>
 
-                <p className="text-center text-xs text-gray-500 mt-4">
+                <Typography variant="caption" className="text-center text-xs text-gray-500 mt-4 block">
                     Already have an account?{" "}
                     <Link
                         replace
@@ -92,7 +93,7 @@ export function SignUp() {
                     >
                         Sign in
                     </Link>
-                </p>
+                </Typography>
             </motion.div>
         </div>
     );

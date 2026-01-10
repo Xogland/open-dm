@@ -53,7 +53,7 @@ export default function StoragePage() {
                                 variant="outline"
                                 size="lg"
                                 onClick={handleLoadMore}
-                                className="rounded-xl px-8 font-semibold shadow-sm"
+                                className="rounded-xl px-8 shadow-sm"
                             >
                                 Load More ({totalCount - visibleCount} remaining)
                             </Button>

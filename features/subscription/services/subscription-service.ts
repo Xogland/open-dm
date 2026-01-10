@@ -161,7 +161,8 @@ export function validateAction(
                     reason: `Service limit reached (${config.limits.servicesLimit})`,
                     currentUsage: currentUsage.services,
                     limit: config.limits.servicesLimit,
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
+                    limitType: 'services',
                 };
             }
             return { allowed: true };
@@ -173,7 +174,8 @@ export function validateAction(
                     reason: `Team member limit reached (${config.limits.teamMembersLimit})`,
                     currentUsage: currentUsage.teamMembers,
                     limit: config.limits.teamMembersLimit,
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
+                    limitType: 'teamMembers',
                 };
             }
             return { allowed: true };
@@ -189,7 +191,8 @@ export function validateAction(
                     reason: `Storage limit would be exceeded (${config.limits.storageLimit}MB)`,
                     currentUsage: currentUsage.storageMB,
                     limit: config.limits.storageLimit,
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
+                    limitType: 'storage',
                 };
             }
             return { allowed: true };
@@ -200,7 +203,7 @@ export function validateAction(
                 return {
                     allowed: false,
                     reason: 'Advanced workflows require Professional plan',
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
                 };
             }
             return { allowed: true };
@@ -210,7 +213,7 @@ export function validateAction(
                 return {
                     allowed: false,
                     reason: 'API access requires Professional plan',
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
                 };
             }
             return { allowed: true };
@@ -220,7 +223,7 @@ export function validateAction(
                 return {
                     allowed: false,
                     reason: 'Custom branding requires Professional plan',
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
                 };
             }
             return { allowed: true };
@@ -230,7 +233,7 @@ export function validateAction(
                 return {
                     allowed: false,
                     reason: 'Custom domain requires Professional plan',
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
                 };
             }
             return { allowed: true };
@@ -240,7 +243,7 @@ export function validateAction(
                 return {
                     allowed: false,
                     reason: 'Data export requires Professional plan',
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
                 };
             }
             return { allowed: true };
@@ -250,7 +253,7 @@ export function validateAction(
                 return {
                     allowed: false,
                     reason: 'Webhooks require Professional plan',
-                    upgradeRequired: 'professional',
+                    upgradeRequired: 'pro',
                 };
             }
             return { allowed: true };

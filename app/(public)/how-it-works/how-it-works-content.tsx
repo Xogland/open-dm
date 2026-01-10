@@ -17,33 +17,48 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-    {
-        number: "01",
-        title: "Create Your Gateway",
-        description: "Set up your professional profile in minutes. Choose your custom handle (opendm.io/yourname) and define your intake categories.",
-        icon: LinkIcon,
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-        points: ["Choose custom handle", "Define inquiry types", "Set qualification logic"]
-    },
-    {
-        number: "02",
-        title: "Share Everywhere",
-        description: "Add your link to your social media bios, email signature, or embed it directly on your professional website.",
-        icon: MousePointerClick,
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
-        points: ["Bio link integration", "Smart website embed", "Custom domain hosting"]
-    },
-    {
-        number: "03",
-        title: "Manage & Monetize",
-        description: "Receive qualified, structured inquiries in your unified inbox. Enable paid access for priority requests.",
-        icon: Inbox,
-        color: "text-emerald-500",
-        bg: "bg-emerald-500/10",
-        points: ["Structured inquiries", "Priority paid DMs", "Centralized lead CRM"]
-    }
+  {
+    number: "01",
+    title: "Create Your Gateway",
+    description:
+      "Set up your professional profile in minutes. Choose your custom handle (opendm.io/yourname) and define your intake categories.",
+    icon: LinkIcon,
+    color: "text-blue-500",
+    bg: "bg-blue-500/10",
+    points: [
+      "Choose custom handle",
+      "Define inquiry types",
+      "Set qualification logic",
+    ],
+  },
+  {
+    number: "02",
+    title: "Share Everywhere",
+    description:
+      "Integrate your link into your social bios, email signature, or embed it directly onto your professional website for maximum visibility.",
+    icon: MousePointerClick,
+    color: "text-purple-500",
+    bg: "bg-purple-500/10",
+    points: [
+      "Bio link integration",
+      "Smart website embed",
+      "Custom domain hosting",
+    ],
+  },
+  {
+    number: "03",
+    title: "Manage & Monetize",
+    description:
+      "Receive qualified, structured inquiries in your unified inbox. Enable paid access for priority requests to focus on high-value interactions.",
+    icon: Inbox,
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+    points: [
+      "Structured inquiries",
+      "Priority paid DMs",
+      "Centralized lead CRM",
+    ],
+  },
 ];
 
 const COMPARISON = [
@@ -88,7 +103,7 @@ export function HowItWorksContent() {
                             transition={{ duration: 0.6 }}
                             className="text-center max-w-3xl mx-auto"
                         >
-                            <div className="inline-flex items-center px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
+                            <div className="inline-flex items-center px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm">
                                 <Search className="w-4 h-4 mr-2" />
                                 How It Works
                             </div>
@@ -120,18 +135,18 @@ export function HowItWorksContent() {
                                 >
                                     <div className={cn("w-20 h-20 rounded-[2rem] flex items-center justify-center relative z-10 shadow-lg transition-transform hover:scale-110", step.bg)}>
                                         <step.icon className={cn("w-10 h-10", step.color)} />
-                                        <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-sm">
+                                        <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center text-sm">
                                             {step.number}
                                         </div>
                                     </div>
                                     <div className="space-y-4">
-                                        <Typography variant="h3" className="text-2xl font-bold">{step.title}</Typography>
+                                        <Typography variant="h3" className="text-2xl">{step.title}</Typography>
                                         <Typography variant="muted" className="text-base leading-relaxed">
                                             {step.description}
                                         </Typography>
                                         <div className="flex flex-wrap justify-center gap-2 pt-2">
                                             {step.points.map((point, i) => (
-                                                <span key={i} className="px-3 py-1 rounded-full bg-muted/50 text-xs font-semibold text-muted-foreground border border-border/50">
+                                                <span key={i} className="px-3 py-1 rounded-full bg-muted/50 text-xs text-muted-foreground border border-border/50">
                                                     {point}
                                                 </span>
                                             ))}
@@ -159,17 +174,17 @@ export function HowItWorksContent() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-muted/50">
-                                        <th className="p-6 font-bold text-lg">Feature</th>
-                                        <th className="p-6 font-bold text-lg text-muted-foreground">Traditional Forms</th>
-                                        <th className="p-6 font-bold text-lg text-primary">OpenDM Gateway</th>
+                                        <th className="p-6 text-lg">Feature</th>
+                                        <th className="p-6 text-lg text-muted-foreground">Traditional Forms</th>
+                                        <th className="p-6 text-lg text-primary">OpenDM Gateway</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {COMPARISON.map((row, index) => (
                                         <tr key={index} className="border-t border-border hover:bg-muted/20 transition-colors">
-                                            <td className="p-6 font-semibold">{row.feature}</td>
+                                            <td className="p-6">{row.feature}</td>
                                             <td className="p-6 text-muted-foreground">{row.traditional}</td>
-                                            <td className="p-6 font-medium flex items-center gap-2">
+                                            <td className="p-6 flex items-center gap-2">
                                                 <CheckCircle2 className="w-4 h-4 text-primary" />
                                                 {row.opendm}
                                             </td>
@@ -235,7 +250,7 @@ export function HowItWorksContent() {
                                         </div>
                                     </div>
                                     <div className="relative z-10 p-4 rounded-xl bg-foreground text-background flex items-center justify-between">
-                                        <span className="text-sm font-bold tracking-tight">opendm.io/sarah_jones</span>
+                                        <span className="text-sm">opendm.io/sarah_jones</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </div>
                                 </div>
@@ -252,11 +267,11 @@ export function HowItWorksContent() {
                             <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl opacity-50" />
 
                             <div className="relative z-10 max-w-2xl mx-auto space-y-8">
-                                <Typography variant="h2" className="text-4xl md:text-5xl font-bold border-none">
+                                <Typography variant="h2" className="text-4xl md:text-5xl border-none">
                                     Ready to Build Your Professional Gateway?
                                 </Typography>
                                 <Typography variant="lead" className="text-muted-foreground">
-                                    Take back control of your inbound. Start your 14-day Pro trial today.
+                                    Take back control of your inbound. Start your 7-day Pro trial today.
                                 </Typography>
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
                                     <Button size="lg" asChild className="rounded-full px-12 h-14 text-lg">

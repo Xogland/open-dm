@@ -95,7 +95,7 @@ export default function ConnectionsPage() {
                     <Button
                         onClick={handleDownload}
                         disabled={!connections || connections.length === 0}
-                        className="h-10 text-sm font-semibold shadow-lg shadow-primary/10 rounded-xl"
+                        className="h-10 text-sm shadow-lg shadow-primary/10 rounded-xl"
                     >
                         <Download className="h-4 w-4 mr-2" />
                         <span className="hidden sm:inline">Download CSV</span>
