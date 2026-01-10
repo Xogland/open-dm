@@ -12,6 +12,7 @@ export const forms = defineTable({
   // Flexible properties system
   properties: v.object({
     description: v.optional(v.string()),
+    title: v.optional(v.string()),
     contactInfo: v.optional(
       v.object({
         type: v.optional(v.string()), // "email" | "phone" | "website"

@@ -60,6 +60,7 @@ export default function EditFormPage() {
     if (formData) {
       setData({
         content: {
+          title: formData.properties?.title || "",
           description: formData.properties?.description || "",
           contactType: formData.properties?.contactInfo?.type || "email",
           phone: formData.properties?.contactInfo?.phone || "",
@@ -85,6 +86,7 @@ export default function EditFormPage() {
     try {
       // Transform content data to match new schema structure
       const properties = {
+        title: data.content.title,
         description: data.content.description,
         contactInfo: {
           type: data.content.contactType,

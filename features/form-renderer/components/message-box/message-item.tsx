@@ -62,8 +62,8 @@ const ICON_MAP: Record<string, React.ElementType> = {
 function SystemMessageBubble({ text }: { text: string }) {
   return (
     <div className="flex justify-start mb-3 animate-in fade-in slide-in-from-left-2 duration-300">
-      <div className="p-3 max-w-[85%] rounded-2xl rounded-tl-none bg-black/20 text-gray-50 shadow-sm">
-        <Typography variant="body" className="text-sm">
+      <div className="p-3 max-w-[85%] rounded-2xl rounded-tl-none bg-black/50 text-white shadow-sm">
+        <Typography variant="body" className="text-sm text-gray-50">
           {text}
         </Typography>
       </div>
