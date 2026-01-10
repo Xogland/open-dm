@@ -143,7 +143,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                     <div className="flex items-center justify-center">
                         <Avatar className="h-16 w-16">
                             <AvatarFallback className="text-2xl">
-                                {invite.organisation.name.substring(0, 2).toUpperCase()}
+                                {invite.organisation.name.substring(0, 2)}
                             </AvatarFallback>
                         </Avatar>
                     </div>
@@ -179,7 +179,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
                                             <Badge
                                                 key={serviceId}
                                                 variant="outline"
-                                                className="text-[10px] uppercase font-bold tracking-wider"
+                                                className="text-[10px]"
                                             >
                                                 {serviceId}
                                             </Badge>

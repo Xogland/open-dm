@@ -113,7 +113,7 @@ function SortableStatusItem({ status, onDelete, onUpdate, onSetDefault }: Sortab
                 <Input
                     value={status.label}
                     onChange={(e) => onUpdate(status.id, { label: e.target.value })}
-                    className="h-9 border-transparent focus:border-input bg-transparent hover:bg-muted/50 transition-colors shadow-none text-sm font-medium"
+                    className="h-9 border-transparent focus:border-input bg-transparent hover:bg-muted/50 transition-colors shadow-none text-sm"
                     placeholder="Status name..."
                 />
             </div>
@@ -123,7 +123,7 @@ function SortableStatusItem({ status, onDelete, onUpdate, onSetDefault }: Sortab
                     variant="ghost"
                     size="sm"
                     className={cn(
-                        "h-8 gap-1.5 px-2 font-semibold transition-all rounded-lg",
+                        "h-8 gap-1.5 px-2 transition-all rounded-lg",
                         status.isDefault
                             ? "text-primary bg-primary/10 hover:bg-primary/20"
                             : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-foreground hover:bg-muted"
@@ -131,7 +131,7 @@ function SortableStatusItem({ status, onDelete, onUpdate, onSetDefault }: Sortab
                     onClick={() => onSetDefault(status.id)}
                 >
                     <Star className={cn("h-3.5 w-3.5", status.isDefault && "fill-current")} />
-                    <span className="text-[10px] uppercase tracking-wider">{status.isDefault ? "Default" : "Set Default"}</span>
+                    <span className="text-[10px]">{status.isDefault ? "Default" : "Set Default"}</span>
                 </Button>
 
                 <Button

@@ -42,7 +42,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ submissionData, onRemove
       <div
         className={`p-6 ${isBot ? "bg-destructive/10 border-b-2 border-destructive" : "bg-primary/10 border-b-2 border-primary"} rounded-t-2xl`}
       >
-        <h3 className="text-xl font-bold text-foreground flex items-center mb-2">
+        <h3 className="text-xl text-foreground flex items-center mb-2">
           <AlertCircle size={20} className="mr-2 text-destructive" />
           Detection Analysis
           <Button variant="ghost" size="icon" className="ml-auto" onClick={onRemove}>
@@ -50,16 +50,16 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ submissionData, onRemove
           </Button>
         </h3>
         <div className="flex justify-between items-center pt-2">
-          <div className="text-sm font-medium">Bot Score:</div>
+          <div className="text-sm">Bot Score:</div>
           <div
-            className={`text-2xl font-extrabold ${isBot ? "text-destructive" : "text-primary"}`}
+            className={`text-2xl ${isBot ? "text-destructive" : "text-primary"}`}
           >
             {score}
           </div>
         </div>
         <div className="flex justify-between items-center pt-1">
-          <div className="text-sm font-medium">Threshold:</div>
-          <div className="text-lg font-bold text-muted-foreground">
+          <div className="text-sm">Threshold:</div>
+          <div className="text-lg text-muted-foreground">
             {BOT_THRESHOLD}
           </div>
         </div>
@@ -67,7 +67,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ submissionData, onRemove
 
       <div className="w-full flex flex-row">
         <div className="p-4 space-y-1 flex-1">
-          <h4 className="text-md font-semibold mb-2 flex items-center text-secondary-foreground">
+          <h4 className="text-md mb-2 flex items-center text-secondary-foreground">
             <TrendingUp size={16} className="mr-2" /> Suspicion Breakdown
             (Weights)
           </h4>
@@ -130,7 +130,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({ submissionData, onRemove
         </div>
 
         <div className="p-4 pt-0 flex-1 h-full">
-          <h4 className="text-md font-semibold mt-4 mb-2">
+          <h4 className="text-md mt-4 mb-2">
             Raw Tracking Data:
           </h4>
           <pre className="bg-muted/30 p-3 rounded-lg overflow-auto text-xs border border-border whitespace-pre-wrap">

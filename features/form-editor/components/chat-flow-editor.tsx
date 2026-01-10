@@ -35,11 +35,17 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   GripVerticalIcon,
-  ExternalLinkIcon
+  ExternalLinkIcon,
+  LockIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Typography } from "@/components/ui/typography";
 import { WorkflowData, WorkflowStep, StepType, TextStep, EmailStep, PhoneStep, AddressStep, WebsiteStep, NumberStep, DateStep, FileStep, EndScreenStep, ExternalBrowserStep, MultipleChoiceStep, MultipleChoiceOption } from "@/lib/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { ADVANCED_WORKFLOW_TYPES, isAdvancedWorkflowType } from "@/features/subscription/config/plan-config";
+import { SubscriptionLimitModal } from "@/features/subscription/components/subscription-limit-modal";
+import { Id } from "@/convex/_generated/dataModel";
 import {
   DndContext,
   closestCenter,
@@ -71,7 +77,6 @@ const STEP_TEMPLATES: { type: StepType; label: string; icon: React.ElementType; 
   { type: "file", label: "File Upload", icon: FileTextIcon, description: "Request a file attachment", defaultQuestion: "Please upload a file" },
   { type: "multiple_choice", label: "Multiple Choice", icon: ListChecksIcon, description: "Select from options", defaultQuestion: "Please make a selection" },
   { type: "external_browser", label: "External URL", icon: ExternalLinkIcon, description: "Redirect to another website", defaultQuestion: "External Redirect" },
-  // End Screen is handled specially
 ];
 
 export const getEmptyStep = (template: typeof STEP_TEMPLATES[0]): WorkflowStep => {
@@ -140,7 +145,7 @@ const getExternalBrowserStep = (): ExternalBrowserStep => ({
 const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="space-y-4">
     <div className="space-y-2">
-      <Label>Question / Label</Label>
+      <Typography variant="caption" className="font-semibold">Question / Label</Typography>
       <Textarea
         value={step.question}
         onChange={(e) => update('question', e.target.value)}
@@ -150,7 +155,7 @@ const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (
     </div>
     {step.stepType !== 'end_screen' && step.stepType !== 'date' && step.stepType !== 'file' && (step as any).placeholder !== undefined && (
       <div className="space-y-2">
-        <Label>Placeholder</Label>
+        <Typography variant="caption" className="font-semibold">Placeholder</Typography>
         <Input
           value={(step as any).placeholder || ''}
           onChange={(e) => update('placeholder', e.target.value)}
@@ -164,16 +169,16 @@ const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (
 const TextProps = ({ step, update, readOnly }: { step: TextStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="space-y-4 pt-4">
     <div className="flex items-center justify-between">
-      <Label>Multiline</Label>
+      <Typography variant="caption" className="font-semibold">Multiline</Typography>
       <Switch checked={step.multiline} onCheckedChange={(c) => update('multiline', c)} disabled={readOnly} />
     </div>
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
-        <Label>Min Length</Label>
+        <Typography variant="caption" className="font-semibold">Min Length</Typography>
         <Input type="number" value={step.minLength || ''} onChange={(e) => update('minLength', parseInt(e.target.value) || undefined)} disabled={readOnly} />
       </div>
       <div className="space-y-2">
-        <Label>Max Length</Label>
+        <Typography variant="caption" className="font-semibold">Max Length</Typography>
         <Input type="number" value={step.maxLength || ''} onChange={(e) => update('maxLength', parseInt(e.target.value) || undefined)} disabled={readOnly} />
       </div>
     </div>
@@ -182,7 +187,7 @@ const TextProps = ({ step, update, readOnly }: { step: TextStep; update: (f: str
 
 const RequiredProp = ({ step, update, readOnly }: { step: any; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="flex items-center justify-between pt-4">
-    <Label>Required</Label>
+    <Typography variant="caption" className="font-semibold">Required</Typography>
     <Switch checked={step.required} onCheckedChange={(c) => update('required', c)} disabled={readOnly} />
   </div>
 );
@@ -190,11 +195,11 @@ const RequiredProp = ({ step, update, readOnly }: { step: any; update: (f: strin
 const NumberProps = ({ step, update, readOnly }: { step: NumberStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="grid grid-cols-2 gap-4 pt-4">
     <div className="space-y-2">
-      <Label>Min</Label>
+      <Typography variant="caption" className="font-semibold">Min</Typography>
       <Input type="number" value={step.min || ''} onChange={(e) => update('min', parseFloat(e.target.value) || undefined)} disabled={readOnly} />
     </div>
     <div className="space-y-2">
-      <Label>Max</Label>
+      <Typography variant="caption" className="font-semibold">Max</Typography>
       <Input type="number" value={step.max || ''} onChange={(e) => update('max', parseFloat(e.target.value) || undefined)} disabled={readOnly} />
     </div>
   </div>
@@ -203,14 +208,14 @@ const NumberProps = ({ step, update, readOnly }: { step: NumberStep; update: (f:
 const DateProps = ({ step, update, readOnly }: { step: DateStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="space-y-4 pt-4">
     {/* Could add generic min/max date pickers here if needed later */}
-    <p className="text-xs text-muted-foreground">Standard date picker.</p>
+    <Typography variant="caption" className="text-xs text-muted-foreground">Standard date picker.</Typography>
   </div>
 );
 
 const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="space-y-4 pt-4">
     <div className="space-y-2">
-      <Label>Max Size (MB)</Label>
+      <Typography variant="caption" className="font-semibold">Max Size (MB)</Typography>
       <Input
         type="number"
         value={(step.maxSize || 0) / (1024 * 1024)}
@@ -219,14 +224,14 @@ const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: str
       />
     </div>
     <div className="space-y-2">
-      <Label>Accepted Types</Label>
+      <Typography variant="caption" className="font-semibold">Accepted Types</Typography>
       <Input
         placeholder="e.g. .pdf, .jpg, .png"
         value={step.acceptedTypes?.join(', ') || ''}
         onChange={(e) => update('acceptedTypes', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
         disabled={readOnly}
       />
-      <p className="text-xs text-muted-foreground">Comma separated extensions</p>
+      <Typography variant="caption" className="text-xs text-muted-foreground">Comma separated extensions</Typography>
     </div>
   </div>
 );
@@ -234,15 +239,15 @@ const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: str
 const EndScreenProps = ({ step, update, readOnly }: { step: EndScreenStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="space-y-4">
     <div className="space-y-2">
-      <Label>Title</Label>
+      <Typography variant="caption" className="font-semibold">Title</Typography>
       <Input value={step.title} onChange={(e) => update('title', e.target.value)} disabled={readOnly} />
     </div>
     <div className="space-y-2">
-      <Label>Message</Label>
+      <Typography variant="caption" className="font-semibold">Message</Typography>
       <Textarea value={step.message} onChange={(e) => update('message', e.target.value)} disabled={readOnly} />
     </div>
     <div className="flex items-center justify-between">
-      <Label>Show Confetti</Label>
+      <Typography variant="caption" className="font-semibold">Show Confetti</Typography>
       <Switch checked={step.showConfetti} onCheckedChange={(c) => update('showConfetti', c)} disabled={readOnly} />
     </div>
   </div>
@@ -251,7 +256,7 @@ const EndScreenProps = ({ step, update, readOnly }: { step: EndScreenStep; updat
 const ExternalBrowserProps = ({ step, update, readOnly }: { step: ExternalBrowserStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
   <div className="space-y-4">
     <div className="space-y-2">
-      <Label>Redirect URL</Label>
+      <Typography variant="caption" className="font-semibold">Redirect URL</Typography>
       <Input
         value={step.url}
         onChange={(e) => update('url', e.target.value)}
@@ -259,10 +264,10 @@ const ExternalBrowserProps = ({ step, update, readOnly }: { step: ExternalBrowse
         type="url"
         disabled={readOnly}
       />
-      <p className="text-xs text-muted-foreground">The URL to redirect users to after form submission</p>
+      <Typography variant="caption" className="text-xs text-muted-foreground">The URL to redirect users to after form submission</Typography>
     </div>
     <div className="space-y-2">
-      <Label>Button Text</Label>
+      <Typography variant="caption" className="font-semibold">Button Text</Typography>
       <Input
         value={step.buttonText || 'Continue'}
         onChange={(e) => update('buttonText', e.target.value)}
@@ -340,11 +345,11 @@ const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceS
   return (
     <div className="space-y-4 pt-4">
       <div className="flex items-center justify-between">
-        <Label>Allow Multiple Selection</Label>
+        <Typography variant="caption" className="font-semibold">Allow Multiple Selection</Typography>
         <Switch checked={step.multiple || false} onCheckedChange={(c) => update('multiple', c)} disabled={readOnly} />
       </div>
       <div className="space-y-4">
-        <Label>Options</Label>
+        <Typography variant="caption" className="font-semibold">Options</Typography>
         <div className="space-y-3">
           {step.options.map((opt, i) => {
             const isExpanded = expandedIndex === i;
@@ -402,7 +407,7 @@ const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceS
                 {isExpanded && (
                   <div className="mt-3 space-y-3 pl-10 border-l-2 ml-4">
                     <div>
-                      <Label className="text-xs">Description (Optional)</Label>
+                      <Typography variant="caption" className="text-xs font-semibold">Description (Optional)</Typography>
                       <Textarea
                         value={description || ''}
                         onChange={(e) => {
@@ -416,7 +421,7 @@ const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceS
                     </div>
                     <div className="grid grid-cols-1 gap-2">
                       <div>
-                        <Label className="text-xs">Price</Label>
+                        <Typography variant="caption" className="text-xs font-semibold">Price</Typography>
                         <Input
                           value={price || ''}
                           onChange={(e) => updateOption(i, 'price', e.target.value)}
@@ -448,9 +453,9 @@ const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceS
 const ServiceListPanel: React.FC<{ services: { title: string }[]; selected: string; onSelect: (s: string) => void }> = ({ services, selected, onSelect }) => (
   <div className="w-64 border-r border-border bg-card flex flex-col h-full flex-shrink-0">
     <div className="p-4 border-b border-border bg-muted/20">
-      <h3 className="font-semibold flex items-center gap-2">
+      <Typography variant="subheading" className="font-semibold flex items-center gap-2">
         <ZapIcon className="w-4 h-4 text-primary" /> Services
-      </h3>
+      </Typography>
     </div>
     <ScrollArea className="flex-1">
       <div className="p-2 space-y-1">
@@ -460,7 +465,7 @@ const ServiceListPanel: React.FC<{ services: { title: string }[]; selected: stri
             onClick={() => onSelect(s.title)}
             className={cn(
               "w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center justify-between",
-              selected === s.title ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted text-muted-foreground hover:text-foreground"
+              selected === s.title ? "bg-primary/10 text-primary" : "hover:bg-muted text-muted-foreground hover:text-foreground"
             )}
           >
             {s.title}
@@ -477,7 +482,7 @@ const PropertiesPanel: React.FC<{ activeStep: WorkflowStep | undefined; onUpdate
     return (
       <div className="w-80 border-l border-border bg-card flex flex-col items-center justify-center text-center p-6 text-muted-foreground h-full flex-shrink-0">
         <Settings2Icon className="w-8 h-8 opacity-20 mb-4" />
-        <p>Select a step to configure properties</p>
+        <Typography variant="body">Select a step to configure properties</Typography>
       </div>
     );
   }
@@ -487,9 +492,9 @@ const PropertiesPanel: React.FC<{ activeStep: WorkflowStep | undefined; onUpdate
   return (
     <div className="w-80 border-l border-border bg-card flex flex-col h-full flex-shrink-0">
       <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
-        <h3 className="font-semibold flex items-center gap-2">
+        <Typography variant="subheading" className="font-semibold flex items-center gap-2">
           <Settings2Icon className="w-4 h-4" /> Properties
-        </h3>
+        </Typography>
         {activeStep.stepType !== 'end_screen' && activeStep.stepType !== 'external_browser' && (
           <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => onDelete(activeStep.id)} disabled={readOnly}>
             <Trash2Icon className="w-4 h-4" />
@@ -498,9 +503,9 @@ const PropertiesPanel: React.FC<{ activeStep: WorkflowStep | undefined; onUpdate
       </div>
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-6">
-          <div className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-4">
+          <Typography variant="caption" className="text-xs font-mono text-muted-foreground mb-4 uppercase">
             {activeStep.stepType.replace('_', ' ')}
-          </div>
+          </Typography>
 
           {activeStep.stepType === 'end_screen' ? (
             <EndScreenProps step={activeStep as EndScreenStep} update={update} readOnly={readOnly} />
@@ -526,11 +531,13 @@ const PropertiesPanel: React.FC<{ activeStep: WorkflowStep | undefined; onUpdate
   );
 };
 
-interface WorkflowEditorProps {
+interface ChatFlowEditorProps {
   services: { title: string }[];
   workflows: WorkflowData;
   onWorkflowsChange: (data: WorkflowData) => void;
   readOnly?: boolean;
+  plan?: string;
+  organisationId?: Id<"organisations">;
 }
 
 // --- Sub-components ---
@@ -583,9 +590,9 @@ const SortableStepItem = ({ step, index, isActive, onSelect, onDelete, Icon, rea
           </div>
           <div className="flex-1">
             <div className="flex justify-between items-start">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">
+              <Typography variant="caption" className="text-xs text-muted-foreground mb-1 block">
                 Step {index + 1}
-              </span>
+              </Typography>
               <Button
                 variant="ghost"
                 size="icon"
@@ -599,7 +606,7 @@ const SortableStepItem = ({ step, index, isActive, onSelect, onDelete, Icon, rea
                 <Trash2Icon className="w-3.5 h-3.5" />
               </Button>
             </div>
-            <p className="font-medium text-sm line-clamp-2">{step.question}</p>
+            <Typography variant="body" className="font-medium text-sm line-clamp-2">{step.question}</Typography>
           </div>
         </CardContent>
       </Card>
@@ -610,11 +617,12 @@ const SortableStepItem = ({ step, index, isActive, onSelect, onDelete, Icon, rea
   );
 };
 
-export default function WorkflowEditor({ services, workflows, onWorkflowsChange, readOnly }: WorkflowEditorProps) {
+export default function ChatFlowEditor({ services, workflows, onWorkflowsChange, readOnly, plan = "free", organisationId }: ChatFlowEditorProps) {
   const [selectedService, setSelectedService] = useState(services[0]?.title || "General");
   const [activeStepId, setActiveStepId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [limitModalOpen, setLimitModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Drag and drop sensors
@@ -681,6 +689,14 @@ export default function WorkflowEditor({ services, workflows, onWorkflowsChange,
 
   const handleAddStep = (template: typeof STEP_TEMPLATES[0]) => {
     if (readOnly) return;
+
+    const isRestricted = plan === "free" && isAdvancedWorkflowType(template.type);
+    if (isRestricted) {
+      setLimitModalOpen(true);
+      setAddDialogOpen(false);
+      return;
+    }
+
     const newStep = getEmptyStep(template);
 
     let newWorkflow: WorkflowStep[];
@@ -787,8 +803,8 @@ export default function WorkflowEditor({ services, workflows, onWorkflowsChange,
 
       <div className="flex-1 flex flex-col h-full bg-muted/5 min-w-0 relative" ref={containerRef}>
         <div className="h-14 flex items-center px-6 justify-between flex-shrink-0 border-b bg-background/50 backdrop-blur-sm z-10">
-          <h2 className="text-lg font-semibold">{selectedService}</h2>
-          <div className="text-xs text-muted-foreground">{steps.length} Steps</div>
+          <Typography variant="subheading" className="text-lg">{selectedService}</Typography>
+          <Typography variant="caption" className="text-xs text-muted-foreground">{steps.length} Steps</Typography>
         </div>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
@@ -834,7 +850,7 @@ export default function WorkflowEditor({ services, workflows, onWorkflowsChange,
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
-                          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 block">
+                          <span className="text-xs text-muted-foreground mb-1 block">
                             {isExternal ? 'External Redirect' : 'End Screen'}
                           </span>
                           {isExternal && (
@@ -868,17 +884,29 @@ export default function WorkflowEditor({ services, workflows, onWorkflowsChange,
                       // Don't show external browser option if one already exists
                       if (t.type === 'external_browser' && hasExternalBrowser) return null;
 
+                      const isRestricted = plan === "free" && isAdvancedWorkflowType(t.type);
+
                       return (
                         <button
                           key={t.label}
                           onClick={() => handleAddStep(t)}
-                          className="flex flex-col items-start p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-all text-left space-y-2 group"
+                          className={cn(
+                            "flex flex-col items-start p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-all text-left space-y-2 group relative",
+                            isRestricted && "opacity-80"
+                          )}
                         >
-                          <div className="p-2 rounded-md bg-muted group-hover:bg-background transition-colors">
-                            <t.icon className="w-5 h-5 text-foreground group-hover:text-primary" />
+                          <div className="flex w-full justify-between items-start">
+                            <div className="p-2 rounded-md bg-muted group-hover:bg-background transition-colors">
+                              <t.icon className="w-5 h-5 text-foreground group-hover:text-primary" />
+                            </div>
+                            {isRestricted && (
+                              <Badge variant="secondary" className="bg-amber-100 text-amber-700 hover:bg-amber-200 border-none px-1.5 py-0 text-[10px] flex items-center gap-1">
+                                <LockIcon className="w-2.5 h-2.5" /> Premium
+                              </Badge>
+                            )}
                           </div>
                           <div>
-                            <div className="font-medium">{t.label}</div>
+                            <div className="font-medium text-sm">{t.label}</div>
                             <div className="text-xs text-muted-foreground">{t.description}</div>
                           </div>
                         </button>
@@ -888,8 +916,6 @@ export default function WorkflowEditor({ services, workflows, onWorkflowsChange,
                 </DialogContent>
               </Dialog>
             </div>
-
-
           </div>
         </div>
 
@@ -901,7 +927,14 @@ export default function WorkflowEditor({ services, workflows, onWorkflowsChange,
         </div>
       </div>
 
-      <PropertiesPanel activeStep={activeStep} onUpdate={handleUpdateStep} onDelete={handleDeleteStep} />
+      <PropertiesPanel activeStep={activeStep} onUpdate={handleUpdateStep} onDelete={handleDeleteStep} readOnly={readOnly} />
+
+      <SubscriptionLimitModal
+        open={limitModalOpen}
+        onOpenChange={setLimitModalOpen}
+        type="advancedWorkflows"
+        organisationId={organisationId}
+      />
     </div>
   );
 }

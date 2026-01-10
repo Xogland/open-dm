@@ -72,7 +72,7 @@ export const createInvite = mutation({
 
         const limit = planConfig.limits.teamMembersLimit;
         if (limit !== Infinity) {
-            // Count current members (excluding owner)
+            // Count total members (including owner)
             const members = await ctx.db
                 .query("organisationMembers")
                 .withIndex("by_organisation_id", (q) =>
@@ -80,8 +80,7 @@ export const createInvite = mutation({
                 )
                 .collect();
 
-            // Filter out owner from count (assuming owner doesn't count towards seat limit)
-            const memberCount = members.filter(m => m.userId !== organisation.owner).length;
+            const totalMemberCount = members.length;
 
             // Count pending invites
             const invites = await ctx.db
@@ -91,13 +90,11 @@ export const createInvite = mutation({
                 )
                 .collect();
 
-            // Filter pending checks in memory or query if index supports.
-            // Index is on [organisationId]. 'status' is not in this index.
             const pendingInviteCount = invites.filter(i => i.status === "pending").length;
 
-            if (memberCount + pendingInviteCount >= limit) {
+            if (totalMemberCount + pendingInviteCount >= limit + 1) { // limit is EXTRA members, so total is limit + 1
                 throw new Error(
-                    `You have reached the limit of ${limit} team members for your ${planConfig.name} plan. Please upgrade to add more.`
+                    `You have reached the limit of ${limit + 1} total members for your ${planConfig.name} plan. Please upgrade to add more.`
                 );
             }
         }

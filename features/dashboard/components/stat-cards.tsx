@@ -22,7 +22,7 @@ export function StatsCards({
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card className="border-0 shadow-sm bg-secondary/5">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm">
                         Total Submissions
                     </CardTitle>
                     <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-full">
@@ -30,15 +30,15 @@ export function StatsCards({
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{totalSubmissions}</div>
-                    <p className="text-xs text-muted-foreground mt-1 text-green-500 font-medium tracking-tight">
+                    <div className="text-2xl">{totalSubmissions}</div>
+                    <p className="text-xs text-muted-foreground mt-1 text-green-500">
                         {submissionTrend >= 0 ? "+" : ""}{submissionTrend}% from last month
                     </p>
                 </CardContent>
             </Card>
             <Card className="border-0 shadow-sm bg-secondary/5">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm">
                         Active Services
                     </CardTitle>
                     <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-full">
@@ -46,7 +46,7 @@ export function StatsCards({
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{activeServices}</div>
+                    <div className="text-2xl">{activeServices}</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Active integration points
                     </p>
@@ -54,7 +54,7 @@ export function StatsCards({
             </Card>
             <Card className="border-0 shadow-sm bg-secondary/5">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm">
                         Total Views
                     </CardTitle>
                     <div className="p-2 bg-orange-100 dark:bg-orange-900/20 rounded-full">
@@ -62,7 +62,7 @@ export function StatsCards({
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{totalViews}</div>
+                    <div className="text-2xl">{totalViews}</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Across all devices
                     </p>
@@ -70,7 +70,7 @@ export function StatsCards({
             </Card>
             <Card className="border-0 shadow-sm bg-secondary/5">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                    <CardTitle className="text-sm">
                         Conversion Rate
                     </CardTitle>
                     <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-full">
@@ -78,7 +78,7 @@ export function StatsCards({
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-2xl font-bold">{conversionRate.toFixed(1)}%</div>
+                    <div className="text-2xl">{conversionRate.toFixed(1)}%</div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Visits to submissions
                     </p>

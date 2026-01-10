@@ -134,7 +134,7 @@ export function OnboardingForm({
                 {/* Header Section */}
                 <div className="space-y-6 text-center">
                     <div className="space-y-2">
-                        <Badge variant="outline" className="px-3 py-1 border-primary/20 bg-primary/5 text-primary tracking-widest text-[10px] uppercase font-bold">
+                        <Badge variant="outline" className="px-3 py-1 border-primary/20 bg-primary/5 text-primary text-[10px]">
                             Step {step} of 3
                         </Badge>
                         <Typography variant="h1" className="bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">
@@ -147,7 +147,7 @@ export function OnboardingForm({
 
                     <div className="relative pt-2">
                         <Progress value={progress} className="h-1.5 w-full max-w-xs mx-auto rounded-full bg-secondary/50" />
-                        <div className="flex justify-between max-w-xs mx-auto mt-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                        <div className="flex justify-between max-w-xs mx-auto mt-2 text-[10px] text-muted-foreground">
                             <span className={cn(step >= 1 && "text-primary")}>Basics</span>
                             <span className={cn(step >= 2 && "text-primary")}>Category</span>
                             <span className={cn(step >= 3 && "text-primary")}>Type</span>
@@ -164,7 +164,7 @@ export function OnboardingForm({
                             <div className="space-y-8 animate-in slide-in-from-right-8 duration-500">
                                 {/* Name Input */}
                                 <div className="space-y-3">
-                                    <Label htmlFor="name" className="text-sm font-medium ml-1">Organization Name</Label>
+                                    <Label htmlFor="name" className="text-sm ml-1">Organization Name</Label>
                                     <div className="relative group">
                                         <Input
                                             id="name"
@@ -179,7 +179,7 @@ export function OnboardingForm({
                                 {/* Handle Input */}
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="handle" className="text-sm font-medium ml-1">
+                                        <Label htmlFor="handle" className="text-sm ml-1">
                                             Unique Handle
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -193,7 +193,7 @@ export function OnboardingForm({
                                             </TooltipProvider>
                                         </Label>
                                         <span className={cn(
-                                            "text-xs font-medium px-2 py-0.5 rounded-full capitalize transition-colors duration-300",
+                                            "text-xs px-2 py-0.5 rounded-full capitalize transition-colors duration-300",
                                             statusState === 'available' && "bg-green-500/10 text-green-500",
                                             statusState === 'taken' && "bg-red-500/10 text-red-500",
                                             (statusState === 'reserved' || statusState === 'official') && "bg-amber-500/10 text-amber-500",
@@ -211,7 +211,7 @@ export function OnboardingForm({
                                             value={handle}
                                             onChange={setHandle}
                                             className={cn(
-                                                "h-12 bg-secondary/30 border-secondary focus:bg-background transition-all pl-4 pr-12 font-mono text-base tracking-tight",
+                                                "h-12 bg-secondary/30 border-secondary focus:bg-background transition-all pl-4 pr-12 font-mono text-base",
                                                 statusState === 'available' && "border-green-500/50 focus:border-green-500 focus:ring-green-500/20",
                                                 statusState === 'taken' && "border-red-500/50 focus:border-red-500 focus:ring-red-500/20",
                                                 (statusState === 'reserved' || statusState === 'official') && "border-amber-500/50 focus:border-amber-500 focus:ring-amber-500/20",
@@ -306,7 +306,7 @@ export function OnboardingForm({
                                             key={cat}
                                             variant="outline"
                                             className={cn(
-                                                "py-3 px-4 justify-center cursor-pointer transition-all duration-200 text-xs font-medium border-border/60 hover:border-primary/50 hover:bg-primary/5",
+                                                "py-3 px-4 justify-center cursor-pointer transition-all duration-200 text-xs border-border/60 hover:border-primary/50 hover:bg-primary/5",
                                                 category === cat && "bg-primary text-primary-foreground hover:bg-primary/90 border-primary shadow-md shadow-primary/20 scale-[1.02]"
                                             )}
                                             onClick={() => setCategory(cat)}
@@ -341,7 +341,7 @@ export function OnboardingForm({
                                                 <Icon className="h-6 w-6" />
                                             </div>
                                             <span className={cn(
-                                                "text-sm font-semibold text-center transition-colors",
+                                                "text-sm text-center transition-colors",
                                                 businessType === label ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                                             )}>
                                                 {label}
@@ -374,7 +374,7 @@ export function OnboardingForm({
                             <Button
                                 onClick={onSubmit}
                                 disabled={loading || !businessType}
-                                className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 px-10 h-11 text-base font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                                className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 px-10 h-11 text-base transition-all hover:scale-[1.02] active:scale-95"
                             >
                                 {loading ? (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

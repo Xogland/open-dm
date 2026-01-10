@@ -79,7 +79,7 @@ export function SplitFeatureSection({
                         transition={{ duration: 0.6 }}
                         className="flex-1 space-y-10"
                     >
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl text-foreground leading-[1.1]">
                             {title}
                         </h2>
 
@@ -94,7 +94,7 @@ export function SplitFeatureSection({
                                         className="w-full py-6 flex items-center justify-between text-left group transition-colors"
                                     >
                                         <h3 className={cn(
-                                            "text-xl md:text-2xl font-medium transition-colors",
+                                            "text-xl md:text-2xl transition-colors",
                                             openIndex === index ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                                         )}>
                                             {item.title}

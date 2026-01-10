@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import {
-  Laptop,
-  Smartphone,
-} from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Laptop, Smartphone } from "lucide-react";
 
 import { MessageList } from "@/features/form-renderer/components/message-box/message-list";
 import { DynamicBottomInput } from "@/features/form-renderer/components/message-box/dynamic-bottom-input";
@@ -18,8 +15,14 @@ interface PreviewBoxProps {
   focusedField?: string | null;
 }
 
-export default function PreviewBox({ formData, orgName = "Username", orgImage, focusedField, orgHandle }: PreviewBoxProps & { orgHandle?: string }) {
-  const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('mobile');
+export default function PreviewBox({
+  formData,
+  orgName = "Username",
+  orgImage,
+  focusedField,
+  orgHandle,
+}: PreviewBoxProps & { orgHandle?: string }) {
+  const [viewMode, setViewMode] = useState<"desktop" | "mobile">("mobile");
 
   // Generate preview messages based on form data
   const generatePreviewMessages = (): ChatMessage[] => {
@@ -32,7 +35,7 @@ export default function PreviewBox({ formData, orgName = "Username", orgImage, f
         type: "service_selection",
         timestamp: Date.now(),
         question: "Hey, How can I help you?",
-        services: formData.services.map(s => ({
+        services: formData.services.map((s) => ({
           id: s.id,
           title: s.title,
         })),
@@ -54,15 +57,15 @@ export default function PreviewBox({ formData, orgName = "Username", orgImage, f
             stepId: step.id,
           };
 
-          if (step.stepType === 'multiple_choice') {
+          if (step.stepType === "multiple_choice") {
             messages.push({
               ...common,
               type: "multiple_choice",
               options: step.options || [],
             });
-          } else if (step.stepType === 'end_screen') {
+          } else if (step.stepType === "end_screen") {
             // End screen isn't usually a message bubble but we can skip or show a system message
-          } else if (step.stepType === 'external_browser') {
+          } else if (step.stepType === "external_browser") {
             messages.push({
               id: `preview-step-${index}`,
               timestamp: Date.now() + index,
@@ -73,13 +76,13 @@ export default function PreviewBox({ formData, orgName = "Username", orgImage, f
           } else {
             // Map other inputs
             let msgType = "text_input";
-            if (step.stepType === 'email') msgType = "email_input";
-            if (step.stepType === 'phone') msgType = "phone_input";
-            if (step.stepType === 'address') msgType = "address_input";
-            if (step.stepType === 'website') msgType = "website_input";
-            if (step.stepType === 'number') msgType = "number_input";
-            if (step.stepType === 'date') msgType = "date_input";
-            if (step.stepType === 'file') msgType = "file_upload";
+            if (step.stepType === "email") msgType = "email_input";
+            if (step.stepType === "phone") msgType = "phone_input";
+            if (step.stepType === "address") msgType = "address_input";
+            if (step.stepType === "website") msgType = "website_input";
+            if (step.stepType === "number") msgType = "number_input";
+            if (step.stepType === "date") msgType = "date_input";
+            if (step.stepType === "file") msgType = "file_upload";
 
             messages.push({
               ...common,
@@ -105,26 +108,65 @@ export default function PreviewBox({ formData, orgName = "Username", orgImage, f
   };
 
   const previewMessages = generatePreviewMessages();
-  const description = formData?.properties?.description || "Description text will appear here.";
 
-  const previewScale = viewMode === 'desktop' ? 0.8 : 1;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dynamicScale, setDynamicScale] = useState(0.5);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        if (viewMode === "desktop") {
+          if (screenWidth > 0) {
+            setDynamicScale(width / screenWidth);
+          }
+        } else {
+          if (screenHeight > 0) {
+            setDynamicScale(height / screenHeight);
+          }
+        }
+      }
+    };
+
+    // Update initially and on resize
+    updateScale();
+
+    const resizeObserver = new ResizeObserver(updateScale);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    window.addEventListener("resize", updateScale);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateScale);
+    };
+  }, [viewMode]);
+
+  // const previewScale = viewMode === 'desktop' ? dynamicScale : 1;
+  const previewScale = dynamicScale;
+  // const previewScale = 1;
 
   return (
     <div className="flex flex-col items-center gap-4 h-full w-full">
-      <div className="flex gap-2 bg-muted p-1 rounded-lg shrink-0">
+      <div className="flex gap-2 bg-muted p-1 rounded-lg shrink-0 mt-4">
         <Button
-          variant={viewMode === 'desktop' ? 'default' : 'ghost'}
+          variant={viewMode === "desktop" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setViewMode('desktop')}
+          onClick={() => setViewMode("desktop")}
           className="px-3"
           title="Desktop View"
         >
           <Laptop className="h-4 w-4" />
         </Button>
         <Button
-          variant={viewMode === 'mobile' ? 'default' : 'ghost'}
+          variant={viewMode === "mobile" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setViewMode('mobile')}
+          onClick={() => setViewMode("mobile")}
           className="px-3"
           title="Mobile View"
         >
@@ -133,15 +175,22 @@ export default function PreviewBox({ formData, orgName = "Username", orgImage, f
       </div>
 
       <div className="flex-1 w-full flex items-center justify-center min-h-0">
-        <div className={`
-          transition-all duration-300 ease-in-out shadow-2xl overflow-hidden bg-white rounded-lg
-          ${viewMode === 'mobile'
-            ? 'h-full w-full max-w-[375px] border border-border'
-            : 'w-full aspect-video rounded-lg max-w-5xl border border-border'
+        <div
+          ref={containerRef}
+          className={`
+          transition-all duration-300 ease-in-out shadow-2xl overflow-hidden bg-white rounded-xs
+          ${
+            viewMode === "mobile"
+              ? "h-full w-full max-w-[375px] border border-border"
+              : "w-full aspect-video max-w-5xl border border-border"
           }
-        `}>
+        `}
+        >
           <FormLayout
-            formData={formData || { properties: {}, services: [], workflows: {} } as any}
+            formData={
+              formData ||
+              ({ properties: {}, services: [], workflows: {} } as any)
+            }
             orgName={orgName}
             orgImage={orgImage}
             orgHandle={orgHandle}
@@ -155,7 +204,7 @@ export default function PreviewBox({ formData, orgName = "Username", orgImage, f
                 <DynamicBottomInput
                   currentStep={null}
                   isSubmitting={false}
-                  onSend={() => { }}
+                  onSend={() => {}}
                   overrideType="text_input"
                 />
               </div>

@@ -61,7 +61,7 @@ export function SubscriptionGuard({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Link href="/pricing">
+                    <Link href={`/settings/billing?orgId=${organisationId}`}>
                         <Button>Upgrade to Unlock</Button>
                     </Link>
                 </CardContent>

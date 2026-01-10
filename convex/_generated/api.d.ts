@@ -11,6 +11,7 @@
 import type * as attachment from "../attachment.js";
 import type * as auth from "../auth.js";
 import type * as connection from "../connection.js";
+import type * as dashboard from "../dashboard.js";
 import type * as form from "../form.js";
 import type * as http from "../http.js";
 import type * as maintenance from "../maintenance.js";
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   attachment: typeof attachment;
   auth: typeof auth;
   connection: typeof connection;
+  dashboard: typeof dashboard;
   form: typeof form;
   http: typeof http;
   maintenance: typeof maintenance;

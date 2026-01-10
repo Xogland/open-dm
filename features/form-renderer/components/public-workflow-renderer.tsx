@@ -16,6 +16,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Typography } from "@/components/ui/typography";
 
 interface UnifiedFormData {
     content: FormContentData;
@@ -122,9 +123,11 @@ export default function PublicWorkflowRenderer({
                     <AvatarFallback className="text-2xl">{organization?.name?.substring(0, 2).toUpperCase() || "OR"}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
-                    <CardTitle className="text-2xl font-bold">{organization?.name || "Organization"}</CardTitle>
-                    <CardDescription className="text-base max-w-xs mx-auto">
-                        {content.description || "Welcome to our inquiry form."}
+                    <CardTitle><Typography variant="subheading">{organization?.name || "Organization"}</Typography></CardTitle>
+                    <CardDescription>
+                        <Typography variant="body" className="text-base max-w-xs mx-auto">
+                            {content.description || "Welcome to our inquiry form."}
+                        </Typography>
                     </CardDescription>
                 </div>
 
@@ -156,8 +159,8 @@ export default function PublicWorkflowRenderer({
     const renderServiceSelection = () => (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center space-y-2 mb-8">
-                <h2 className="text-2xl font-semibold tracking-tight">How can we help you?</h2>
-                <p className="text-muted-foreground">Select a topic to get started.</p>
+                <Typography variant="subheading" as="h2">How can we help you?</Typography>
+                <Typography variant="caption" className="text-base">Select a topic to get started.</Typography>
             </div>
 
             <div className="grid gap-3">
@@ -165,7 +168,7 @@ export default function PublicWorkflowRenderer({
                     <Button
                         key={service.id}
                         variant="outline"
-                        className="h-auto py-4 px-6 justify-between text-base font-medium hover:border-primary hover:bg-primary/5 transition-all group"
+                        className="h-auto py-4 px-6 justify-between text-base hover:border-primary hover:bg-primary/5 transition-all group"
                         onClick={() => handleStartService(service.title)}
                     >
                         {service.title}
@@ -183,7 +186,7 @@ export default function PublicWorkflowRenderer({
             case "text":
                 return (
                     <div className="space-y-4">
-                        <Label className="text-lg font-medium">{step.question}</Label>
+                        <Label className="text-lg">{step.question}</Label>
                         <Input
                             placeholder={step.placeholder}
                             value={value}
@@ -196,7 +199,7 @@ export default function PublicWorkflowRenderer({
             case "number":
                 return (
                     <div className="space-y-4">
-                        <Label className="text-lg font-medium">{step.question}</Label>
+                        <Label className="text-lg">{step.question}</Label>
                         <Input
                             type="tel"
                             placeholder={step.placeholder}
@@ -210,7 +213,7 @@ export default function PublicWorkflowRenderer({
             case "multiple_choice":
                 return (
                     <div className="space-y-4">
-                        <Label className="text-lg font-medium">{step.question}</Label>
+                        <Label className="text-lg">{step.question}</Label>
                         <div className="grid gap-2 pt-2">
                             {step.options?.map((option) => (
                                 <Button
@@ -229,7 +232,7 @@ export default function PublicWorkflowRenderer({
             case "date":
                 return (
                     <div className="space-y-4 flex flex-col">
-                        <Label className="text-lg font-medium">{step.question}</Label>
+                        <Label className="text-lg">{step.question}</Label>
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button
@@ -260,8 +263,8 @@ export default function PublicWorkflowRenderer({
                         <div className="h-16 w-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2">
                             <CheckCircle2Icon className="h-8 w-8" />
                         </div>
-                        <h2 className="text-2xl font-bold">{step.question || "Thank you!"}</h2>
-                        <p className="text-muted-foreground">Your request has been received.</p>
+                        <Typography variant="subheading" as="h2">{step.question || "Thank you!"}</Typography>
+                        <Typography variant="caption" className="text-base">Your request has been received.</Typography>
                         <Button className="mt-6" variant="outline" onClick={() => window.location.reload()}>
                             Submit Another Response
                         </Button>
@@ -273,8 +276,8 @@ export default function PublicWorkflowRenderer({
                         <div className="h-16 w-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
                             <CheckCircle2Icon className="h-8 w-8" />
                         </div>
-                        <h2 className="text-2xl font-bold">Thank you!</h2>
-                        <p className="text-muted-foreground">Click the button below to continue.</p>
+                        <Typography variant="subheading" as="h2">Thank you!</Typography>
+                        <Typography variant="caption" className="text-base">Click the button below to continue.</Typography>
                         <Button className="mt-6" onClick={() => window.location.href = (step as any).url}>
                             {(step as any).buttonText || "Continue"}
                         </Button>
@@ -302,7 +305,7 @@ export default function PublicWorkflowRenderer({
                             <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-8 duration-300">
                                 {/* Step Indicator */}
                                 {currentStep?.stepType !== 'end_screen' && currentStep?.stepType !== 'external_browser' && (
-                                    <div className="mb-8 flex items-center justify-between text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                                    <div className="mb-8 flex items-center justify-between text-xs text-muted-foreground">
                                         <span>Step {currentStepIndex + 1} of {currentWorkflowSteps.length > 0 ? (currentWorkflowSteps.filter(s => s.stepType !== 'end_screen').length) : 1}</span>
                                         <span className="text-primary">{Math.round(((currentStepIndex + 1) / (currentWorkflowSteps.length)) * 100)}%</span>
                                     </div>

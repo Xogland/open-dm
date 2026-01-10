@@ -9,6 +9,8 @@ import { FormData, WorkflowStep } from "@/lib/types";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import { Inbox, InboxIcon } from "lucide-react";
+import { Typography } from "@/components/ui/typography";
 import { toast } from "sonner";
 import { FormSidebar } from "./shared/form-sidebar";
 import { FormContactActions } from "./shared/form-contact-actions";
@@ -36,6 +38,7 @@ interface ChatFormViewProps {
   orgHandle?: string;
   onSubmit: (answers: Record<string, any>) => Promise<void>;
   isSubmitting: boolean;
+  limitReached?: boolean;
 }
 
 export default function ChatFormView({
@@ -45,6 +48,7 @@ export default function ChatFormView({
   orgHandle,
   onSubmit,
   isSubmitting,
+  limitReached = false,
 }: ChatFormViewProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedService, setSelectedService] = useState<string | null>(null);
@@ -74,7 +78,7 @@ export default function ChatFormView({
   const validContacts = [
     {
       type: "profile",
-      value: contactInfo.profile || (typeof window !== "undefined" ? window.location.href : ""),
+      value: contactInfo.profile, // Removed fallback
       action: (v: string) => {
         navigator.clipboard.writeText(v);
         toast.success("Profile link copied!");
@@ -106,7 +110,7 @@ export default function ChatFormView({
     (c) => c.value && typeof c.value === "string" && c.value.trim() !== "",
   );
 
-  const visibleContacts = validContacts.slice(0, 2);
+  // const visibleContacts = validContacts.slice(0, 2); // Unused
 
   // ----------------------------------------------------------------------
 
@@ -567,6 +571,34 @@ export default function ChatFormView({
 
 
 
+
+  if (limitReached) {
+    return (
+      <FormLayout
+        formData={formData}
+        orgName={orgName}
+        orgImage={orgImage}
+        orgHandle={orgHandle}
+        serviceSelected={false}
+        onReset={reset}
+        footer={null}
+      >
+        <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-4">
+          <div className="bg-white/5 p-4 rounded-full">
+            <InboxIcon className="w-8 h-8 text-white opacity-50" />
+          </div>
+          <div className="space-y-2">
+            <Typography variant="subheading" className="text-white/80">
+              Inbox at capacity
+            </Typography>
+            {/* <Typography variant="body" className="text-white/40 text-sm max-w-[280px]">
+              {orgName} is currently receiving a high volume of messages. Please try again later or reach out via socials.
+            </Typography> */}
+          </div>
+        </div>
+      </FormLayout>
+    );
+  }
 
   return (
     <FormLayout

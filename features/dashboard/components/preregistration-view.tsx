@@ -84,10 +84,10 @@ function TimerCard({ label, value }: { label: string; value: number }) {
     return (
         <Card className="bg-card/30 backdrop-blur-sm border-border/50 shadow-xl">
             <CardContent className="p-6 text-center">
-                <div className="text-4xl md:text-5xl font-mono font-bold text-primary mb-1">
+                <div className="text-4xl md:text-5xl font-mono text-primary mb-1">
                     {String(value).padStart(2, '0')}
                 </div>
-                <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+                <div className="text-xs text-muted-foreground">
                     {label}
                 </div>
             </CardContent>

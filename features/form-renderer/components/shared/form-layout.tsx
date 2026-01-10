@@ -53,16 +53,18 @@ export function FormLayout({
 
   const containerStyle: React.CSSProperties = isDesktop
     ? {
-        transform: `scale(${scale})`,
-        transformOrigin: "top left",
-        width: `${100 / scale}%`,
-        height: `${100 / scale}%`,
-      }
+      transform: `scale(${scale})`,
+      transformOrigin: "top left",
+      width: `${100 / scale}%`,
+      height: `${100 / scale}%`,
+      backfaceVisibility: "hidden",
+      transformStyle: "preserve-3d",
+    }
     : {};
 
   return (
     <div
-      className={`w-full h-full bg-white flex ${isResponsive ? "flex-col md:flex-row" : isDesktop ? "flex-row" : "flex-col"} overflow-hidden shadow-2xl`}
+      className={`w-full h-full bg-primary flex ${isResponsive ? "flex-col md:flex-row" : isDesktop ? "flex-row" : "flex-col"} overflow-hidden shadow-2xl`}
       style={containerStyle}
     >
       {/* Desktop Sidebar */}
@@ -85,7 +87,7 @@ export function FormLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full bg-white relative overflow-hidden">
+      <div className="flex-1 flex flex-col h-full bg-primary relative overflow-hidden">
         {/* TOP SECTION: Header (Mobile) / Contact Bar (Desktop) */}
         <div
           className={`w-full shrink-0 bg-primary transition-colors duration-300`}
@@ -98,6 +100,7 @@ export function FormLayout({
               orgImage={orgImage}
               orgHandle={orgHandle}
               contactInfo={formData.properties?.contactInfo}
+              tags={formData.properties?.tags}
               serviceSelected={serviceSelected}
               onReset={onReset}
               focusedField={focusedField}
@@ -109,11 +112,15 @@ export function FormLayout({
           {(isDesktop || isResponsive) && (
             <div
               className={`
-              w-full h-[80px] items-center bg-white
-              ${isResponsive ? "hidden md:flex" : "flex"}
-            `}
+                w-full h-[80px] items-center bg-primary
+                ${isResponsive ? "hidden md:flex" : "flex"}
+              `}
             >
-              <div className="flex-1 bg-primary rounded-tr-[30px] h-full" />
+              <div className="flex-1 bg-primary h-full relative">
+                {/* Intentional white notch - only in corner to prevent bleeding at edges */}
+                <div className="absolute top-0 right-0 w-[40px] h-[40px] bg-white z-0" />
+                <div className="relative z-10 bg-primary rounded-tr-[30px] h-full" />
+              </div>
               <div className="bg-primary h-full">
                 <FormContactActions
                   contactInfo={formData.properties?.contactInfo}
@@ -128,59 +135,63 @@ export function FormLayout({
         </div>
 
         {/* CONTENT SECTION: Socials + Messages */}
-        <div className="flex-1 flex flex-col min-h-0 bg-primary transition-colors duration-300 rounded-tr-[30px]">
-          {/* Mobile Socials & Description (Hidden on Start if NOT in ReadOnly/Preview mode) */}
-          {(isMobile || isResponsive) && (!serviceSelected || isReadOnly) && (
-            <div
-              className={`
-              flex flex-col items-center px-4 pb-2 w-full mt-4
-              ${isResponsive ? "md:hidden" : ""}
-            `}
-            >
-              <FormSocialLinks
-                socialLinks={formData.properties?.socialLinks}
-                focusedField={focusedField}
-                isReadOnly={isReadOnly}
-              />
+        <div className="flex-1 bg-primary relative flex flex-col min-h-0">
+          <div className="absolute top-0 right-0 w-[40px] h-[40px] bg-white z-0" />
+          <div className={`
+            relative z-10 flex-1 flex flex-col min-h-0 bg-primary transition-colors duration-300 rounded-tr-[30px]
+          `}>
+            {/* Mobile Socials & Description (Hidden on Start if NOT in ReadOnly/Preview mode) */}
+            {(isMobile || isResponsive) && (!serviceSelected || isReadOnly) && (
               <div
                 className={`
-                w-full transition-all duration-300 mt-8 px-4 
-                ${focusedField === "description" ? "ring-2 ring-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)] bg-white/5" : ""}
+                flex flex-col items-center px-4 pb-2 w-full mt-4
+                ${isResponsive ? "md:hidden" : ""}
               `}
               >
-                <div
-                  className={`
-                  flex flex-wrap gap-3 mb-2 transition-all duration-300 px-2 -ml-2 py-1 
-                  ${focusedField === "tags" ? "ring-2 ring-amber-400 bg-white/5" : ""}
-                `}
-                >
-                  {formData.properties?.tags?.map((tag, i) => (
+                <FormSocialLinks
+                  socialLinks={formData.properties?.socialLinks}
+                  focusedField={focusedField}
+                  isReadOnly={isReadOnly}
+                />
+                <div className="w-full mt-8 px-4 flex flex-col items-start gap-1">
+                  <div
+                    className={`
+                    flex flex-wrap gap-3 mb-2 transition-all duration-300 px-2 -ml-2 py-1
+                    ${focusedField === "title" ? "ring-2 ring-amber-400 bg-white/5 shadow-[0_0_15px_rgba(251,191,36,0.5)]" : ""}
+                  `}
+                  >
+                    {formData.properties?.title && (
+                      <span className="text-lg font-medium text-primary-foreground">
+                        {formData.properties.title}
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    className={`
+                    w-full transition-all duration-300 px-2 -ml-2 py-1
+                    ${focusedField === "description" ? "ring-2 ring-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)] bg-white/5" : ""}
+                  `}
+                  >
                     <span
-                      key={i}
-                      className="text-lg font-bold text-primary-foreground"
+                      className="text-base text-primary-foreground/90 leading-relaxed block text-left"
                     >
-                      {tag}
+                      {description}
                     </span>
-                  ))}
+                  </div>
                 </div>
-                <span
-                  className={`text-base text-primary-foreground/90 leading-relaxed block ${isReadOnly ? "text-center" : "text-left"}`}
-                >
-                  {description}
-                </span>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Message Area */}
-          <div
-            className={`
-            w-full flex-1 min-h-0 custom-scrollbar p-4 transition-all duration-300
-            ${focusedField === "services" ? "ring-2 ring-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)] bg-white/5" : ""}
-            ${!serviceSelected && isResponsive ? "mt-2 md:mt-0" : ""}
-          `}
-          >
-            {children}
+            {/* Message Area */}
+            <div
+              className={`
+              w-full flex-1 min-h-0 custom-scrollbar p-4 transition-all duration-300
+              ${focusedField === "services" ? "ring-2 ring-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)] bg-white/5" : ""}
+              ${!serviceSelected && isResponsive ? "mt-2 md:mt-0" : ""}
+            `}
+            >
+              {children}
+            </div>
           </div>
         </div>
 
@@ -198,11 +209,8 @@ export function FormLayout({
               `}
               >
                 <div className="flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity cursor-default">
-                  <span className="text-[9px] text-primary-foreground tracking-widest uppercase">
-                    Powered by
-                  </span>
-                  <span className="text-[9px] text-primary-foreground font-bold tracking-widest uppercase">
-                    Open DM
+                  <span className="text-xs text-primary-foreground">
+                    opendm.io/{orgHandle}
                   </span>
                 </div>
               </div>

@@ -39,7 +39,7 @@ export default function FaqPage() {
                             </div>
                         ))}
                     </div>
-                    <Typography variant="small" className="ml-2">5,000+ Professionals Helped</Typography>
+                    <Typography variant="caption" className="ml-2">5,000+ Professionals Helped</Typography>
                 </div>
             </SectionWrapper>
 
@@ -56,7 +56,7 @@ export default function FaqPage() {
                     <div className="inline-flex p-3 rounded-2xl bg-primary/10 mb-6">
                         <MessageSquare className="w-8 h-8 text-primary" />
                     </div>
-                    <Typography variant="h2" className="mb-6 border-none">{SUPPORT_CONTENT.title}</Typography>
+                    <Typography variant="heading" className="mb-6 border-none">{SUPPORT_CONTENT.title}</Typography>
                     <Typography variant="lead" className="mb-12">{SUPPORT_CONTENT.description}</Typography>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
@@ -67,11 +67,11 @@ export default function FaqPage() {
                                 target="_blank"
                                 className="flex flex-col items-center p-6 rounded-2xl bg-background border hover:border-primary hover:shadow-lg transition-all group"
                             >
-                                <Typography variant="muted" className="mb-2">
+                                <Typography variant="caption" className="mb-2">
                                     {contact.label === 'Support' ? 'OpenDM us @' : 'OpenDM me @'}
                                 </Typography>
-                                <Typography variant="large" className="group-hover:text-primary transition-colors">{contact.link}</Typography>
-                                <span className="mt-4 px-3 py-1 rounded-full bg-muted text-xs font-semibold">{contact.label}</span>
+                                <Typography variant="subheading" className="group-hover:text-primary transition-colors">{contact.link}</Typography>
+                                <span className="mt-4 px-3 py-1 rounded-full bg-muted text-xs">{contact.label}</span>
                             </Link>
                         ))}
                     </div>
@@ -82,7 +82,7 @@ export default function FaqPage() {
             <div className="w-full bg-background pt-24 pb-32 flex items-center justify-center">
                 <div className="container px-4 text-center flex items-center justify-center">
                     <Typography variant="lead" className="md:text-2xl max-w-3xl mx-auto leading-relaxed">
-                        Join <span className="text-foreground font-bold italic">15,000+ professionals</span> who use OpenDM to save time, filter spam, and monetize their expertise.
+                        Join <span className="text-foreground italic">15,000+ professionals</span> who use OpenDM to save time, filter spam, and monetize their expertise.
                     </Typography>
                 </div>
             </div>

@@ -112,7 +112,7 @@ export function FeaturesContent() {
                             transition={{ duration: 0.6 }}
                             className="text-center max-w-3xl mx-auto"
                         >
-                            <div className="inline-flex items-center px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium">
+                            <div className="inline-flex items-center px-4 py-1.5 mb-6 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm">
                                 <Zap className="w-4 h-4 mr-2" />
                                 Powerful Feature Set
                             </div>
@@ -166,7 +166,7 @@ export function FeaturesContent() {
                                                     <div className={cn("w-5 h-5 rounded-full flex items-center justify-center", feature.bg)}>
                                                         <Check className={cn("w-3 h-3", feature.color)} />
                                                     </div>
-                                                    <span className="text-foreground/80 font-medium">{detail}</span>
+                                                    <span className="text-foreground/80">{detail}</span>
                                                 </li>
                                             ))}
                                         </ul>
@@ -177,7 +177,7 @@ export function FeaturesContent() {
                                             <feature.icon className={cn("w-24 h-24 opacity-20 group-hover:scale-110 transition-transform duration-500", feature.color)} />
                                         </div>
                                         <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <Typography variant="small" className="font-bold tracking-widest uppercase">Feature Detail View</Typography>
+                                            <Typography variant="small" className="font-bold">Feature Detail View</Typography>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -234,17 +234,17 @@ export function FeaturesContent() {
                                 <div className="space-y-6">
                                     <div className="p-6 rounded-2xl bg-background/50 border border-border/50">
                                         <Typography variant="h4" className="flex items-center gap-2">
-                                            WordPress Plugin <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-wider">Coming Soon</span>
+                                            WordPress Plugin <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">Coming Soon</span>
                                         </Typography>
-                                        <Typography variant="muted" className="mt-2 italic">
+                                        <Typography variant="muted" className="mt-2">
                                             Native widget for any WordPress site, maintaining your design while adding powerful capture tools.
                                         </Typography>
                                     </div>
                                     <div className="p-6 rounded-2xl bg-background/50 border border-border/50">
                                         <Typography variant="h4" className="flex items-center gap-2">
-                                            React & Next.js Components <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-wider">Coming Soon</span>
+                                            React & Next.js Components <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">Coming Soon</span>
                                         </Typography>
-                                        <Typography variant="muted" className="mt-2 italic">
+                                        <Typography variant="muted" className="mt-2">
                                             Drop a fully-functional contact widget into your modern web apps with full styling control.
                                         </Typography>
                                     </div>
@@ -270,18 +270,18 @@ export function FeaturesContent() {
                             <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px]" />
 
                             <div className="relative z-10 text-center max-w-3xl mx-auto space-y-8">
-                                <Typography variant="h2" className="text-4xl md:text-6xl font-bold tracking-tight border-none text-white">
+                                <Typography variant="h2" className="text-4xl md:text-6xl border-none text-white">
                                     Stop Losing Leads to Cluttered Inboxes
                                 </Typography>
                                 <Typography className="text-lg md:text-xl text-white/70">
                                     Join thousands of professionals who have reclaimed their time and turned their contact link into a business asset.
                                 </Typography>
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
+                                <div className="flex flex-col items-center justify-center gap-6 pt-8">
                                     <Button size="lg" asChild className="rounded-full px-12 bg-white text-black hover:bg-white/90 h-14 text-lg">
                                         <Link href="/sign-up">Get Started Free</Link>
                                     </Button>
                                     <Typography variant="small" className="text-white/50">
-                                        No credit card required. 14-day Pro trial.
+                                        Free 7-day Pro trial.
                                     </Typography>
                                 </div>
                             </div>

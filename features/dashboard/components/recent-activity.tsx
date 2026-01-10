@@ -52,15 +52,15 @@ export function RecentActivity({ activities, className }: RecentActivityProps) {
 
                             <div className="flex flex-1 flex-col space-y-1 pb-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm font-semibold truncate max-w-[150px]">
+                                    <span className="text-sm truncate max-w-[150px]">
                                         {activity.email || "Anonymous Hunter"}
                                     </span>
-                                    <span className="text-[11px] text-muted-foreground font-medium">
+                                    <span className="text-[11px] text-muted-foreground">
                                         {formatDistanceToNow(new Date(activity.creationTime), { addSuffix: true })}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="secondary" className="px-1.5 py-0 text-[10px] uppercase tracking-wider font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border-0">
+                                    <Badge variant="secondary" className="px-1.5 py-0 text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 border-0">
                                         {activity.serviceName}
                                     </Badge>
                                     <div className="h-1 w-1 rounded-full bg-muted-foreground/30" />

@@ -19,7 +19,7 @@ export const ScoreDebugItem: React.FC<ScoreDebugItemProps> = ({
                                                                 rawValue,
                                                               }) => {
   const colorClass = isTriggered
-    ? "text-red-500 font-semibold"
+    ? "text-red-500"
     : "text-green-500";
   const scoreText = isTriggered ? `+${weight}` : "+0";
 

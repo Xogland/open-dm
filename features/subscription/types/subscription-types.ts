@@ -6,15 +6,14 @@
  */
 
 import { Id } from "@/convex/_generated/dataModel";
+import { SubscriptionPlan, PlanConfig } from "@/convex/planLimitConfig";
+
+export type { SubscriptionPlan, PlanConfig };
+
 
 // ============================================================================
 // Plan Types
 // ============================================================================
-
-/**
- * Available subscription plan tiers
- */
-export type SubscriptionPlan = 'starter' | 'professional' | 'enterprise';
 
 /**
  * Subscription status matching Lemon Squeezy API
@@ -38,49 +37,9 @@ export type BillingCycle = 'monthly' | 'annual';
 // Plan Configuration
 // ============================================================================
 
-/**
- * Comprehensive plan configuration with all limits and features
- */
-export interface PlanConfig {
-    id: SubscriptionPlan;
-    name: string;
-    description: string;
 
-    // Pricing
-    pricing: {
-        monthly: number;
-        annual: number;
-        currency: string;
-    };
+// Interface is now imported from @/convex/planLimitConfig
 
-    // Limits
-    limits: {
-        servicesLimit: number;           // Number of services per form (Infinity for unlimited)
-        submissionsPerMonth: number;     // Monthly submission quota (Infinity for unlimited)
-        storageLimit: number;            // Storage in MB
-        teamMembersLimit: number;        // Additional team members beyond owner (Infinity for unlimited)
-        analyticsRetention: number;      // Days of analytics data retention
-    };
-
-    // Feature Flags
-    features: {
-        customBranding: boolean;         // White-label features
-        prioritySupport: boolean;        // Priority support tier
-        apiAccess: boolean;              // API availability
-        advancedWorkflows: boolean;      // Premium workflow types (file upload, multiple choice)
-        customDomain: boolean;           // Custom domain support
-        exportData: boolean;             // Data export capabilities
-        webhooks: boolean;               // Webhook integrations
-        analytics: boolean;              // Advanced analytics
-    };
-
-    // UI Display
-    ui: {
-        badge?: string;                  // e.g., "Most Popular", "Best Value"
-        popular?: boolean;               // Highlight as popular choice
-        color?: string;                  // Theme color for plan
-    };
-}
 
 // ============================================================================
 // Lemon Squeezy API Types
@@ -246,4 +205,5 @@ export interface ActionValidationResult {
     currentUsage?: number;
     limit?: number;
     upgradeRequired?: SubscriptionPlan;
+    limitType?: 'submissions' | 'services' | 'storage' | 'teamMembers' | 'organisations';
 }

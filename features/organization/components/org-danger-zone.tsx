@@ -34,29 +34,55 @@ export function OrgDangerZone({ organisationId, organisationName }: OrgDangerZon
     const router = useRouter();
 
     const handleDelete = async () => {
-        try {
-            setIsDeleting(true);
-            await deleteOrg({ organisationId });
+      try {
+        setIsDeleting(true);
+        await deleteOrg({ organisationId });
 
-            toast.success("Organization deleted successfully");
+        toast.success("Organization deleted successfully");
 
-            // Find another organization to switch to
-            const remainingOrgs = allOrgs?.filter(org => org._id !== organisationId) || [];
+        // Find another organization to switch to
+        const remainingOrgs =
+          allOrgs?.filter((org) => org._id !== organisationId) || [];
 
-            if (remainingOrgs.length > 0) {
-                await updateSelectedOrg({ organisationId: remainingOrgs[0]._id });
-                router.push("/dashboard");
-            } else {
-                router.push("/organization/create");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to delete organization");
-        } finally {
-            setIsDeleting(false);
+        if (remainingOrgs.length > 0) {
+          await updateSelectedOrg({ organisationId: remainingOrgs[0]._id });
+          router.push("/dashboard");
+        } else {
+          router.push("/organization/create");
         }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to delete organization");
+      } finally {
+        setIsDeleting(false);
+      }
     };
 
+    if (isDeleting) {
+      return (
+        <Card className="border-destructive/20 bg-destructive/5 animate-pulse">
+          <CardHeader>
+            <div className="flex items-center gap-2 text-destructive/50">
+              <Trash2 className="h-5 w-5 animate-bounce" />
+              <CardTitle>Deleting Organization...</CardTitle>
+            </div>
+            <CardDescription>
+              Please wait while we securely remove your data.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center p-8 rounded-xl border border-dashed border-destructive/20">
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-destructive border-t-transparent" />
+                <p className="text-sm font-medium text-destructive/70">
+                  Finalizing removal...
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
     return (
         <Card className="border-destructive/20 bg-destructive/5">
             <CardHeader>

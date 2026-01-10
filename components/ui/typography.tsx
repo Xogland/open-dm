@@ -5,25 +5,30 @@ import { cn } from "@/lib/utils"
 const typographyVariants = cva("text-foreground", {
     variants: {
         variant: {
-            h1: "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl",
-            h2: "scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0",
-            h3: "scroll-m-20 text-2xl font-semibold tracking-tight",
-            h4: "scroll-m-20 text-xl font-semibold tracking-tight",
-            p: "leading-7 [&:not(:first-child)]:mt-6",
-            blockquote: "mt-6 border-l-2 pl-6 italic",
-            ul: "my-6 ml-6 list-disc [&>li]:mt-2",
-            inlineCode: "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold",
-            lead: "text-xl text-muted-foreground",
-            large: "text-lg font-semibold",
-            small: "text-sm font-medium leading-none",
-            muted: "text-sm text-muted-foreground",
-            link: "font-medium text-primary underline underline-offset-4 hover:opacity-80 transition-opacity",
+            heading: "text-5xl md:text-7xl leading-tight",
+            subheading: "text-xl leading-snug",
+            body: "leading-relaxed text-muted-foreground",
+            lead: "text-xl text-muted-foreground leading-relaxed",
+            caption: "text-sm text-muted-foreground",
+            stat: "text-3xl",
+            code: "font-mono text-sm bg-muted px-1.5 py-0.5 rounded",
         },
     },
     defaultVariants: {
-        variant: "p",
+        variant: "body",
     },
 })
+
+// Default element mapping for each variant
+const elementMap: Record<string, React.ElementType> = {
+    heading: "h1",
+    subheading: "h2",
+    body: "p",
+    lead: "p",
+    caption: "span",
+    stat: "div",
+    code: "code",
+}
 
 interface TypographyProps
     extends React.HTMLAttributes<HTMLElement>,
@@ -33,8 +38,8 @@ interface TypographyProps
 }
 
 const Typography = React.forwardRef<HTMLElement, TypographyProps>(
-    ({ className, variant, as, ...props }, ref) => {
-        const Component = as || (variant && ["h1", "h2", "h3", "h4"].includes(variant) ? (variant as unknown as React.ElementType) : (variant === "p" ? "p" : (variant === "inlineCode" ? "code" : (variant === "blockquote" ? "blockquote" : (variant === "ul" ? "ul" : "div")))))
+    ({ className, variant = "body", as, ...props }, ref) => {
+        const Component = as || elementMap[variant || "body"] || "p"
 
         return (
             <Component

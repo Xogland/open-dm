@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import { Typography } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -89,7 +90,7 @@ const renderWorkflowAnswers = (workflowAnswers: any) => {
                     <FileIcon className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex flex-col overflow-hidden">
-                    <span className="text-sm font-medium truncate max-w-[150px]">{answer.name}</span>
+                    <span className="text-sm truncate max-w-[150px]">{answer.name}</span>
                     <span className="text-xs text-muted-foreground">{(answer.size / 1024).toFixed(1)} KB</span>
                   </div>
                 </div>
@@ -168,10 +169,10 @@ const renderWorkflowAnswers = (workflowAnswers: any) => {
           <Card key={index} className="overflow-hidden border-none shadow-md bg-card transition-colors">
             <div className="flex flex-col">
               <div className="px-4 py-3 bg-secondary/30 border-b border-border/50 flex items-center gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary">
                   {index + 1}
                 </div>
-                <span className="text-sm font-medium text-foreground/90">{question}</span>
+                <span className="text-sm text-foreground/90">{question}</span>
               </div>
               <div className="p-4">
                 <div className="text-sm text-foreground">
@@ -229,12 +230,12 @@ export default function SidePanel({
         <div className="flex flex-col p-6 sm:p-8 border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-10 space-y-6">
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-1">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              <Typography variant="heading" as="h2">
                 {selectedSubmission?.formName || "Details"}
-              </h2>
+              </Typography>
               {selectedSubmission && (
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[10px] uppercase tracking-wider font-bold">
+                  <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[10px]">
                     {selectedSubmission.service || "General"}
                   </Badge>
                   {organisationStatuses && (
@@ -254,7 +255,7 @@ export default function SidePanel({
                                 {organisationStatuses.find(s => s.id === selectedSubmission.statusId)?.label}
                               </span>
                             </>
-                          ) : <span className="text-muted-foreground font-medium">Set Status</span>}
+                          ) : <span className="text-muted-foreground">Set Status</span>}
                         </div>
                       </SelectTrigger>
                       <SelectContent align="start" className="min-w-[140px]">
@@ -297,7 +298,7 @@ export default function SidePanel({
                   window.location.href = mailtoLink;
                 }
               }}
-              className="flex-1 shadow-lg shadow-primary/20 font-semibold h-12 rounded-xl group"
+              className="flex-1 shadow-lg shadow-primary/20 h-12 rounded-xl group"
             >
               <Mail className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
               Reply to Lead
@@ -316,10 +317,10 @@ export default function SidePanel({
               {/* Metadata Section */}
               <div className="grid gap-4">
                 <div className="flex flex-col gap-1.5 p-4 rounded-xl border bg-muted/20 border-border/50">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <Typography variant="caption" className="flex items-center gap-2">
                     <User className="h-3 w-3" />
                     Sender
-                  </div>
+                  </Typography>
                   <div className="font-medium text-foreground pl-5 truncate">
                     {selectedSubmission.email}
                   </div>
@@ -328,10 +329,10 @@ export default function SidePanel({
 
 
                 <div className="flex flex-col gap-1.5 p-4 rounded-xl border bg-muted/20 border-border/50">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <Typography variant="caption" className="flex items-center gap-2">
                     <Clock className="h-3 w-3" />
                     Received
-                  </div>
+                  </Typography>
                   <div className="font-medium text-foreground pl-5">
                     {format(new Date(selectedSubmission._creationTime), "MMMM dd, yyyy 'at' hh:mm a")}
                   </div>
@@ -343,9 +344,9 @@ export default function SidePanel({
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="h-px flex-1 bg-border/50" />
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center shrink-0">
+                    <Typography variant="subheading" className="text-xs flex items-center shrink-0">
                       Form Responses
-                    </h3>
+                    </Typography>
                     <div className="h-px flex-1 bg-border/50" />
                   </div>
                   {renderWorkflowAnswers(selectedSubmission.workflowAnswers)}
@@ -357,12 +358,12 @@ export default function SidePanel({
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="h-px flex-1 bg-border/50" />
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest shrink-0">
+                    <Typography variant="subheading" className="text-xs shrink-0">
                       Message Content
-                    </h3>
+                    </Typography>
                     <div className="h-px flex-1 bg-border/50" />
                   </div>
-                  <div className="p-5 rounded-2xl bg-muted/30 border border-border/40 text-sm leading-relaxed whitespace-pre-wrap text-foreground/80 font-medium">
+                  <div className="p-5 rounded-2xl bg-muted/30 border border-border/40 text-sm leading-relaxed whitespace-pre-wrap text-foreground/80">
                     {selectedSubmission.content}
                   </div>
                 </div>
@@ -373,9 +374,9 @@ export default function SidePanel({
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="h-px flex-1 bg-border/50" />
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest shrink-0">
+                    <Typography variant="subheading" className="text-xs shrink-0">
                       Attachments ({attachments.length})
-                    </h3>
+                    </Typography>
                     <div className="h-px flex-1 bg-border/50" />
                   </div>
                   <div className="grid gap-3">
@@ -389,10 +390,10 @@ export default function SidePanel({
                             <FileIcon className="h-5 w-5 text-primary" />
                           </div>
                           <div className="flex flex-col overflow-hidden">
-                            <span className="text-sm font-semibold truncate">
+                            <span className="text-sm truncate">
                               {attachment.name}
                             </span>
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase">
+                            <span className="text-[10px] text-muted-foreground">
                               {(attachment.size / 1024).toFixed(1)} KB
                             </span>
                           </div>
@@ -418,10 +419,10 @@ export default function SidePanel({
                 <Mail className="h-10 w-10 text-muted-foreground/30" />
               </div>
               <div className="space-y-1">
-                <p className="font-bold text-foreground">No submission selected</p>
-                <p className="text-sm text-muted-foreground max-w-[200px]">
+                <Typography variant="subheading" className="font-bold">No submission selected</Typography>
+                <Typography variant="body" className="text-sm text-center max-w-[200px]">
                   Select a submission from the inbox to view the full details here.
-                </p>
+                </Typography>
               </div>
             </div>
           )}

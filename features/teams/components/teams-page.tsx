@@ -43,6 +43,7 @@ import { InviteDialog } from "./invite-dialog";
 import { toast } from "sonner";
 import { getPlanConfig } from "@/features/subscription/config/plan-config";
 import { PageShell } from "@/components/page-shell";
+import { Typography } from "@/components/ui/typography";
 
 export default function TeamsPage() {
   const { selectedOrganization } = useUserData();
@@ -160,7 +161,7 @@ export default function TeamsPage() {
         description="Manage your organization members and their access roles."
       >
         {canManageTeam && !subscriptionExpired && (
-          <Button className="h-10 px-6 rounded-xl bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all font-semibold flex items-center gap-2" onClick={() => setInviteDialogOpen(true)}>
+          <Button className="h-10 px-6 rounded-xl bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center gap-2" onClick={() => setInviteDialogOpen(true)}>
             <Plus className="w-4 h-4" /> Invite Member
           </Button>
         )}
@@ -180,31 +181,31 @@ export default function TeamsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="border shadow-sm rounded-xl overflow-hidden bg-card/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Members</CardTitle>
+            <CardTitle><Typography variant="subheading" className="text-xs text-muted-foreground">Total Members</Typography></CardTitle>
             <Users className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{members.length}</div>
+            <Typography variant="stat" className="text-3xl">{members.length}</Typography>
           </CardContent>
         </Card>
         <Card className="border shadow-sm rounded-xl overflow-hidden bg-card/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Status</CardTitle>
+            <CardTitle><Typography variant="subheading" className="text-xs text-muted-foreground">Active Status</Typography></CardTitle>
             <ShieldCheck className="w-4 h-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">
+            <Typography variant="stat" className="text-3xl">
               {members.filter((m: any) => !subscriptionExpired).length}
-            </div>
+            </Typography>
           </CardContent>
         </Card>
         <Card className="border shadow-sm rounded-xl overflow-hidden bg-card/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Pending Invites</CardTitle>
+            <CardTitle><Typography variant="subheading" className="text-xs text-muted-foreground">Pending Invites</Typography></CardTitle>
             <UserPlus className="w-4 h-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{pendingInvites.length}</div>
+            <Typography variant="stat" className="text-3xl">{pendingInvites.length}</Typography>
           </CardContent>
         </Card>
       </div>
@@ -235,10 +236,10 @@ export default function TeamsPage() {
           <Table>
             <TableHeader className="bg-muted/30 sticky top-0 z-10">
               <TableRow className="hover:bg-transparent border-b">
-                <TableHead className="py-4 font-bold text-foreground">Member</TableHead>
-                <TableHead className="py-4 font-bold text-foreground">Role</TableHead>
-                <TableHead className="py-4 font-bold text-foreground">Status</TableHead>
-                <TableHead className="py-4 text-right font-bold text-foreground">Actions</TableHead>
+                <TableHead className="py-4 text-foreground">Member</TableHead>
+                <TableHead className="py-4 text-foreground">Role</TableHead>
+                <TableHead className="py-4 text-foreground">Status</TableHead>
+                <TableHead className="py-4 text-right text-foreground">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -248,25 +249,25 @@ export default function TeamsPage() {
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
                         <AvatarImage src={member.image} />
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                        <AvatarFallback className="bg-primary/10 text-primary">
                           {member.name?.substring(0, 2).toUpperCase() || "??"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col min-w-0">
-                        <span className="font-semibold text-sm truncate">{member.name || "Unknown"}</span>
-                        <span className="text-xs text-muted-foreground truncate">{member.email}</span>
+                        <Typography variant="body" className="font-semibold text-sm truncate">{member.name || "Unknown"}</Typography>
+                        <Typography variant="caption" className="text-xs text-muted-foreground truncate">{member.email}</Typography>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="py-4">
-                    <Badge variant={getRoleBadgeVariant(member.role)} className="capitalize px-2.5 py-0.5 rounded-full text-[10px] font-bold">
+                    <Badge variant={getRoleBadgeVariant(member.role)} className="capitalize px-2.5 py-0.5 rounded-full text-[10px]">
                       {member.role}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="flex items-center gap-2">
                       <div className={`h-2 w-2 rounded-full ${subscriptionExpired && member.role !== "owner" ? "bg-muted-foreground/30" : "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"}`} />
-                      <span className={`text-xs font-medium ${subscriptionExpired && member.role !== "owner" ? "text-muted-foreground" : "text-foreground"}`}>
+                      <span className={`text-xs ${subscriptionExpired && member.role !== "owner" ? "text-muted-foreground" : "text-foreground"}`}>
                         {subscriptionExpired && member.role !== "owner" ? "Inactive" : "Active"}
                       </span>
                     </div>
@@ -280,7 +281,7 @@ export default function TeamsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48 p-2 rounded-xl border-border/50">
-                          <DropdownMenuLabel className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-2 py-1.5">Manage Access</DropdownMenuLabel>
+                          <DropdownMenuLabel className="text-[10px] text-muted-foreground px-2 py-1.5">Manage Access</DropdownMenuLabel>
                           <DropdownMenuItem className="rounded-lg cursor-pointer text-xs" onClick={() => handleChangeRole(member._id, "editor")}>
                             Set as Editor
                           </DropdownMenuItem>

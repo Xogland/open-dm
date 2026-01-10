@@ -15,17 +15,17 @@ import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
-interface WorkflowRoutingEditorProps {
+interface WorkFlowEditorProps {
     organisationId: string;
     services: { id: string; title: string }[];
     readOnly?: boolean;
 }
 
-export default function WorkflowRoutingEditor({
+export default function WorkFlowEditor({
     organisationId,
     services,
     readOnly = false
-}: WorkflowRoutingEditorProps) {
+}: WorkFlowEditorProps) {
     const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
 
     const members = useQuery(
@@ -124,7 +124,6 @@ export default function WorkflowRoutingEditor({
             <div className="w-full md:w-80 border-r border-border/50 flex flex-col bg-muted/5 shrink-0">
                 <div className="p-4 border-b border-border/50 bg-background/50">
                     <Typography variant="small" as="h3" className="font-bold flex items-center gap-2">
-                        <ArrowRight className="w-4 h-4 text-primary" />
                         Select Service
                     </Typography>
                     <Typography variant="muted" as="p" className="text-[11px] mt-0.5">Configure routing per service</Typography>
@@ -143,7 +142,7 @@ export default function WorkflowRoutingEditor({
                                 )}
                             >
                                 <div className="flex flex-col min-w-0">
-                                    <span className="text-sm font-bold truncate">{service.title}</span>
+                                    <span className="text-sm truncate">{service.title}</span>
                                     <span className={cn(
                                         "text-[10px] truncate",
                                         selectedServiceId === service.id ? "text-primary-foreground/70" : "text-muted-foreground"
@@ -187,11 +186,11 @@ export default function WorkflowRoutingEditor({
                             <div>
                                 <Typography variant="h3" as="h2" className="flex items-center gap-3 border-none pb-0">
                                     {selectedService.title}
-                                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest font-bold">Routing Config</span>
+                                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">Routing Config</span>
                                 </Typography>
                                 <Typography variant="muted" as="p" className="mt-1">Determine who gets notified and who can view submissions for this service.</Typography>
                             </div>
-                            <div className="flex items-center gap-4 text-[11px] font-bold text-muted-foreground bg-muted/30 px-4 py-2 rounded-xl border border-border/50">
+                            <div className="flex items-center gap-4 text-[11px] text-muted-foreground bg-muted/30 px-4 py-2 rounded-xl border border-border/50">
                                 <div className="flex items-center gap-1.5">
                                     <Users className="w-3.5 h-3.5 text-primary" />
                                     <span>GRANULAR MEMBER ACCESS</span>
@@ -218,14 +217,14 @@ export default function WorkflowRoutingEditor({
                                                     <div className="flex items-center gap-3 min-w-0">
                                                         <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
                                                             <AvatarImage src={member.image} />
-                                                            <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                                                                {member.name?.substring(0, 2).toUpperCase() || "??"}
+                                                            <AvatarFallback className="bg-primary/10 text-primary">
+                                                                {member.name?.substring(0, 2) || "??"}
                                                             </AvatarFallback>
                                                         </Avatar>
                                                         <div className="flex flex-col min-w-0">
                                                             <div className="flex items-center gap-2">
                                                                 <Typography variant="small" className="font-bold truncate">{member.name || "Unnamed"}</Typography>
-                                                                <span className="text-[9px] bg-muted px-1.5 py-0.5 rounded font-black text-muted-foreground uppercase">{member.role}</span>
+                                                                <span className="text-[9px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{member.role}</span>
                                                             </div>
                                                             <Typography variant="muted" as="p" className="text-xs truncate italic">{member.email}</Typography>
                                                         </div>
@@ -242,7 +241,7 @@ export default function WorkflowRoutingEditor({
                                                         <div className="flex items-center gap-2">
                                                             <Inbox className={cn("w-3.5 h-3.5", isAssigned ? "text-blue-500" : "text-muted-foreground")} />
                                                             <div className="flex flex-col text-left">
-                                                                <Typography variant="small" className="text-[10px] font-bold uppercase tracking-wider">Inbox Access</Typography>
+                                                                <Typography variant="small" className="text-[10px]">Inbox Access</Typography>
                                                                 <Typography variant="muted" className="text-[10px]">View service submissions</Typography>
                                                             </div>
                                                         </div>
@@ -263,7 +262,7 @@ export default function WorkflowRoutingEditor({
                                                         <div className="flex items-center gap-2">
                                                             <Bell className={cn("w-3.5 h-3.5", isEscalated ? "text-primary" : "text-muted-foreground")} />
                                                             <div className="flex flex-col text-left">
-                                                                <Typography variant="small" className="text-[10px] font-bold uppercase tracking-wider">Email Escalation</Typography>
+                                                                <Typography variant="small" className="text-[10px]">Email Escalation</Typography>
                                                                 <Typography variant="muted" className="text-[10px]">Notify at {member.email}</Typography>
                                                             </div>
                                                         </div>

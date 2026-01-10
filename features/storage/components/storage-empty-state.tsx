@@ -8,7 +8,7 @@ export function StorageEmptyState() {
             <div className="p-4 bg-primary/10 rounded-full">
                 <FileIcon className="h-8 w-8 text-primary" />
             </div>
-            <p className="text-xl font-semibold text-foreground">
+            <p className="text-xl text-foreground">
                 No files found
             </p>
             <p className="text-base text-muted-foreground max-w-sm">

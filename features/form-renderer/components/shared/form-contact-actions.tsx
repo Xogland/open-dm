@@ -23,7 +23,7 @@ export function FormContactActions({
     isReadOnly = false,
     scale = 1,
 }: FormContactActionsProps) {
-    const handleAction = (type: string, value: string) => {
+    const handleAction = async (type: string, value: string) => {
         if (isReadOnly) {
             if (type === "profile") {
                 navigator.clipboard.writeText(value);
@@ -34,8 +34,21 @@ export function FormContactActions({
 
         switch (type) {
             case "profile":
-                navigator.clipboard.writeText(value);
-                toast.success("Profile link copied!");
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Profile',
+                            url: value
+                        });
+                    } catch (err) {
+                        // User cancelled or failed, fallback to copy
+                        navigator.clipboard.writeText(value);
+                        toast.success("Profile link copied!");
+                    }
+                } else {
+                    navigator.clipboard.writeText(value);
+                    toast.success("Profile link copied!");
+                }
                 break;
             case "phone":
                 window.open(`tel:${value}`);
@@ -53,7 +66,7 @@ export function FormContactActions({
     };
 
     const validContacts = [
-        { type: "profile", value: contactInfo?.profile || (typeof window !== "undefined" ? window.location.href : "") },
+        { type: "profile", value: contactInfo?.profile },
         { type: "phone", value: contactInfo?.phone },
         { type: "email", value: contactInfo?.email },
         { type: "website", value: contactInfo?.website },
@@ -63,42 +76,44 @@ export function FormContactActions({
     const visibleContacts = validContacts.slice(0, 2);
 
     return (
-        <div
-            className={`h-full gap-2 flex flex-row items-center justify-center px-4 py-3 rounded-bl-[32px] bg-white text-gray-900 transition-all duration-300 ${className}`}
-            style={scale !== 1 ? { transform: `scale(${scale})`, transformOrigin: 'top right' } : {}}
-        >
-            {serviceSelected ? (
-                <button
-                    onClick={onReset}
-                    className="flex items-center justify-center w-10 h-10 border border-transparent rounded-full bg-gray-900 text-white hover:bg-gray-700 transition-colors"
-                    title="Reset Chat"
-                >
-                    <HomeIcon className="w-5 h-5" />
-                </button>
-            ) : (
-                <>
-                    {visibleContacts.map((contact, idx) => {
-                        const Icon =
-                            contact.type === "calendarLink"
-                                ? getCalendarIcon(contact.value as string)
-                                : CONTACT_ICONS[contact.type as keyof typeof CONTACT_ICONS];
-                        const isFocused = focusedField === `contact-${contact.type}`;
+        <div className="h-full bg-primary relative">
+            <div
+                className={`h-full gap-2 flex flex-row items-center justify-center px-4 py-3 rounded-bl-[32px] bg-white text-gray-900 transition-all duration-300 shadow-[0_0_0_1px_white] ${className}`}
+                style={scale !== 1 ? { transform: `scale(${scale})`, transformOrigin: 'top right' } : {}}
+            >
+                {serviceSelected ? (
+                    <button
+                        onClick={onReset}
+                        className="flex items-center justify-center w-10 h-10 border border-transparent rounded-full bg-gray-900 text-white hover:bg-gray-700 transition-colors"
+                        title="Reset Chat"
+                    >
+                        <HomeIcon className="w-5 h-5" />
+                    </button>
+                ) : (
+                    <>
+                        {visibleContacts.map((contact, idx) => {
+                            const Icon =
+                                contact.type === "calendarLink"
+                                    ? getCalendarIcon(contact.value as string)
+                                    : CONTACT_ICONS[contact.type as keyof typeof CONTACT_ICONS];
+                            const isFocused = focusedField === `contact-${contact.type}`;
 
-                        return (
-                            <button
-                                key={idx}
-                                onClick={() => handleAction(contact.type!, contact.value!)}
-                                className={`flex items-center justify-center w-10 h-10 border border-border rounded-full text-gray-900 transition-all duration-300 ${isFocused
-                                    ? "ring-2 ring-amber-400 ring-offset-2 ring-offset-white shadow-lg scale-110"
-                                    : "hover:text-primary hover:bg-muted"
-                                    }`}
-                            >
-                                <Icon className="w-5 h-5" />
-                            </button>
-                        );
-                    })}
-                </>
-            )}
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleAction(contact.type!, contact.value!)}
+                                    className={`flex items-center justify-center w-10 h-10 border border-border rounded-full text-gray-900 transition-all duration-300 ${isFocused
+                                        ? "ring-2 ring-amber-400 ring-offset-2 ring-offset-white shadow-lg scale-110"
+                                        : "hover:text-primary hover:bg-muted"
+                                        }`}
+                                >
+                                    <Icon className="w-5 h-5" />
+                                </button>
+                            );
+                        })}
+                    </>
+                )}
+            </div>
         </div>
     );
 }

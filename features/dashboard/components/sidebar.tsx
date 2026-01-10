@@ -24,6 +24,7 @@ import {
   PencilIcon,
   Plus,
   LinkIcon,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 import { MdPeopleOutline, MdStorage } from "react-icons/md";
@@ -38,13 +39,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import OrganisationAvatar from "@/components/organisation-avatar";
 import { useUserData } from "@/features/organization/providers/user-data-provider";
 import { useUserAuth } from "@/features/auth/providers/user-auth-provider";
 import { Button } from "@/components/ui/button";
 import { RiTeamLine } from "react-icons/ri";
 import { useTeamAccess } from "@/features/teams/hooks/use-team-access";
-import { OrganizationLimitModal } from "@/features/organization/components/organization-limit-modal";
+import { SubscriptionLimitModal } from "@/features/subscription/components/subscription-limit-modal";
+import { useSubscriptionLimit } from "@/features/subscription/hooks/use-subscription-limit";
 
 const ORGANISATION_LIMIT = 15;
 
@@ -55,6 +57,7 @@ const items = [
   { title: "Client Management", url: "/connections", icon: MdPeopleOutline },
   { title: "Storage", url: "/storage", icon: MdStorage },
   { title: "Teams", url: "/teams", icon: RiTeamLine },
+  { title: "Billing", url: "/settings/billing", icon: CreditCard },
   { title: "Settings", url: "/settings/organization", icon: Settings },
   { title: "Domain Integration", url: "/domain-integration", icon: LinkIcon },
 ];
@@ -68,7 +71,8 @@ export function Sidebar() {
   const { role: currentUserRole } = useTeamAccess(selectedOrganization?._id);
   const { signOut } = useAuthActions();
   const router = useRouter();
-  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+  const { limitModalProps, checkLimit, setLimitModalOpen } = useSubscriptionLimit(selectedOrganization?._id);
 
   const isOwner = currentUserRole === "owner";
   const isEditor = currentUserRole === "editor";
@@ -104,17 +108,8 @@ export function Sidebar() {
                     size="lg"
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
-                    <Avatar>
-                      <AvatarImage
-                        src={selectedOrganization?.image ?? undefined}
-                        alt={selectedOrganization?.name}
-                        className="object-cover"
-                      />
-                      <AvatarFallback>
-                        {selectedOrganization?.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="truncate font-medium">
+                    <OrganisationAvatar organisation={selectedOrganization} />
+                    <span className="truncate">
                       {selectedOrganization?.name}
                     </span>
                     <ChevronDown className="ml-auto size-4" />
@@ -124,7 +119,7 @@ export function Sidebar() {
                 <DropdownMenuContent align="end" className="w-[240px]">
                   {ownedOrgs.length > 0 && (
                     <>
-                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
                         My Organizations
                       </div>
                       {ownedOrgs.map((org) => (
@@ -137,11 +132,7 @@ export function Sidebar() {
                             }
                           }}
                         >
-                          <Avatar className="mr-2 h-4 w-4">
-                            <AvatarFallback>
-                              {org.name.charAt(0).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
+                          <OrganisationAvatar organisation={org} className="mr-2 h-4 w-4" />
                           <span className="truncate flex-1">{org.name}</span>
                           {org._id === selectedOrganization?._id && (
                             <Check className="ml-auto h-4 w-4 text-primary" />
@@ -154,7 +145,7 @@ export function Sidebar() {
                   {memberOrgs.length > 0 && (
                     <>
                       <DropdownMenuSeparator />
-                      <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
                         Shared With Me
                       </div>
                       {memberOrgs.map((org) => (
@@ -167,11 +158,7 @@ export function Sidebar() {
                             }
                           }}
                         >
-                          <Avatar className="mr-2 h-4 w-4">
-                            <AvatarFallback>
-                              {org.name.charAt(0).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
+                          <OrganisationAvatar organisation={org} className="mr-2 h-4 w-4" />
                           <span className="truncate flex-1 font-normal text-muted-foreground">
                             {org.name}
                           </span>
@@ -188,7 +175,7 @@ export function Sidebar() {
                     onClick={(e) => {
                       if (ownedOrgs.length >= ORGANISATION_LIMIT) {
                         e.preventDefault();
-                        setIsLimitModalOpen(true);
+                        setLimitModalOpen(true);
                       }
                     }}
                     asChild={ownedOrgs.length < ORGANISATION_LIMIT && CURRENT_PLATFORM_STATUS !== PlatformStatus.PREREGISTRATION}
@@ -207,7 +194,7 @@ export function Sidebar() {
                     ) : ownedOrgs.length >= ORGANISATION_LIMIT ? (
                       <div
                         className="flex items-center w-full cursor-pointer"
-                        onClick={() => setIsLimitModalOpen(true)}
+                        onClick={() => setLimitModalOpen(true)}
                       >
                         <Plus className="mr-2 h-4 w-4" />
                         <span>Create Organization</span>
@@ -278,8 +265,8 @@ export function Sidebar() {
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
                     <UserAvatar />
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">{user.name}</span>
+                    <div className="grid flex-1 text-left text-sm">
+                      <span className="truncate">{user.name}</span>
                       <span className="text-muted-foreground truncate text-xs">
                         {user.email}
                       </span>
@@ -311,9 +298,9 @@ export function Sidebar() {
           )}
         </SidebarGroup>
       </SidebarContent>
-      <OrganizationLimitModal
-        open={isLimitModalOpen}
-        onOpenChange={setIsLimitModalOpen}
+      <SubscriptionLimitModal
+        {...limitModalProps}
+        type="organisations"
         limit={ORGANISATION_LIMIT}
       />
     </SidebarComponent>
@@ -346,7 +333,7 @@ function SubscriptionCard() {
                 <Lock className="h-2.5 w-2.5" />
               </div>
             ) : (
-              <Link href="/pricing">Upgrade</Link>
+              <Link href={`/settings/billing?orgId=${selectedOrganization._id}`}>Upgrade</Link>
             )}
           </Button>
         )}

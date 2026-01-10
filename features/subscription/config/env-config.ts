@@ -53,17 +53,21 @@ export function getLemonSqueezyConfig(): LemonSqueezyConfig {
             : 'https://api.lemonsqueezy.com/v1', // Lemon Squeezy uses same URL for both
 
         variantIds: {
-            starter: {
-                monthly: getEnvVar('LEMON_SQUEEZY_STARTER_MONTHLY_VARIANT_ID', false),
-                annual: getEnvVar('LEMON_SQUEEZY_STARTER_ANNUAL_VARIANT_ID', false),
+            free: {
+                monthly: '',
+                annual: '',
             },
-            professional: {
-                monthly: getEnvVar('LEMON_SQUEEZY_PROFESSIONAL_MONTHLY_VARIANT_ID'),
-                annual: getEnvVar('LEMON_SQUEEZY_PROFESSIONAL_ANNUAL_VARIANT_ID'),
+            beginner: {
+                monthly: getEnvVar('LEMON_SQUEEZY_BEGINNER_MONTHLY_VARIANT_ID', false),
+                annual: getEnvVar('LEMON_SQUEEZY_BEGINNER_ANNUAL_VARIANT_ID', false),
             },
-            enterprise: {
-                monthly: getEnvVar('LEMON_SQUEEZY_ENTERPRISE_MONTHLY_VARIANT_ID'),
-                annual: getEnvVar('LEMON_SQUEEZY_ENTERPRISE_ANNUAL_VARIANT_ID'),
+            pro: {
+                monthly: getEnvVar('LEMON_SQUEEZY_PRO_MONTHLY_VARIANT_ID', false),
+                annual: getEnvVar('LEMON_SQUEEZY_PRO_ANNUAL_VARIANT_ID', false),
+            },
+            max: {
+                monthly: getEnvVar('LEMON_SQUEEZY_MAX_MONTHLY_VARIANT_ID', false),
+                annual: getEnvVar('LEMON_SQUEEZY_MAX_ANNUAL_VARIANT_ID', false),
             },
         },
     };

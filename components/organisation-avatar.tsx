@@ -1,19 +1,21 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
-export default function UserAvatar({ className }: { className?: string }) {
-  const user = useQuery(api.user.getUser);
 
-  if (!user) {
+export default function OrganisationAvatar({
+  organisation,
+  className,
+}: {
+  organisation?: { name: string; image?: string | null };
+  className?: string;
+}) {
+  if (!organisation) {
     return null;
   }
-
   return (
     <Avatar className={className}>
-      <AvatarImage src={user.image} />
-      <AvatarFallback>{(user.name ?? "U")[0]}</AvatarFallback>
+      <AvatarImage src={organisation.image ?? undefined} className="object-cover" />
+      <AvatarFallback>{(organisation.name ?? "O")[0]}</AvatarFallback>
     </Avatar>
   );
 }

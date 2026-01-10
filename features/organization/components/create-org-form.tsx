@@ -43,7 +43,7 @@ export function CreateOrgForm({
         <div className="flex items-center justify-center h-full p-4 sm:p-8">
             <Card className="w-full max-w-lg shadow-xl">
                 <CardHeader className="text-center space-y-2">
-                    <CardTitle className="text-3xl font-bold">
+                    <CardTitle className="text-3xl">
                         Create Your Organization
                     </CardTitle>
                 </CardHeader>

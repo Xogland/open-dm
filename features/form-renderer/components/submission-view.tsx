@@ -21,7 +21,7 @@ export default function SubmissionView() {
             {/* Success Icon */}
             <CheckCircle2 className="h-12 w-12 text-emerald-500 animate-in fade-in zoom-in" />
           </div>
-          <CardTitle className="text-2xl font-bold">Message Sent</CardTitle>
+          <CardTitle className="text-2xl">Message Sent</CardTitle>
           <CardDescription className="text-base text-gray-700 dark:text-gray-300">
             Your message has been successfully delivered.
           </CardDescription>

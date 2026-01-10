@@ -125,8 +125,11 @@ export const updateSubscriptionStatus = mutation({
       endsAt: args.endsAt,
     });
 
+    // If subscription expires, revert organisation to free plan
+    const newPlan = args.status === 'expired' ? 'free' : subscription.planId;
+
     await ctx.db.patch(subscription.organisationId, {
-      plan: subscription.planId,
+      plan: newPlan,
       subscriptionStatus: args.status,
     });
 
@@ -190,7 +193,7 @@ export const deleteSubscription = mutation({
 
     await ctx.db.delete(subscription._id);
     await ctx.db.patch(subscription.organisationId, {
-      plan: "starter",
+      plan: "free",
       subscriptionStatus: "expired",
     });
   },
@@ -277,7 +280,7 @@ export const getSubscriptionUsage = query({
       (s) => s._creationTime >= monthStart.getTime(),
     ).length;
 
-    // Count team members (excluding owner)
+    // Count total members (including owner)
     const members = await ctx.db
       .query("organisationMembers")
       .withIndex("by_organisation_id", (q) =>
@@ -285,26 +288,14 @@ export const getSubscriptionUsage = query({
       )
       .collect();
 
-    const teamMembersCount = members.filter(
-      (m) => m.userId !== organisation.owner,
-    ).length;
+    const totalMembersCount = members.length;
 
-    // Calculate storage usage
-    /*const attachments = await ctx.db
-        .query("attachments")
-        .filter((q) => q.eq(q.field("organisation"), args.organisationId))
-        .collect();
-
-    const storageMB = attachments.reduce((total, attachment) => {
-        return total + (attachment.size || 0);
-    }, 0) / (1024 * 1024);*/
-
-    const storageMB = 100;
+    const storageMB = 100; // Placeholder for now
 
     return {
       services: servicesCount,
       submissions: submissionsThisMonth,
-      teamMembers: teamMembersCount,
+      teamMembers: totalMembersCount,
       storageMB: Math.round(storageMB * 100) / 100,
     };
   },
@@ -331,5 +322,48 @@ export const canPerformAction = query({
       allowed: true,
       reason: undefined,
     };
+  },
+});
+
+/**
+ * Switch organisation to free plan (local update)
+ */
+export const switchToFree = mutation({
+  args: {
+    organisationId: v.id("organisations"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    const organisation = await ctx.db.get(args.organisationId);
+    if (!organisation) throw new Error("Organisation not found");
+
+    // Authorization: only owner can change plans
+    if (organisation.owner !== userId) {
+      throw new Error("Only the owner can change the subscription plan.");
+    }
+
+    // Update organisation to free plan
+    await ctx.db.patch(args.organisationId, {
+      plan: "free",
+      subscriptionStatus: "active",
+    });
+
+    // Mark any active subscriptions as cancelled in our DB
+    const subscriptions = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_organisation", (q) => q.eq("organisationId", args.organisationId))
+      .collect();
+
+    for (const sub of subscriptions) {
+      if (sub.status !== "expired") {
+        await ctx.db.patch(sub._id, {
+          status: "cancelled",
+        });
+      }
+    }
+
+    return { success: true };
   },
 });

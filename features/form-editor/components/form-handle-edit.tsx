@@ -207,7 +207,7 @@ export function FormHandleEdit({
     <div className="pt-1">
       <label
         htmlFor="form-slug"
-        className="text-sm font-semibold text-foreground block mb-2"
+        className="text-sm text-foreground block mb-2"
       >
         🔗 Form Slug (URL Handle)
       </label>

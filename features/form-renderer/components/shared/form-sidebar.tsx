@@ -42,21 +42,21 @@ export function FormSidebar({
                     </Avatar>
                     <div className="flex flex-col text-sm text-primary-foreground min-w-0">
                         <p className="font-semibold text-xl truncate">{orgName}</p>
-                        {orgHandle && <p className="text-sm opacity-70">@{orgHandle}</p>}
+                        {tags.length > 0 && <p className="text-sm opacity-70">{tags.join(" | ")}</p>}
                     </div>
                 </div>
 
                 {/* Desc & Socials */}
                 <div className="mt-24 flex flex-col">
                     <div
-                        className={`flex flex-wrap gap-3 mb-2 transition-all duration-300 rounded px-2 -ml-2 py-1 ${focusedField === "tags" ? "ring-2 ring-amber-400 bg-white/5" : ""
+                        className={`flex flex-wrap gap-3 mb-2 transition-all duration-300 rounded px-2 -ml-2 py-1 ${focusedField === "title" ? "ring-2 ring-amber-400 bg-white/5" : ""
                             }`}
                     >
-                        {tags.map((tag, i) => (
-                            <span key={i} className="text-lg font-bold text-primary-foreground">
-                                {tag}
+                        {properties?.title && (
+                            <span className="text-lg font-medium text-primary-foreground">
+                                {properties.title}
                             </span>
-                        ))}
+                        )}
                     </div>
                     <div
                         className={`w-full transition-all duration-300 rounded-lg ${focusedField === "description"
@@ -80,8 +80,7 @@ export function FormSidebar({
             {/* Powered By Footer */}
             <div className="mt-auto flex justify-center pb-6">
                 <div className="flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity cursor-default">
-                    <span className="text-[10px] text-primary-foreground tracking-widest uppercase">Powered by</span>
-                    <span className="text-[10px] text-primary-foreground font-bold tracking-widest uppercase">Open DM</span>
+                    <span className="text-sm text-primary-foreground">opendm.io/{orgHandle}</span>
                 </div>
             </div>
         </div>
