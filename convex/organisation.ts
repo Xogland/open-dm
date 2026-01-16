@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { defineTable } from "convex/server";
@@ -36,23 +36,52 @@ export const organisations = defineTable({
       }),
     ),
   ),
-  views: v.optional(v.number()),
-  debugMode: v.optional(v.boolean()),
 })
   .index("owner", ["owner"])
   .index("handle", ["handle"]);
+
+export const orgSettings = defineTable({
+  organisationId: v.id("organisations"),
+  key: v.string(), // e.g., "debugMode"
+  value: v.any(),
+}).index("by_organisation_key", ["organisationId", "key"]);
+
+export const orgStats = defineTable({
+  organisationId: v.id("organisations"),
+  metric: v.string(), // e.g., "views"
+  value: v.number(),
+}).index("by_organisation_metric", ["organisationId", "metric"]);
+
+export const thirdPartyConfigs = defineTable({
+  organisationId: v.id("organisations"),
+  provider: v.union(v.literal("stripe"), v.literal("google"), v.literal("custom")),
+  config: v.any(),
+  updatedAt: v.number(),
+}).index("by_organisation_provider", ["organisationId", "provider"]);
 
 export const incrementView = mutation({
   args: {
     organisationId: v.id("organisations"),
   },
   handler: async (ctx, args) => {
-    const organisation = await ctx.db.get(args.organisationId);
-    if (!organisation) return;
+    const existing = await ctx.db
+      .query("orgStats")
+      .withIndex("by_organisation_metric", (q) =>
+        q.eq("organisationId", args.organisationId).eq("metric", "views")
+      )
+      .unique();
 
-    await ctx.db.patch(args.organisationId, {
-      views: (organisation.views ?? 0) + 1,
-    });
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        value: existing.value + 1,
+      });
+    } else {
+      await ctx.db.insert("orgStats", {
+        organisationId: args.organisationId,
+        metric: "views",
+        value: 1,
+      });
+    }
   },
 });
 
@@ -624,9 +653,78 @@ export const getOrganisation = query({
   handler: async (ctx, args) => {
     const org = await ctx.db.get(args.id);
     if (!org) return null;
+
+    // Get stats and settings
+    const [stripeConfigDoc, viewsDoc, debugModeDoc] = await Promise.all([
+      ctx.db
+        .query("thirdPartyConfigs")
+        .withIndex("by_organisation_provider", (q) =>
+          q.eq("organisationId", args.id).eq("provider", "stripe")
+        )
+        .unique(),
+      ctx.db
+        .query("orgStats")
+        .withIndex("by_organisation_metric", (q) =>
+          q.eq("organisationId", args.id).eq("metric", "views")
+        )
+        .unique(),
+      ctx.db
+        .query("orgSettings")
+        .withIndex("by_organisation_key", (q) =>
+          q.eq("organisationId", args.id).eq("key", "debugMode")
+        )
+        .unique(),
+    ]);
+
+    // Redact secret key for the client
+    const stripeConfig = stripeConfigDoc?.config ? {
+      publishableKey: stripeConfigDoc.config.publishableKey,
+    } : undefined;
+
     return {
       ...org,
+      stripeConfig,
+      views: viewsDoc?.value ?? 0,
+      debugMode: !!debugModeDoc?.value,
       image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
+    };
+  },
+});
+
+export const getOrganisationInternal = internalQuery({
+  args: {
+    id: v.id("organisations"),
+  },
+  handler: async (ctx, args) => {
+    const org = await ctx.db.get(args.id);
+    if (!org) return null;
+
+    const [stripeConfigDoc, viewsDoc, debugModeDoc] = await Promise.all([
+      ctx.db
+        .query("thirdPartyConfigs")
+        .withIndex("by_organisation_provider", (q) =>
+          q.eq("organisationId", args.id).eq("provider", "stripe")
+        )
+        .unique(),
+      ctx.db
+        .query("orgStats")
+        .withIndex("by_organisation_metric", (q) =>
+          q.eq("organisationId", args.id).eq("metric", "views")
+        )
+        .unique(),
+      ctx.db
+        .query("orgSettings")
+        .withIndex("by_organisation_key", (q) =>
+          q.eq("organisationId", args.id).eq("key", "debugMode")
+        )
+        .unique(),
+    ]);
+
+    return {
+      ...org,
+      stripeConfig: stripeConfigDoc?.config,
+      views: viewsDoc?.value ?? 0,
+      debugMode: !!debugModeDoc?.value,
     };
   },
 });
@@ -643,10 +741,42 @@ export const getUserOrganisations = query({
       .collect();
 
     return await Promise.all(
-      ownedOrganisations.map(async (org) => ({
-        ...org,
-        image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
-      })),
+      ownedOrganisations.map(async (org) => {
+        // Get stats, settings, and config
+        const [stripeConfigDoc, viewsDoc, debugModeDoc] = await Promise.all([
+          ctx.db
+            .query("thirdPartyConfigs")
+            .withIndex("by_organisation_provider", (q) =>
+              q.eq("organisationId", org._id).eq("provider", "stripe")
+            )
+            .unique(),
+          ctx.db
+            .query("orgStats")
+            .withIndex("by_organisation_metric", (q) =>
+              q.eq("organisationId", org._id).eq("metric", "views")
+            )
+            .unique(),
+          ctx.db
+            .query("orgSettings")
+            .withIndex("by_organisation_key", (q) =>
+              q.eq("organisationId", org._id).eq("key", "debugMode")
+            )
+            .unique(),
+        ]);
+
+        // Redact secret key for the client
+        const stripeConfig = stripeConfigDoc?.config ? {
+          publishableKey: stripeConfigDoc.config.publishableKey,
+        } : undefined;
+
+        return {
+          ...org,
+          stripeConfig,
+          views: viewsDoc?.value ?? 0,
+          debugMode: !!debugModeDoc?.value,
+          image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
+        };
+      }),
     );
   },
 });
@@ -675,10 +805,42 @@ export const getMemberOrganisations = query({
     );
 
     return await Promise.all(
-      validOrgs.map(async (org) => ({
-        ...org,
-        image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
-      })),
+      validOrgs.map(async (org) => {
+        // Get stats, settings, and config
+        const [stripeConfigDoc, viewsDoc, debugModeDoc] = await Promise.all([
+          ctx.db
+            .query("thirdPartyConfigs")
+            .withIndex("by_organisation_provider", (q) =>
+              q.eq("organisationId", org._id).eq("provider", "stripe")
+            )
+            .unique(),
+          ctx.db
+            .query("orgStats")
+            .withIndex("by_organisation_metric", (q) =>
+              q.eq("organisationId", org._id).eq("metric", "views")
+            )
+            .unique(),
+          ctx.db
+            .query("orgSettings")
+            .withIndex("by_organisation_key", (q) =>
+              q.eq("organisationId", org._id).eq("key", "debugMode")
+            )
+            .unique(),
+        ]);
+
+        // Redact secret key for the client
+        const stripeConfig = stripeConfigDoc?.config ? {
+          publishableKey: stripeConfigDoc.config.publishableKey,
+        } : undefined;
+
+        return {
+          ...org,
+          stripeConfig,
+          views: viewsDoc?.value ?? 0,
+          debugMode: !!debugModeDoc?.value,
+          image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
+        };
+      }),
     );
   },
 });
@@ -712,12 +874,45 @@ export const getAllUserOrganisations = query({
 
     // Combine and deduplicate
     const allOrgs = [...ownedOrganisations, ...validMemberOrgs];
+    allOrgs.sort((a, b) => b._creationTime - a._creationTime);
 
     return await Promise.all(
-      allOrgs.map(async (org) => ({
-        ...org,
-        image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
-      })),
+      allOrgs.map(async (org) => {
+        // Get stats, settings, and config
+        const [stripeConfigDoc, viewsDoc, debugModeDoc] = await Promise.all([
+          ctx.db
+            .query("thirdPartyConfigs")
+            .withIndex("by_organisation_provider", (q) =>
+              q.eq("organisationId", org._id).eq("provider", "stripe")
+            )
+            .unique(),
+          ctx.db
+            .query("orgStats")
+            .withIndex("by_organisation_metric", (q) =>
+              q.eq("organisationId", org._id).eq("metric", "views")
+            )
+            .unique(),
+          ctx.db
+            .query("orgSettings")
+            .withIndex("by_organisation_key", (q) =>
+              q.eq("organisationId", org._id).eq("key", "debugMode")
+            )
+            .unique(),
+        ]);
+
+        // Redact secret key for the client
+        const stripeConfig = stripeConfigDoc?.config ? {
+          publishableKey: stripeConfigDoc.config.publishableKey,
+        } : undefined;
+
+        return {
+          ...org,
+          stripeConfig,
+          views: viewsDoc?.value ?? 0,
+          debugMode: !!debugModeDoc?.value,
+          image: org.image ? await ctx.storage.getUrl(org.image) : undefined,
+        };
+      }),
     );
   },
 });
@@ -782,6 +977,8 @@ export const getOrganisationMembers = query({
       }),
     );
 
+    membersWithDetails.sort((a, b) => (b as any)._creationTime - (a as any)._creationTime);
+
     return membersWithDetails.filter((m) => m._id);
   },
 });
@@ -834,8 +1031,38 @@ export const getOrganisationByHandle = query({
 
     if (!organisation) return null;
 
+    // Get stats, settings, and config
+    const [stripeConfigDoc, viewsDoc, debugModeDoc] = await Promise.all([
+      ctx.db
+        .query("thirdPartyConfigs")
+        .withIndex("by_organisation_provider", (q) =>
+          q.eq("organisationId", organisation._id).eq("provider", "stripe")
+        )
+        .unique(),
+      ctx.db
+        .query("orgStats")
+        .withIndex("by_organisation_metric", (q) =>
+          q.eq("organisationId", organisation._id).eq("metric", "views")
+        )
+        .unique(),
+      ctx.db
+        .query("orgSettings")
+        .withIndex("by_organisation_key", (q) =>
+          q.eq("organisationId", organisation._id).eq("key", "debugMode")
+        )
+        .unique(),
+    ]);
+
+    // Redact secret key for the client
+    const stripeConfig = stripeConfigDoc?.config ? {
+      publishableKey: stripeConfigDoc.config.publishableKey,
+    } : undefined;
+
     return {
       ...organisation,
+      stripeConfig,
+      views: viewsDoc?.value ?? 0,
+      debugMode: !!debugModeDoc?.value,
       image: organisation.image
         ? await ctx.storage.getUrl(organisation.image)
         : undefined,
@@ -1260,9 +1487,24 @@ export const toggleDebugMode = mutation({
       throw new Error("Only the owner can toggle debug mode.");
     }
 
-    await ctx.db.patch(args.organisationId, {
-      debugMode: args.enabled,
-    });
+    const existing = await ctx.db
+      .query("orgSettings")
+      .withIndex("by_organisation_key", (q) =>
+        q.eq("organisationId", args.organisationId).eq("key", "debugMode")
+      )
+      .unique();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        value: args.enabled,
+      });
+    } else {
+      await ctx.db.insert("orgSettings", {
+        organisationId: args.organisationId,
+        key: "debugMode",
+        value: args.enabled,
+      });
+    }
   },
 });
 
@@ -1283,7 +1525,14 @@ export const fakeUpdatePlan = mutation({
       throw new Error("Only the owner can update the plan.");
     }
 
-    if (!organisation.debugMode) {
+    const debugModeDoc = await ctx.db
+      .query("orgSettings")
+      .withIndex("by_organisation_key", (q) =>
+        q.eq("organisationId", args.organisationId).eq("key", "debugMode")
+      )
+      .unique();
+
+    if (!debugModeDoc?.value) {
       throw new Error("Debug mode must be enabled to fake plan updates.");
     }
 
@@ -1317,5 +1566,56 @@ export const fakeUpdatePlan = mutation({
     } else {
       await ctx.db.insert("subscriptions", fakeSubData);
     }
+  },
+});
+export const updateOrganisationStripeConfig = mutation({
+  args: {
+    organisationId: v.id("organisations"),
+    stripeConfig: v.object({
+      publishableKey: v.string(),
+      secretKey: v.optional(v.string()),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    const organisation = await ctx.db.get(args.organisationId);
+    if (!organisation) throw new Error("Organisation not found");
+
+    if (organisation.owner !== userId) {
+      throw new Error("Only the owner can update the Stripe configuration.");
+    }
+
+    // Get existing config
+    const existingConfigDoc = await ctx.db
+      .query("thirdPartyConfigs")
+      .withIndex("by_organisation_provider", (q) =>
+        q.eq("organisationId", args.organisationId).eq("provider", "stripe")
+      )
+      .unique();
+
+    const finalSecretKey = args.stripeConfig.secretKey || existingConfigDoc?.config?.secretKey || "";
+
+    const newConfig = {
+      publishableKey: args.stripeConfig.publishableKey,
+      secretKey: finalSecretKey,
+    };
+
+    if (existingConfigDoc) {
+      await ctx.db.patch(existingConfigDoc._id, {
+        config: newConfig,
+        updatedAt: Date.now(),
+      });
+    } else {
+      await ctx.db.insert("thirdPartyConfigs", {
+        organisationId: args.organisationId,
+        provider: "stripe",
+        config: newConfig,
+        updatedAt: Date.now(),
+      });
+    }
+
+    return true;
   },
 });

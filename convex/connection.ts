@@ -58,6 +58,8 @@ export const getConnections = query({
       );
     }
 
+    results.sort((a, b) => b._creationTime - a._creationTime);
+
     return results;
   },
 });

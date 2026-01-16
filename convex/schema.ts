@@ -6,6 +6,9 @@ import { forms } from "./form";
 import {
   organisationMembers,
   organisations,
+  thirdPartyConfigs,
+  orgSettings,
+  orgStats,
 } from "./organisation";
 import { submissions } from "./submission";
 import { connections } from "./connection";
@@ -42,13 +45,6 @@ const preregistered = defineTable({
   user: v.id("users"),
 });
 
-const dailyMetrics = defineTable({
-  organisationId: v.id("organisations"),
-  date: v.string(), // YYYY-MM-DD
-  views: v.number(),
-  submissions: v.number(),
-}).index("by_org_date", ["organisationId", "date"]);
-
 export default defineSchema({
   ...authTables,
   users,
@@ -65,4 +61,7 @@ export default defineSchema({
   reservedHandles,
   redemptionKeys,
   acquiredHandles,
+  thirdPartyConfigs,
+  orgSettings,
+  orgStats,
 });

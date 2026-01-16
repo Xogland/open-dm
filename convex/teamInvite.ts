@@ -193,6 +193,7 @@ export const getOrganisationInvites = query({
             .withIndex("by_organisation", (q) =>
                 q.eq("organisationId", args.organisationId)
             )
+            .order("desc")
             .collect();
 
         return Promise.all(

@@ -1,0 +1,21 @@
+{
+    "name": "OpenDM",
+    "short_name": "OpenDM",
+    "description": "The Professional Contact Link to Monetize & Filter Inquiries",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "icons": [
+        {
+            "src": "/opendm.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/opendm.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

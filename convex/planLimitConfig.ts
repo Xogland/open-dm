@@ -66,7 +66,7 @@ export const PLAN_CONFIGS: Record<SubscriptionPlan, PlanConfig> = {
         limits: {
             servicesLimit: Infinity,
             submissionsPerMonth: 20,
-            storageLimit: 100, // 100MB
+            storageLimit: 0,
             teamMembersLimit: 0,
             analyticsRetention: 7,
         },
@@ -314,7 +314,7 @@ export function getNextTier(planId: SubscriptionPlan): SubscriptionPlan | null {
 /**
  * Advanced workflow types that require professional or higher plan
  */
-export const ADVANCED_WORKFLOW_TYPES = ["file", "multiple_choice"] as const;
+export const ADVANCED_WORKFLOW_TYPES = ["file", "multiple_choice", "payment"] as const;
 
 /**
  * Check if a workflow type requires an advanced plan

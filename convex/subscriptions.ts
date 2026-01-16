@@ -8,6 +8,8 @@ import { defineTable } from "convex/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { getPlanConfig } from "./planLimitConfig";
+import { Id } from "./_generated/dataModel";
 
 export const subscriptions = defineTable({
   // Organisation relationship
@@ -41,6 +43,45 @@ export const subscriptions = defineTable({
   .index("by_organisation", ["organisationId"])
   .index("by_lemon_squeezy_id", ["lemonSqueezyId"])
   .index("by_status", ["status"]);
+
+/**
+ * Helper to get the current usage window for an organisation
+ * Returns the start and end timestamps for the current billing cycle
+ */
+export const getUsageWindow = async (ctx: any, organisationId: Id<"organisations">) => {
+  const subscription = await ctx.db
+    .query("subscriptions")
+    .withIndex("by_organisation", (q: any) =>
+      q.eq("organisationId", organisationId)
+    )
+    .first();
+
+  const now = Date.now();
+
+  // Default to calendar month for free/no subscription
+  const startOfMonth = new Date(now);
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0, 0, 0, 0);
+
+  let windowStart = startOfMonth.getTime();
+  let windowEnd = now;
+
+  // If active paid subscription (or cancelled but not expired), use billing period
+  if (subscription &&
+    (subscription.status === "active" ||
+      subscription.status === "on_trial" ||
+      subscription.status === "past_due" ||
+      subscription.status === "cancelled")) {
+    windowStart = subscription.currentPeriodStart;
+    windowEnd = subscription.currentPeriodEnd;
+  }
+
+  return {
+    windowStart,
+    windowEnd,
+    subscription
+  };
+};
 
 /**
  * Create or update subscription from webhook data
@@ -258,27 +299,25 @@ export const getSubscriptionUsage = query({
     const organisation = await ctx.db.get(args.organisationId);
     if (!organisation) return null;
 
-    // Get form for this organisation
     const form = await ctx.db.get(organisation.formId);
     if (!form) return null;
+
+    // Get usage window based on billing cycle
+    const { windowStart, subscription } = await getUsageWindow(ctx, args.organisationId);
 
     // Count services
     const servicesCount = form.services?.length || 0;
 
-    // Count submissions for current month
-    const now = Date.now();
-    const monthStart = new Date(now);
-    monthStart.setDate(1);
-    monthStart.setHours(0, 0, 0, 0);
-
+    // Count submissions for current billing period
+    // Note: iterating all submission for org might be slow at scale. 
+    // Recommended: Add index on [organisation, _creationTime]
     const submissions = await ctx.db
       .query("submissions")
-      .filter((q) => q.eq(q.field("organisation"), args.organisationId))
+      .withIndex("organisation", (q) => q.eq("organisation", args.organisationId))
+      .filter((q) => q.gte(q.field("_creationTime"), windowStart))
       .collect();
 
-    const submissionsThisMonth = submissions.filter(
-      (s) => s._creationTime >= monthStart.getTime(),
-    ).length;
+    const submissionsThisPeriod = submissions.length;
 
     // Count total members (including owner)
     const members = await ctx.db
@@ -288,15 +327,26 @@ export const getSubscriptionUsage = query({
       )
       .collect();
 
-    const totalMembersCount = members.length;
+    const totalMembersCount = members.length; // Owner is a member too
 
-    const storageMB = 100; // Placeholder for now
+    // Calculate Storage
+    const attachments = await ctx.db
+      .query("attachments")
+      .filter((q) => q.eq(q.field("organisation"), args.organisationId))
+      .collect();
+
+    let totalBytes = 0;
+    for (const att of attachments) {
+      if (att.size) totalBytes += att.size;
+    }
+    const storageMB = totalBytes / (1024 * 1024);
 
     return {
       services: servicesCount,
-      submissions: submissionsThisMonth,
+      submissions: submissionsThisPeriod,
       teamMembers: totalMembersCount,
       storageMB: Math.round(storageMB * 100) / 100,
+      subscription // Return subscription details for UI to show renewal date
     };
   },
 });
@@ -307,7 +357,7 @@ export const getSubscriptionUsage = query({
 export const canPerformAction = query({
   args: {
     organisationId: v.id("organisations"),
-    action: v.string(),
+    action: v.string(), // "create_service" | "add_member" | "storage_upload"
     metadata: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
@@ -316,8 +366,52 @@ export const canPerformAction = query({
       return { allowed: false, reason: "Organisation not found" };
     }
 
-    // Import plan config (we'll need to pass limits from client)
-    // For now, return basic structure
+    const planConfig = getPlanConfig(organisation.plan);
+
+    if (args.action === "create_service") {
+      // Check service limit (usually Infinity for most plans but good to have)
+      if (planConfig.limits.servicesLimit !== Infinity) {
+        const form = await ctx.db.get(organisation.formId);
+        if (form && (form.services?.length || 0) >= planConfig.limits.servicesLimit) {
+          return { allowed: false, reason: `Service limit of ${planConfig.limits.servicesLimit} reached. Upgrade to add more.` };
+        }
+      }
+    }
+
+    if (args.action === "add_member") {
+      const members = await ctx.db
+        .query("organisationMembers")
+        .withIndex("by_organisation_id", (q) => q.eq("organisationId", args.organisationId))
+        .collect();
+
+      // Real limit is owner (1) + teamMembersLimit
+      const maxMembers = 1 + planConfig.limits.teamMembersLimit;
+
+      if (members.length >= maxMembers) {
+        return { allowed: false, reason: `Team member limit of ${maxMembers} reached. Upgrade to add more.` };
+      }
+    }
+
+    if (args.action === "storage_upload") {
+      const fileSizeMB = (args.metadata?.size || 0) / (1024 * 1024);
+
+      // Check current usage
+      const attachments = await ctx.db
+        .query("attachments")
+        .filter((q) => q.eq(q.field("organisation"), args.organisationId))
+        .collect();
+
+      let currentBytes = 0;
+      for (const att of attachments) {
+        if (att.size) currentBytes += att.size;
+      }
+      const currentMB = currentBytes / (1024 * 1024);
+
+      if ((currentMB + fileSizeMB) > planConfig.limits.storageLimit) {
+        return { allowed: false, reason: `Storage limit of ${planConfig.limits.storageLimit}MB reached. Upgrade to upload more.` };
+      }
+    }
+
     return {
       allowed: true,
       reason: undefined,

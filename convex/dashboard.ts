@@ -2,6 +2,7 @@ import { query } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { getPlanConfig } from "./planLimitConfig";
+import { getUsageWindow } from "./subscriptions";
 
 export const getUsageStats = query({
     args: {
@@ -27,17 +28,13 @@ export const getUsageStats = query({
 
         const planConfig = getPlanConfig(org.plan);
 
-        // 1. Calculate submissions this month
-        const now = Date.now();
-        const monthStart = new Date(now);
-        monthStart.setDate(1);
-        monthStart.setHours(0, 0, 0, 0);
-        const monthStartTs = monthStart.getTime();
+        // 1. Calculate submissions this period
+        const { windowStart, windowEnd, subscription } = await getUsageWindow(ctx, args.organisationId);
 
         const submissionsThisMonth = await ctx.db
             .query("submissions")
             .withIndex("organisation", (q) => q.eq("organisation", args.organisationId))
-            .filter((q) => q.gte(q.field("_creationTime"), monthStartTs))
+            .filter((q) => q.gte(q.field("_creationTime"), windowStart))
             .collect();
 
         const submissionCount = submissionsThisMonth.length;
@@ -67,6 +64,7 @@ export const getUsageStats = query({
                 percentage: storageLimitMB === Infinity ? 0 : Math.min(100, (totalUsedMB / storageLimitMB) * 100),
             },
             planName: planConfig.name,
+            planRenewalDate: subscription?.currentPeriodEnd || (new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).getTime()),
         };
     },
 });

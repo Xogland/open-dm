@@ -1,11 +1,12 @@
 import { defineTable } from "convex/server";
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { internal } from "./_generated/api";
 
 import { getPlanConfig } from "./planLimitConfig";
+import { getUsageWindow } from "./subscriptions";
 
 export const submissions = defineTable({
   form: v.id("forms"),
@@ -33,6 +34,8 @@ export const submissions = defineTable({
     }),
   ),
   statusId: v.optional(v.string()),
+  sesMessageId: v.optional(v.string()),
+  stripePaymentId: v.optional(v.string()),
 })
   .index("organisation", ["organisation"])
   .index("form", ["form"])
@@ -62,6 +65,7 @@ export const createSubmission = mutation({
         users: v.array(v.string()),
       }),
     ),
+    stripePaymentId: v.optional(v.string()),
   },
   handler: async (
     ctx,
@@ -76,6 +80,7 @@ export const createSubmission = mutation({
       score,
       timeToSubmit,
       accessControl,
+      stripePaymentId,
     },
   ) => {
     const org = await ctx.db.get(organisation);
@@ -86,18 +91,14 @@ export const createSubmission = mutation({
     const limit = planConfig.limits.submissionsPerMonth;
 
     if (limit !== Infinity) {
-      const now = Date.now();
-      const monthStart = new Date(now);
-      monthStart.setDate(1);
-      monthStart.setHours(0, 0, 0, 0);
-      const monthStartTs = monthStart.getTime();
+      const { windowStart } = await getUsageWindow(ctx, organisation);
 
-      // Count submissions for this month
+      // Count submissions for this period
       // Note: This scans all organization submissions. For high Scale, add index on [organisation, _creationTime]
       const currentSubmissionsCount = (await ctx.db
         .query("submissions")
         .withIndex("organisation", (q) => q.eq("organisation", organisation))
-        .filter((q) => q.gte(q.field("_creationTime"), monthStartTs))
+        .filter((q) => q.gte(q.field("_creationTime"), windowStart))
         .collect()).length;
 
       if (currentSubmissionsCount >= limit) {
@@ -125,6 +126,7 @@ export const createSubmission = mutation({
       timeToSubmit,
       accessControl,
       statusId,
+      stripePaymentId,
     });
 
     // Handle Email Escalation
@@ -147,15 +149,18 @@ export const createSubmission = mutation({
       }
     }
 
-    // TODO: Trigger email sending to escalationEmails
-    // if (escalationEmails.length > 0) {
-    //   await ctx.scheduler.runAfter(0, internal.emails.sendEscalation, {
-    //     emails: escalationEmails,
-    //     submissionId: id,
-    //     orgName: org.name,
-    //     service: service
-    //   });
-    // }
+    // Trigger email sending to escalationEmails
+    if (escalationEmails.length > 0) {
+      await ctx.scheduler.runAfter(0, internal.emails.sendEscalation, {
+        emails: escalationEmails,
+        submissionId: id,
+        orgName: org.name,
+        service: service,
+        workflowAnswers,
+        content,
+        senderEmail: email,
+      });
+    }
 
     if (email && email.trim().length > 0) {
       const connection = await ctx.db
@@ -254,6 +259,7 @@ export const getSubmissions = query({
     });
 
     let submissions = Array.from(combinedSubmissionsMap.values());
+    submissions.sort((a, b) => b._creationTime - a._creationTime);
 
     // Filter by allowed services for restricted users
     if (allowedServices !== undefined) {
@@ -342,6 +348,21 @@ export const updateSubmissionStatus = mutation({
 
     await ctx.db.patch(args.id, {
       statusId: args.statusId,
+    });
+  },
+});
+
+export const updateSubmissionSesId = internalMutation({
+  args: {
+    id: v.id("submissions"),
+    sesMessageId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Note: This is an internal-use mutation, but since it's an exported mutation
+    // we should ideally restrict it or rely on the fact that only the backend calls it.
+    // In Convex, internal functions are safer for this, but actions trigger via internal.
+    await ctx.db.patch(args.id, {
+      sesMessageId: args.sesMessageId,
     });
   },
 });

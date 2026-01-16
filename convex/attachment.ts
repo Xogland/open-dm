@@ -153,6 +153,7 @@ export const getUserAttachments = query({
     );
 
     const flatAttachments = allAttachments.flat();
+    flatAttachments.sort((a, b) => b._creationTime - a._creationTime);
 
     return await Promise.all(
       flatAttachments.map(async (attachment) => ({
