@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Users, MousePointerClick, TrendingUp, Layers } from "lucide-react";
+import { FileText, MousePointerClick, TrendingUp, Layers } from "lucide-react";
 
 interface StatsCardsProps {
     totalSubmissions: number;

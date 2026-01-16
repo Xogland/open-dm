@@ -31,8 +31,6 @@ import type {
     BulkEmailSendResult,
     BulkEmailSendStatus,
     EmailAddress,
-    EmailError,
-    EmailErrorCode,
 } from "../types";
 import { EmailError as EmailErrorClass, EmailErrorCode as ErrorCodes } from "../types";
 

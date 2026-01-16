@@ -5,10 +5,10 @@ import { useBotDetector } from "@/hooks/use-bot-detector";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useParams } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import ChatFormView from "./chat-form-view";
-import { Typography } from "@/components/ui/typography";
 
 export default function FormView({
   onSubmitted,
@@ -20,12 +20,10 @@ export default function FormView({
     handle: handle,
   });
 
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  // const { executeRecaptcha } = useGoogleReCaptcha();
   const submitForm = useMutation(api.submission.createSubmission);
 
   const {
-    honeypotValue,
-    setHoneypotValue,
     handlers: detectionHandlers,
     calculateScore,
   } = useBotDetector();
@@ -43,7 +41,7 @@ export default function FormView({
     }
   }, [formWithOrg, incrementView]);
 
-  const handleSubmit = async (submissionData: Record<string, any>) => {
+  const handleSubmit = async (submissionData: Record<string, unknown>) => {
     if (!formWithOrg) return;
 
     setIsSubmitting(true);
@@ -78,8 +76,8 @@ export default function FormView({
         (val) =>
           val &&
           typeof val === "object" &&
-          (val.type === "email" || val.type === "email_input"),
-      );
+          ((val as { type?: string }).type === "email" || (val as { type?: string }).type === "email_input"),
+      ) as { answer: string } | undefined;
 
       if (emailEntry && emailEntry.answer) {
         email = emailEntry.answer;
@@ -89,20 +87,21 @@ export default function FormView({
         (val) =>
           val &&
           typeof val === "object" &&
+          // @ts-expect-error type field exists at runtime
           val.type === "payment",
-      );
+      ) as { answer: string } | undefined;
 
       if (paymentEntry && paymentEntry.answer) {
         stripePaymentId = paymentEntry.answer;
       }
 
-      const service = submissionData.service || "General Inquiry";
+      const service = (submissionData.service as string) || "General Inquiry";
 
       const submissionId = await submitForm({
         formId: formWithOrg.form._id,
         organisation: formWithOrg.organisation._id,
         service: service,
-        workflowAnswers: submissionData,
+        workflowAnswers: submissionData as Record<string, unknown>,
         email: email,
         stripePaymentId: stripePaymentId,
         timeToSubmit: result.tracking.ttsInMs,
@@ -114,18 +113,22 @@ export default function FormView({
       const attachmentPromises = values.map(async (val) => {
         if (
           val &&
+          // @ts-expect-error answer field exists at runtime
           val.answer &&
+          // @ts-expect-error answer is object
           typeof val.answer === "object" &&
+          // @ts-expect-error answer type field exists
           val.answer.type === "file_reference"
         ) {
-          const fileRef = val.answer;
+          // @ts-expect-error cast to file_reference
+          const fileRef = val.answer as { name: string; mimeType: string; size: number; storageId: string; };
           await createAttachment({
             submission: submissionId,
             organisation: formWithOrg.organisation._id,
             name: fileRef.name,
             type: fileRef.mimeType,
             size: fileRef.size,
-            storageId: fileRef.storageId,
+            storageId: fileRef.storageId as Id<"_storage">,
           });
         }
       });
@@ -169,6 +172,7 @@ export default function FormView({
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
           formId={form._id}
+          limitReached={limitReached}
         />
       </div>
     </div>

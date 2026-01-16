@@ -33,8 +33,8 @@ export default function NotFound() {
                     transition={{ duration: 0.5, delay: 0.1 }}
                 >
                     <Typography variant="subheading" className="text-muted-foreground mx-auto max-w-md">
-                        The page you're looking for doesn't exist or has been moved.
-                        Perhaps you've wandered into a private DM that isn't yours?
+                        The page you&apos;re looking for doesn&apos;t exist or has been moved.
+                        Perhaps you&apos;ve wandered into a private DM that isn&apos;t yours?
                     </Typography>
                 </motion.div>
 

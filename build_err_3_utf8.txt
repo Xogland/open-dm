@@ -1,0 +1,288 @@
+﻿
+> open-dm@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.7
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 8.9s
+   Linting and checking validity of types ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified:  
+   (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandE 
+   rror
+ 
+Failed to compile.
+
+./src/features/form-editor/components/form-ha
+ndle-edit.tsx
+20:3  Warning: '_formId' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-editor/components/preview
+-box.tsx
+7:20  Warning: 'WorkflowStep' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/debug
+/score-debug-item.tsx
+4:10  Warning: 'TrendingUp' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/form-
+view.tsx
+5:10  Warning: 'useGoogleReCaptcha' is 
+defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/messa
+ge-box/message-item.tsx
+292:10  Warning: 'DateInputMessage' is 
+defined but never used.  
+@typescript-eslint/no-unused-vars
+354:10  Warning: 'FileUploadMessage' is 
+defined but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/share
+d/form-contact-actions.tsx
+48:30  Warning: 'err' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/share
+d/form-header.tsx
+27:5  Warning: '_orgHandle' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/share
+d/form-sidebar.tsx
+4:26  Warning: 'SocialLinks' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/form-renderer/components/submi
+ssion-view.tsx
+5:8  Warning: 'Link' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/inbox/components/side-panel.ts
+x
+62:12  Warning: '_key' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+62:48  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+105:22  Warning: 'e' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/inbox/hooks/use-inbox-data.ts
+13:23  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+
+./src/features/landing/components/better-way.
+tsx
+4:10  Warning: 'ListChecks' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+4:22  Warning: 'Route' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+4:29  Warning: 'UserSquare2' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+4:42  Warning: 'DollarSign' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/landing/components/faq-accordi
+on.tsx
+73:43  Warning: 'index' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/landing/components/features.ts
+x
+4:16  Warning: 'Check' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+8:8  Warning: 'Image' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+48:21  Warning: 'bgColorClass' is assigned a 
+value but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/landing/components/hero-modern
+.tsx
+6:22  Warning: 'Check' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+10:8  Warning: 'Hyperspeed' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/landing/components/testimonial
+s.tsx
+5:10  Warning: 'Star' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/landing/components/why-choose.
+tsx
+49:50  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+
+./src/features/landing/constants/landing-cont
+ent.ts
+1:121  Warning: 'Users' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+1:128  Warning: 'FileText' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+1:138  Warning: 'Zap' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/onboarding/components/onboardi
+ng-page.tsx
+15:9  Warning: 'setHandle' is assigned a 
+value but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/organization/components/org-st
+atuses-form.tsx
+6:10  Warning: 'Label' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/organization/components/steps/
+business-type-step.tsx
+9:5  Warning: 'LucideIcon' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/organization/hooks/use-org-set
+tings.ts
+10:13  Warning: 'user' is assigned a value 
+but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/subscription/components/billin
+g-banner.tsx
+6:23  Warning: 'CreditCard' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+6:49  Warning: 'X' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+./src/features/subscription/components/subscr
+iption-limit-modal.tsx
+13:10  Warning: 'Typography' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/subscription/components/subscr
+iption-plans.tsx
+21:15  Warning: 'Info' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+22:10  Warning: 'cn' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+160:14  Warning: 'error' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/subscription/components/usage-
+widget.tsx
+135:11  Warning: 'isNearLimit' is assigned a 
+value but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/subscription/hooks/use-subscri
+ption.ts
+16:5  Warning: 'UsageStats' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/teams/components/invite-dialog
+.tsx
+19:3  Warning: 'SelectValue' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+26:3  Warning: 'AlertCircle' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+28:3  Warning: 'Sparkles' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+73:21  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+102:16  Warning: 'error' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+140:55  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+230:3  Warning: 'currentCount' is defined 
+but never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/teams/components/teams-page.ts
+x
+73:9  Warning: 'isViewer' is assigned a 
+value but never used.  
+@typescript-eslint/no-unused-vars
+77:44  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+83:45  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+87:51  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+90:54  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+100:27  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+103:21  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+113:27  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+117:21  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+198:32  Warning: 'm' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+198:35  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+246:43  Error: Unexpected any. Specify a 
+different type.  
+@typescript-eslint/no-explicit-any
+
+./src/features/teams/hooks/use-team-access.ts
+6:10  Warning: 'TeamRole' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+
+./src/features/user/hooks/use-user-settings.t
+s
+2:10  Warning: 'useMutation' is defined but 
+never used.  
+@typescript-eslint/no-unused-vars
+3:10  Warning: 'api' is defined but never 
+used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? 
+Learn more here: https://nextjs.org/docs/app/
+api-reference/config/eslint#disabling-rules

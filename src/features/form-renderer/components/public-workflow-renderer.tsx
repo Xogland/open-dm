@@ -2,15 +2,13 @@
 
 import React, { useState, useMemo } from "react";
 import { FormContentData } from "@/features/form-editor/components/content-section";
-import { WorkflowData, WorkflowStep, StepType } from "@/lib/types";
+import { WorkflowData, WorkflowStep, ExternalBrowserStep } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, GlobeIcon, MailIcon, PhoneIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon } from "lucide-react";
+import { CalendarIcon, GlobeIcon, PhoneIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircle2Icon } from "lucide-react";
 import Link from "next/link";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -25,7 +23,7 @@ interface UnifiedFormData {
 
 interface PublicWorkflowRendererProps {
     data: UnifiedFormData;
-    onSubmit: (formData: any) => Promise<void>;
+    onSubmit: (formData: Record<string, unknown>) => Promise<void>;
     isSubmitting: boolean;
     organization?: { name: string; image?: string };
 }
@@ -38,8 +36,7 @@ export default function PublicWorkflowRenderer({
 }: PublicWorkflowRendererProps) {
     const [selectedService, setSelectedService] = useState<string | null>(null);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
-    const [answers, setAnswers] = useState<Record<string, any>>({});
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [answers, setAnswers] = useState<Record<string, unknown>>({});
 
     const { content, workflows } = data;
 
@@ -58,7 +55,7 @@ export default function PublicWorkflowRenderer({
         setAnswers({}); // Reset answers or keep common ones? Reset for now.
     };
 
-    const handleAnswerChange = (value: any) => {
+    const handleAnswerChange = (value: unknown) => {
         if (!currentStep) return;
         setAnswers((prev) => ({
             ...prev,
@@ -92,8 +89,7 @@ export default function PublicWorkflowRenderer({
             service: selectedService,
             ...answers
         };
-        await onSubmit(finalData);
-        setShowSuccess(true);
+        await onSubmit(finalData as Record<string, unknown>);
 
         // Move to terminal screen (end screen or external browser)
         const terminalIndex = currentWorkflowSteps.findIndex(s =>
@@ -180,7 +176,7 @@ export default function PublicWorkflowRenderer({
     );
 
     const renderStepInput = (step: WorkflowStep) => {
-        const value = answers[step.id] || "";
+        const value = (answers[step.id] as string) || "";
 
         switch (step.stepType) {
             case "text":
@@ -243,13 +239,13 @@ export default function PublicWorkflowRenderer({
                                     )}
                                 >
                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
+                                    {value ? format(new Date(value as string), "PPP") : <span>Pick a date</span>}
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0">
                                 <Calendar
                                     mode="single"
-                                    selected={value ? new Date(value) : undefined}
+                                    selected={value ? new Date(value as string) : undefined}
                                     onSelect={(date) => handleAnswerChange(date?.toISOString())}
                                     initialFocus
                                 />
@@ -278,8 +274,8 @@ export default function PublicWorkflowRenderer({
                         </div>
                         <Typography variant="subheading" as="h2">Thank you!</Typography>
                         <Typography variant="caption" className="text-base">Click the button below to continue.</Typography>
-                        <Button className="mt-6" onClick={() => window.location.href = (step as any).url}>
-                            {(step as any).buttonText || "Continue"}
+                        <Button className="mt-6" onClick={() => { if (typeof window !== 'undefined') window.location.href = (step as ExternalBrowserStep).url; }}>
+                            {(step as ExternalBrowserStep).buttonText || "Continue"}
                         </Button>
                     </div>
                 );

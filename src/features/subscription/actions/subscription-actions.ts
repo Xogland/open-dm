@@ -34,11 +34,11 @@ export async function cancelSubscriptionAction(subscriptionId: string) {
         revalidatePath('/dashboard/billing');
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[Action] Error cancelling subscription:', error);
         return {
             success: false,
-            error: error.message || 'Failed to cancel subscription'
+            error: error instanceof Error ? error.message : 'Failed to cancel subscription'
         };
     }
 }
@@ -52,8 +52,8 @@ export async function cancelSubscriptionAction(subscriptionId: string) {
  */
 export async function updateSubscriptionAction(
     subscriptionId: string,
-    newPlan: any,
-    billingCycle: any
+    newPlan: SubscriptionPlan,
+    billingCycle: BillingCycle
 ) {
     if (!subscriptionId) {
         return { success: false, error: 'Subscription ID is required' };
@@ -67,11 +67,11 @@ export async function updateSubscriptionAction(
         revalidatePath('/dashboard/billing');
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[Action] Error updating subscription:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update plan'
+            error: error instanceof Error ? error.message : 'Failed to update plan'
         };
     }
 }
@@ -108,11 +108,11 @@ export async function createCheckoutAction(
         );
 
         return { success: true, url: checkoutUrl };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[Action] Error creating checkout:', error);
         return {
             success: false,
-            error: error.message || 'Failed to initiate checkout'
+            error: error instanceof Error ? error.message : 'Failed to initiate checkout'
         };
     }
 }

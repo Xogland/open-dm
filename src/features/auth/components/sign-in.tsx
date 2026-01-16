@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { APP_NAME } from "@/data/constants";
 import { useSearchParams } from "next/navigation";
-import { Typography } from "@/components/ui/typography";
 
 export function SignIn() {
     const [loading, setLoading] = useState(false);
@@ -23,9 +22,9 @@ export function SignIn() {
                 data: "This is a test message from the client.",
                 redirectTo: "/dashboard",
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             setLoading(false);
-            if (error) {
+            if (error instanceof Error) {
                 console.error("Error signing in with Google:", error.message);
             }
         }

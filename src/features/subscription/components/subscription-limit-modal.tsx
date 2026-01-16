@@ -27,7 +27,7 @@ interface SubscriptionLimitModalProps {
 const LIMIT_CONFIGS: Record<LimitType, {
     title: string;
     description: string;
-    icon: any;
+    icon: React.ElementType;
     action: string;
 }> = {
     submissions: {

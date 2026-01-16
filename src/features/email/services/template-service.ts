@@ -18,7 +18,7 @@ import {
 import { getSESClient, isSESConfigured } from "../client/ses-client";
 import { emailTemplateSchema, templateTestDataSchema } from "../schemas";
 import type { EmailTemplate } from "../types";
-import { EmailError, EmailErrorCode } from "../types";
+import { EmailErrorCode } from "../types";
 
 // ============================================================================
 // Types
@@ -367,9 +367,9 @@ export async function testRenderTemplate(
 
         return {
             success: true,
-            renderedSubject: extractPart(rendered, "Subject"),
-            renderedText: extractPart(rendered, "Text"),
-            renderedHtml: extractPart(rendered, "Html"),
+            renderedSubject: extractPart(rendered),
+            renderedText: extractPart(rendered),
+            renderedHtml: extractPart(rendered),
         };
     } catch (error) {
         const err = error as Error;
@@ -384,7 +384,7 @@ export async function testRenderTemplate(
  * Helper to extract parts from rendered template.
  * This is a simplified parser; actual SES output format may vary.
  */
-function extractPart(rendered: string, part: string): string | undefined {
+function extractPart(rendered: string): string | undefined {
     // The rendered template contains the full email - return as-is for now
     // In production, you might want to parse the MIME structure
     return rendered || undefined;

@@ -4,7 +4,7 @@ import { Laptop, Smartphone } from "lucide-react";
 import { MessageList } from "@/features/form-renderer/components/message-box/message-list";
 import { DynamicBottomInput } from "@/features/form-renderer/components/message-box/dynamic-bottom-input";
 import { ChatMessage } from "@/lib/message-types";
-import { FormData } from "@/lib/types";
+import { FormData, WorkflowStep, ExternalBrowserStep, TextStep } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { FormLayout } from "@/features/form-renderer/components/shared/form-layout";
 
@@ -70,25 +70,27 @@ export default function PreviewBox({
               id: `preview-step-${index}`,
               timestamp: Date.now() + index,
               type: "external_browser",
-              url: (step as any).url,
-              buttonText: (step as any).buttonText,
+              url: (step as ExternalBrowserStep).url,
+              buttonText: (step as ExternalBrowserStep).buttonText,
             });
           } else {
             // Map other inputs
-            let msgType = "text_input";
+            let msgType: ChatMessage["type"] = "text_input";
             if (step.stepType === "email") msgType = "email_input";
-            if (step.stepType === "phone") msgType = "phone_input";
-            if (step.stepType === "address") msgType = "address_input";
-            if (step.stepType === "website") msgType = "website_input";
-            if (step.stepType === "number") msgType = "number_input";
-            if (step.stepType === "date") msgType = "date_input";
-            if (step.stepType === "file") msgType = "file_upload";
+            else if (step.stepType === "phone") msgType = "phone_input";
+            else if (step.stepType === "address") msgType = "address_input";
+            else if (step.stepType === "website") msgType = "website_input";
+            else if (step.stepType === "number") msgType = "number_input";
+            else if (step.stepType === "date") msgType = "date_input";
+            else if (step.stepType === "file") msgType = "file_upload";
+
+            const placeholder = (step as TextStep).placeholder;
 
             messages.push({
               ...common,
-              type: msgType as any,
-              placeholder: (step as any).placeholder,
-            });
+              type: msgType,
+              ...(placeholder ? { placeholder } : {}),
+            } as ChatMessage);
           }
         });
       }
@@ -188,7 +190,7 @@ export default function PreviewBox({
           <FormLayout
             formData={
               formData ||
-              ({ properties: {}, services: [], workflows: {} } as any)
+              ({ properties: {}, services: [], workflows: {} } as FormData)
             }
             orgName={orgName}
             orgImage={orgImage}

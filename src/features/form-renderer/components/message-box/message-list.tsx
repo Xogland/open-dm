@@ -2,12 +2,12 @@
 
 import React, { useEffect, useRef } from "react";
 import { MessageItem } from "./message-item";
-import { ChatMessage } from "@/lib/message-types";
+import { ChatMessage, MultipleChoiceOption } from "@/lib/message-types";
 
 interface MessageListProps {
   messages: ChatMessage[];
   onServiceSelect?: (serviceId: string, serviceTitle: string) => void;
-  onOptionSelect?: (option: any) => void;
+  onOptionSelect?: (option: MultipleChoiceOption | MultipleChoiceOption[] | string | number | string[]) => void;
   onDateSelect?: (date: Date) => void;
   onFileUpload?: (file: File) => void;
   onTextSubmit?: (text: string) => void;
@@ -30,6 +30,8 @@ export function MessageList({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const filteredMessages = messages.filter(Boolean);
+
   // Auto-scroll to bottom with smooth behavior
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -38,22 +40,22 @@ export function MessageList({
         block: "end",
       });
     }
-  }, [messages]);
+  }, [filteredMessages]);
 
   return (
     <div
       ref={containerRef}
       className="w-full min-h-full flex flex-col justify-end gap-1"
     >
-      {messages.filter(Boolean).map((message, index) => {
+      {filteredMessages.map((message, index) => {
         // Check if this message is "answered" by the next message being a user_response
         // This assumes a linear flow: Question -> Answer
-        const nextMessage = messages[index + 1];
+        const nextMessage = filteredMessages[index + 1];
         const isAnswered = nextMessage?.type === 'user_response';
 
         // Also disable if it's not the last message and not a system/typing message
         // or if global interactions are disabled
-        const isDisabled = disableInteractions || isAnswered || (index < messages.length - 1 && message.type !== 'system_info' && message.type !== 'typing' && message.type !== 'end_screen');
+        const isDisabled = disableInteractions || isAnswered || (index < filteredMessages.length - 1 && message.type !== 'system_info' && message.type !== 'typing' && message.type !== 'end_screen');
 
         return (
           <MessageItem

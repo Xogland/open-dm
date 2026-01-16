@@ -2,7 +2,8 @@
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ShieldCheck, Zap } from "lucide-react";
+import { ShieldCheck, Zap } from "lucide-react";
+import Link from "next/link";
 import { APP_NAME } from "@/data/constants";
 import Image from "next/image";
 
@@ -78,9 +79,9 @@ export function AuthLayout({ children, mode }: AuthLayoutProps) {
           transition={{ delay: 0.5 }}
           className="flex items-center gap-6 text-sm text-slate-400"
         >
-          <a href="/privacy" className="hover:text-slate-600 transition-colors">Privacy</a>
+          <Link href="/privacy" className="hover:text-slate-600 transition-colors">Privacy</Link>
           <span className="w-px h-4 bg-slate-200" />
-          <a href="/terms" className="hover:text-slate-600 transition-colors">Terms</a>
+          <Link href="/terms" className="hover:text-slate-600 transition-colors">Terms</Link>
         </motion.div>
 
       </div>

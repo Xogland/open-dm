@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Id } from '@/convex/_generated/dataModel';
 import { LimitType } from '../components/subscription-limit-modal';
-import { useCanPerformAction, useUsageStats } from './use-subscription';
+import { useUsageStats } from './use-subscription';
 import { SubscriptionAction } from '../types/subscription-types';
 
 export function useSubscriptionLimit(organisationId: Id<"organisations"> | undefined) {
@@ -13,7 +13,7 @@ export function useSubscriptionLimit(organisationId: Id<"organisations"> | undef
 
     const usageStats = useUsageStats(organisationId);
 
-    const checkLimit = useCallback((action: SubscriptionAction, metadata?: any) => {
+    const checkLimit = useCallback((action: SubscriptionAction) => {
         // This is a bit tricky because useCanPerformAction is a hook
         // We might need a non-hook version of validation for immediate checks
         // or rely on the usage stats already being loaded.

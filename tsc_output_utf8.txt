@@ -1,0 +1,2 @@
+﻿src/features/form-renderer/components/shared/form-layout.tsx(103,15): error TS2322: Type '{ className: string; orgName: string; orgImage: string | undefined; orgHandle: string | undefined; contactInfo: ContactInfo | undefined; tags: string[] | undefined; serviceSelected: boolean; onReset: (() => void) | undefined; focusedField: string | null; isReadOnly: boolean; }' is not assignable to type 'IntrinsicAttributes & FormHeaderProps'.
+  Property 'orgHandle' does not exist on type 'IntrinsicAttributes & FormHeaderProps'. Did you mean '_orgHandle'?

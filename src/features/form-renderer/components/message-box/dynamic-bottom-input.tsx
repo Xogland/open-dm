@@ -11,7 +11,6 @@ import { Send, AlertCircle, CalendarIcon, Upload, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
-    StepType,
     TextStep,
     EmailStep,
     PhoneStep,
@@ -152,7 +151,7 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
         else if (stepType === 'multiple_choice') placeholder = "Please select an option above";
         else if (stepType === 'end_screen') placeholder = "Conversation ended";
     } else {
-        const step = currentStep as any;
+        const step = currentStep as TextStep;
         placeholder = step?.placeholder || "Type your answer...";
     }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+
 import {
   Sidebar as SidebarComponent,
   SidebarContent,
@@ -75,10 +75,7 @@ export function Sidebar() {
   const { signOut } = useAuthActions();
   const router = useRouter();
 
-  const { limitModalProps, checkLimit, setLimitModalOpen } = useSubscriptionLimit(selectedOrganization?._id);
-
-  const isOwner = currentUserRole === "owner";
-  const isEditor = currentUserRole === "editor";
+  const { limitModalProps, setLimitModalOpen } = useSubscriptionLimit(selectedOrganization?._id);
   const isViewer = currentUserRole === "viewer";
 
   const ownedOrgs = organizations?.filter((org) => org.owner === user?._id) || [];

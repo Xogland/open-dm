@@ -47,7 +47,7 @@ export function OrgProfileForm({
           <div className="space-y-1">
             <CardTitle>Organization Profile</CardTitle>
             <CardDescription>
-              Manage your organization's public identity and branding.
+              Manage your organization&apos;s public identity and branding.
             </CardDescription>
           </div>
         </div>

@@ -72,7 +72,7 @@ export default function ConnectionsPage() {
             sidebar={
                 <>
                     <SidePanel
-                        submission={selectedSubmission as any}
+                        submission={selectedSubmission || null}
                         isPanelOpen={isPanelOpen}
                         closeSidePanel={closeSidePanel}
                     />

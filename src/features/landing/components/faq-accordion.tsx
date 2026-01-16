@@ -52,7 +52,7 @@ export function FAQAccordion() {
       {filteredSections.length === 0 ? (
         <div className="text-center py-12">
           <Typography variant="lead">
-            No results found for "{searchQuery}"
+            No results found for &quot;{searchQuery}&quot;
           </Typography>
         </div>
       ) : (

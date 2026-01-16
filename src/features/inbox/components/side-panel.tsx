@@ -2,15 +2,14 @@
 import * as React from "react";
 import { Typography } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Mail, Clock, Hash, User, Package, Calendar, PhoneIcon } from "lucide-react";
+import { X, Mail, Clock, User, Calendar, PhoneIcon } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
-import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { FileIcon, Download, Tag } from "lucide-react";
+import { FileIcon, Download } from "lucide-react";
 import { Status } from "@/features/organization/providers/user-data-provider";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -18,7 +17,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
@@ -28,7 +26,7 @@ interface SubmissionData {
   _id: Id<"submissions">;
   _creationTime: number;
   service?: string;
-  workflowAnswers?: any;
+  workflowAnswers?: Record<string, unknown>;
   cc?: string[] | undefined;
   content?: string | undefined;
   email: string;
@@ -46,19 +44,14 @@ interface SidePanelProps {
 }
 
 // Utility to format time to submit
+/*
 const formatTimeToSubmit = (ms: number | undefined): string => {
-  if (ms === undefined) return "N/A";
-  const seconds = Math.floor(ms / 1000);
-  if (seconds < 60) {
-    return `${seconds}s`;
-  }
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}m ${remainingSeconds}s`;
+...
 };
+*/
 
 // Render workflow answers as structured data
-const renderWorkflowAnswers = (workflowAnswers: any) => {
+const renderWorkflowAnswers = (workflowAnswers: Record<string, unknown>) => {
   if (!workflowAnswers || typeof workflowAnswers !== "object") {
     return null;
   }
@@ -66,7 +59,7 @@ const renderWorkflowAnswers = (workflowAnswers: any) => {
   // Filter out service and iterate over values which now contain { answer, question, type }
   const answersList = Object.entries(workflowAnswers)
     .filter(([key]) => key !== "service")
-    .map(([_, value]) => value as { answer: any; question: string; type: string; })
+    .map(([_key, value]) => value as { answer: any; question: string; type: string; })
     .filter(item => item && item.question); // Basic validation
 
   if (answersList.length === 0) {
@@ -138,7 +131,7 @@ const renderWorkflowAnswers = (workflowAnswers: any) => {
             if (Array.isArray(answer)) {
               content = (
                 <div className="flex flex-col gap-1.5">
-                  {answer.map((opt: any, i: number) => (
+                  {answer.map((opt: string | { title: string; price?: string }, i: number) => (
                     <div key={i} className="flex justify-between items-center text-sm bg-muted/30 p-1.5 rounded">
                       <span className="font-medium">{typeof opt === 'string' ? opt : opt.title}</span>
                       {typeof opt === 'object' && opt.price && <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded border">{opt.price}</span>}
@@ -215,7 +208,7 @@ export default function SidePanel({
     try {
       await updateStatus({ id: selectedSubmission._id, statusId });
       toast.success("Status updated");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update status");
     }
   };

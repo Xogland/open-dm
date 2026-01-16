@@ -9,11 +9,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
-    CheckCircle,
-    CircleDot,
-    Clock3,
     Mail,
-    Search,
 } from "lucide-react";
 import { IoIosContact } from "react-icons/io";
 import ConnectionSkeleton from "./connection-skeleton";
@@ -27,48 +23,7 @@ interface ConnectionsTableProps {
     onViewConnection: (connection: ConnectionData) => void;
 }
 
-const StatusBadge = ({
-    status,
-}: {
-    status: "Active" | "Alert" | "Warning" | string;
-}) => {
-    let icon, classes, text;
 
-    switch (status) {
-        case "Active":
-            icon = <CheckCircle className="h-3 w-3 mr-1" />;
-            classes =
-                "bg-green-100 text-green-700 border-green-300 hover:bg-green-200 dark:bg-green-900 dark:text-green-400 dark:border-green-700";
-            text = "Active";
-            break;
-        case "Alert":
-            icon = <Clock3 className="h-3 w-3 mr-1" />;
-            classes =
-                "bg-amber-100 text-amber-700 border-amber-300 hover:bg-amber-200 dark:bg-amber-900 dark:text-amber-400 dark:border-amber-700";
-            text = "Pending";
-            break;
-        case "Warning":
-            icon = <CircleDot className="h-3 w-3 mr-1" />;
-            classes =
-                "bg-red-100 text-red-700 border-red-300 hover:bg-red-200 dark:bg-red-900 dark:text-red-400 dark:border-red-700";
-            text = "Blocked";
-            break;
-        default:
-            icon = null;
-            classes =
-                "bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-300";
-            text = "Unknown";
-    }
-
-    return (
-        <div
-            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${classes}`}
-        >
-            {icon}
-            {text}
-        </div>
-    );
-};
 
 export function ConnectionsTable({
     isLoading,

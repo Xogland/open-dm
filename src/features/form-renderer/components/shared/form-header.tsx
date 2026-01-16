@@ -2,13 +2,14 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FormContactActions } from "./form-contact-actions";
 import { Typography } from "@/components/ui/typography";
+import { ContactInfo } from "@/lib/types";
 import { NOTCH_COLOR, NOTCH_SIZE } from "./form-layout";
 
 interface FormHeaderProps {
     orgName?: string;
     orgImage?: string;
     orgHandle?: string;
-    contactInfo?: any;
+    contactInfo?: ContactInfo;
     tags?: string[];
     serviceSelected?: boolean;
     onReset?: () => void;

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUserData } from "@/features/organization/providers/user-data-provider";
 import { useUserAuth } from "@/features/auth/providers/user-auth-provider";
 import { toast } from "sonner";
-import { Id } from "@/convex/_generated/dataModel";
+
 
 export function useOrgSettings() {
     const { user } = useUserAuth();
@@ -39,7 +39,7 @@ export function useOrgSettings() {
         }
     };
 
-    const handleUpdateStatuses = async (statuses: any[]) => {
+    const handleUpdateStatuses = async (statuses: { id: string; label: string; color: string; isDefault: boolean }[]) => {
         if (!selectedOrganization) return;
 
         try {

@@ -1,7 +1,6 @@
 import {
   CalendarDaysIcon,
   CheckCircle2,
-  Edit,
   GlobeIcon,
   PhoneCallIcon,
   PlusIcon,
@@ -41,7 +40,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { SOCIAL_PLATFORMS, CALENDAR_PLATFORMS, getCalendarIcon } from "@/constants/social-platforms";
-import { getPlanConfig } from "@/features/subscription/config/plan-config";
+import { getPlanConfig, SubscriptionPlan } from "@/features/subscription/config/plan-config";
 export type FormContentData = {
   title?: string;
   description: string;
@@ -151,11 +150,9 @@ export default function ContentSection({
 
   // Ensure profile URL is set if it's enabled but empty (initial load case)
   // Also ensures at least one visible contact exists
+  // Ensure profile URL is set if it's enabled but empty (initial load case)
+  // Also ensures at least one visible contact exists
   useEffect(() => {
-    if (enabledContacts.includes('profile') && !properties.profile) {
-      handleStateChange('profile', profileUrl);
-    }
-
     // Check if we have at least one contact that will actually show a button
     const hasVisibleContact = enabledContacts.some(id => {
       if (id === 'profile') return true;
@@ -163,18 +160,22 @@ export default function ContentSection({
       return val && val.trim().length > 0;
     });
 
-    if (!hasVisibleContact) {
+    if (enabledContacts.includes('profile') && !properties.profile) {
+      handleStateChange('profile', profileUrl);
+    } else if (!hasVisibleContact) {
       // If no other contact has a value, we MUST enable profile
-      if (!enabledContacts.includes('profile')) {
-        setEnabledContacts(prev => {
-          if (prev.length >= 2) {
-            // Replace the first one to stay within limit
-            return ['profile', prev[0]];
-          }
-          return [...prev, 'profile'];
-        });
-      }
+      // Check if profile is already enabled inside the setter to avoid loop
+      setEnabledContacts(prev => {
+        if (prev.includes('profile')) return prev;
+
+        if (prev.length >= 2) {
+          // Replace the first one to stay within limit
+          return ['profile', prev[0]];
+        }
+        return [...prev, 'profile'];
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabledContacts, properties.profile, properties.phone, properties.website, properties.calendarLink, profileUrl]);
 
   const toggleContact = (type: string) => {
@@ -235,7 +236,7 @@ export default function ContentSection({
   const handleAddService = () => {
     // Check limits
     if (plan) {
-      const config = getPlanConfig(plan as any);
+      const config = getPlanConfig(plan as SubscriptionPlan);
       const limit = config.limits.servicesLimit;
       if ((properties.services?.length || 0) >= limit) {
         toast.error(`Plan limit reached`, {
@@ -325,7 +326,7 @@ export default function ContentSection({
         organisationId: organisationId as Id<"organisations">,
       });
       toast.success("Image removed");
-    } catch (error) {
+    } catch {
       toast.error("Failed to remove image");
     }
   };

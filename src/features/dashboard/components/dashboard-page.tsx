@@ -2,7 +2,6 @@
 
 import { useDashboard } from "../hooks/use-dashboard";
 import { StatsCards } from "./stat-cards";
-import { RecentActivity } from "./recent-activity";
 import { AnalyticsChart } from "./analytics-chart";
 import { ServiceChart } from "./service-chart";
 import { Button } from "@/components/ui/button";

@@ -4,14 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Loader2, Mail, Inbox, ShieldCheck, ChevronRight, Users, Bell, ArrowRight } from 'lucide-react';
+import { Loader2, Inbox, ChevronRight, Users, Bell } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +49,7 @@ export default function WorkFlowEditor({
 
     const selectedService = services.find(s => s.id === selectedServiceId) || services[0];
 
-    const handleInboxToggle = async (member: any, serviceId: string, isChecked: boolean) => {
+    const handleInboxToggle = async (member: { membershipId: Id<"organisationMembers">; allowedServices?: string[] }, serviceId: string, isChecked: boolean) => {
         if (readOnly) return;
 
         const allServiceIds = services.map(s => s.id);
@@ -88,12 +86,12 @@ export default function WorkFlowEditor({
                 allowedServices: finalAllowed
             });
             toast.success("Inbox access updated");
-        } catch (error: any) {
-            toast.error(error.message || "Failed to update inbox access");
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Failed to update inbox access");
         }
     };
 
-    const handleEscalationUpdate = async (member: any, serviceId: string, updates: { enabled: boolean }) => {
+    const handleEscalationUpdate = async (member: { membershipId: Id<"organisationMembers">; serviceEscalation?: Record<string, { enabled?: boolean; email?: string }> }, serviceId: string, updates: { enabled: boolean }) => {
         if (readOnly) return;
 
         const currentEscalation = member.serviceEscalation || {};
@@ -113,8 +111,8 @@ export default function WorkFlowEditor({
                 serviceEscalation: newEscalation
             });
             toast.success("Routing updated");
-        } catch (error: any) {
-            toast.error(error.message || "Failed to update routing");
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Failed to update routing");
         }
     };
 

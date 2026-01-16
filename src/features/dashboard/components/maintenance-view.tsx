@@ -14,8 +14,8 @@ export function MaintenanceView() {
             <div className="text-center space-y-4">
                 <Typography variant="h1">Under Maintenance</Typography>
                 <Typography variant="lead">
-                    We're currently performing some scheduled maintenance to improve your experience.
-                    We'll be back online shortly.
+                    We&apos;re currently performing some scheduled maintenance to improve your experience.
+                    We&apos;ll be back online shortly.
                 </Typography>
             </div>
 
@@ -25,7 +25,7 @@ export function MaintenanceView() {
                         <AlertCircle className="h-5 w-5 text-yellow-500" />
                     </div>
                     <div>
-                        <CardTitle className="text-lg">What's happening?</CardTitle>
+                        <CardTitle className="text-lg">What&apos;s happening?</CardTitle>
                         <CardDescription>System upgrades & database optimization</CardDescription>
                     </div>
                 </CardHeader>

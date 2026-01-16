@@ -10,8 +10,6 @@ import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { APP_NAME } from "@/data/constants";
-import { Typography } from "@/components/ui/typography";
 import {
     Tooltip,
     TooltipContent,
@@ -63,8 +61,8 @@ export function SignUp() {
                 data: "This is a test message from the client.",
                 redirectTo: "/dashboard", // Redirect to dashboard checks
             });
-        } catch (error: any) {
-            if (error) {
+        } catch (error: unknown) {
+            if (error instanceof Error) {
                 console.error("Error signing in with Google:", error.message);
                 setLoading(false);
             }

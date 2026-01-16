@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, CheckCircle2Icon, Upload, AlertCircle, ExternalLink, FileIcon } from "lucide-react";
+import { CalendarIcon, CheckCircle2Icon, Upload, AlertCircle, FileIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Typography } from "@/components/ui/typography";
@@ -24,10 +24,10 @@ import {
   isSystemInfoMessage,
   isTypingMessage,
   isEndScreenMessage,
-  isExternalBrowserMessage,
   isPaymentInputMessage,
   validateFileUpload,
-  MultipleChoiceOption
+  MultipleChoiceOption,
+  UserResponseMessage
 } from "@/lib/message-types";
 import {
   StarIcon, HeartIcon, TrophyIcon, ThumbsUpIcon, SmileIcon,
@@ -74,7 +74,7 @@ function SystemMessageBubble({ text }: { text: string }) {
 }
 
 // ============= User Response Bubble =============
-function UserResponseBubble({ value }: { value: string | number | Date | File | string[] | MultipleChoiceOption | MultipleChoiceOption[] }) {
+function UserResponseBubble({ value }: { value: UserResponseMessage["value"] }) {
   if (value instanceof File) {
     return (
       <div className="flex justify-end mb-3 animate-in fade-in slide-in-from-right-2 duration-300">
@@ -434,7 +434,7 @@ interface EndScreenProps {
   showConfetti?: boolean;
 }
 
-function EndScreenMessage({ title, message, onReset, showConfetti }: EndScreenProps) {
+function EndScreenMessage({ title, message, onReset }: EndScreenProps) {
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-4 py-8 animate-in zoom-in-50 duration-500">
       <div className="h-16 w-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2 animate-bounce">
@@ -473,9 +473,6 @@ export function MessageItem({
   message,
   onServiceSelect,
   onOptionSelect,
-  onDateSelect,
-  onFileUpload,
-  onTextSubmit,
   onPaymentSuccess,
   onReset,
   disabled = false,
@@ -522,7 +519,7 @@ export function MessageItem({
 
   // Standard Messages
   if (isUserResponseMessage(message)) {
-    return <UserResponseBubble value={message.value as any} />;
+    return <UserResponseBubble value={message.value} />;
   }
 
   if (isSystemInfoMessage(message)) {

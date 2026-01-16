@@ -7,7 +7,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Search, Inbox, Clock, Mail } from "lucide-react";
+import { ChevronRight, Inbox, Clock, Mail } from "lucide-react";
 import { format } from "date-fns";
 import InboxSkeleton from "./inbox-skeleton";
 import { SubmissionData } from "../hooks/use-inbox-data";
@@ -18,6 +18,7 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Typography } from "@/components/ui/typography";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface InboxTableProps {
     isLoading: boolean;
@@ -38,11 +39,11 @@ export function InboxTable({
 }: InboxTableProps) {
     const updateStatus = useMutation(api.submission.updateSubmissionStatus);
 
-    const handleStatusChange = async (submissionId: any, statusId: string) => {
+    const handleStatusChange = async (submissionId: Id<"submissions">, statusId: string) => {
         try {
             await updateStatus({ id: submissionId, statusId });
             toast.success("Status updated");
-        } catch (error) {
+        } catch {
             toast.error("Failed to update status");
         }
     };

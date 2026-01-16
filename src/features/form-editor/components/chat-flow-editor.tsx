@@ -12,24 +12,17 @@ import { Switch } from "@/components/ui/switch";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
-import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
   CalendarDaysIcon, FileTextIcon, SmartphoneIcon,
-  MessageSquareIcon,
   PlusIcon, Trash2Icon, ZapIcon, Settings2Icon,
-  ArrowDownIcon,
-  XIcon,
-  ZoomInIcon,
-  ZoomOutIcon,
   UserIcon,
   MailIcon,
   MapPinIcon,
   GlobeIcon,
   AlignLeftIcon,
   HashIcon,
-  CheckCircle2Icon,
   ListChecksIcon,
   StarIcon, HeartIcon, TrophyIcon, ThumbsUpIcon, SmileIcon,
   ShoppingBagIcon, GiftIcon, CrownIcon, TargetIcon, RocketIcon,
@@ -37,7 +30,6 @@ import {
   MicIcon, BriefcaseIcon, CoffeeIcon, BeerIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  GripVerticalIcon,
   ExternalLinkIcon,
   LockIcon,
   CreditCardIcon,
@@ -45,14 +37,20 @@ import {
   SparklesIcon,
   LayersIcon,
   InfoIcon,
-  Loader2
+  Loader2,
+  GripVerticalIcon,
+  ArrowDownIcon,
+  CheckCircle2Icon,
+  MessageSquareIcon,
+  ZoomOutIcon,
+  ZoomInIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Typography } from "@/components/ui/typography";
 import { WorkflowData, WorkflowStep, StepType, TextStep, EmailStep, PhoneStep, AddressStep, WebsiteStep, NumberStep, DateStep, FileStep, EndScreenStep, ExternalBrowserStep, MultipleChoiceStep, MultipleChoiceOption, PaymentStep } from "@/lib/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { ADVANCED_WORKFLOW_TYPES, isAdvancedWorkflowType } from "@/features/subscription/config/plan-config";
+import { isAdvancedWorkflowType } from "@/features/subscription/config/plan-config";
 import { SubscriptionLimitModal } from "@/features/subscription/components/subscription-limit-modal";
 import { Id } from "@/convex/_generated/dataModel";
 import { StripeSettingsForm } from "@/features/organization/components/stripe-settings-form";
@@ -153,20 +151,13 @@ const getEndScreenStep = (): EndScreenStep => ({
   animationType: 'fade'
 });
 
-const getExternalBrowserStep = (): ExternalBrowserStep => ({
-  id: `external_${Date.now()}`,
-  stepType: 'external_browser',
-  question: 'External Redirect', // Internal label
-  url: 'https://example.com',
-  title: 'Thank you!',
-  message: 'Click the button below to continue.',
-  buttonText: 'Continue'
-});
+// Type definition for update values
+type StepValue = string | number | boolean | undefined | string[] | MultipleChoiceOption[] | null;
 
 
 // --- Property Sub-Components ---
 
-const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-4">
     <div className="space-y-1.5">
       <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Question / Label</Label>
@@ -178,11 +169,11 @@ const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (
         disabled={readOnly}
       />
     </div>
-    {step.stepType !== 'end_screen' && step.stepType !== 'date' && step.stepType !== 'file' && (step as any).placeholder !== undefined && (
+    {step.stepType !== 'end_screen' && step.stepType !== 'date' && step.stepType !== 'file' && (step as TextStep).placeholder !== undefined && (
       <div className="space-y-1.5">
         <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Placeholder</Label>
         <Input
-          value={(step as any).placeholder || ''}
+          value={(step as TextStep).placeholder || ''}
           onChange={(e) => update('placeholder', e.target.value)}
           placeholder="e.g. Type your answer here..."
           className="h-9 text-sm bg-transparent border-border/60 focus:border-primary"
@@ -194,7 +185,7 @@ const CommonProps = ({ step, update, readOnly }: { step: WorkflowStep; update: (
   </div>
 );
 
-const TextProps = ({ step, update, readOnly }: { step: TextStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const TextProps = ({ step, update, readOnly }: { step: TextStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-4 pt-2">
     <div className="flex items-center justify-between">
       <Typography variant="caption" className="font-semibold text-xs">Multiline Input</Typography>
@@ -226,7 +217,7 @@ const TextProps = ({ step, update, readOnly }: { step: TextStep; update: (f: str
   </div>
 );
 
-const RequiredProp = ({ step, update, readOnly }: { step: any; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const RequiredProp = ({ step, update, readOnly }: { step: EmailStep | PhoneStep | AddressStep | WebsiteStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="flex items-center justify-between pt-4 border-t border-border/40 mt-4">
     <div className="flex items-center gap-2 text-primary">
       <SparklesIcon className="w-3.5 h-3.5" />
@@ -236,7 +227,7 @@ const RequiredProp = ({ step, update, readOnly }: { step: any; update: (f: strin
   </div>
 );
 
-const NumberProps = ({ step, update, readOnly }: { step: NumberStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const NumberProps = ({ step, update, readOnly }: { step: NumberStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-3 pt-2">
     <div className="grid grid-cols-2 gap-3">
       <div className="space-y-1.5">
@@ -263,7 +254,7 @@ const NumberProps = ({ step, update, readOnly }: { step: NumberStep; update: (f:
   </div>
 );
 
-const DateProps = ({ step, update, readOnly }: { step: DateStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const DateProps = () => (
   <div className="pt-2">
     <div className="p-3 rounded-lg bg-muted/20 border border-border/40 flex items-center gap-2">
       <InfoIcon className="w-4 h-4 text-muted-foreground" />
@@ -274,7 +265,7 @@ const DateProps = ({ step, update, readOnly }: { step: DateStep; update: (f: str
   </div>
 );
 
-const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-3 pt-2">
     <div className="space-y-1.5">
       <Label className="text-[10px] uppercase text-muted-foreground font-bold">Max Size (MB)</Label>
@@ -299,7 +290,7 @@ const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: str
   </div>
 );
 
-const EndScreenProps = ({ step, update, readOnly }: { step: EndScreenStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const EndScreenProps = ({ step, update, readOnly }: { step: EndScreenStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-5">
     <div className="space-y-1.5">
       <Label className="text-[10px] uppercase text-muted-foreground font-bold">Title</Label>
@@ -329,7 +320,7 @@ const EndScreenProps = ({ step, update, readOnly }: { step: EndScreenStep; updat
   </div>
 );
 
-const ExternalBrowserProps = ({ step, update, readOnly }: { step: ExternalBrowserStep; update: (f: string, v: any) => void; readOnly?: boolean }) => (
+const ExternalBrowserProps = ({ step, update, readOnly }: { step: ExternalBrowserStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-5">
     <div className="space-y-1.5">
       <Label className="text-[10px] uppercase text-muted-foreground font-bold">Redirect URL</Label>
@@ -359,7 +350,7 @@ const PaymentProps = ({
   allSteps = []
 }: {
   step: PaymentStep;
-  update: (f: string, v: any) => void;
+  update: (f: string, v: StepValue) => void;
   readOnly?: boolean;
   isStripeConfigured?: boolean;
   allSteps?: WorkflowStep[];
@@ -498,7 +489,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Zap: ZapIcon
 };
 
-const IconPicker = ({ selected, onSelect, readOnly }: { selected?: string; onSelect: (icon: string) => void; readOnly?: boolean }) => {
+const IconPicker = ({ selected, readOnly }: { selected?: string; readOnly?: boolean }) => {
   return (
     <PopoverTrigger asChild>
       <Button variant="outline" size="sm" className="h-8 w-8 p-0" disabled={readOnly}>
@@ -512,7 +503,7 @@ const IconPicker = ({ selected, onSelect, readOnly }: { selected?: string; onSel
   );
 };
 
-const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceStep; update: (f: string, v: any) => void; readOnly?: boolean }) => {
+const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const addOption = () => update('options', [...step.options, {
@@ -522,7 +513,7 @@ const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceS
     icon: ''
   }]);
   const removeOption = (index: number) => update('options', step.options.filter((_, i) => i !== index));
-  const updateOption = (index: number, field: keyof MultipleChoiceOption, val: any) => {
+  const updateOption = (index: number, field: keyof MultipleChoiceOption, val: string | number | undefined) => {
     const newOptions = [...step.options];
     newOptions[index] = { ...newOptions[index], [field]: val };
     update('options', newOptions);
@@ -560,7 +551,7 @@ const MultipleChoiceProps = ({ step, update, readOnly }: { step: MultipleChoiceS
                 <div className="flex items-center gap-2">
                   {/* Icon Picker */}
                   <Popover>
-                    <IconPicker selected={icon} onSelect={(val) => updateOption(i, 'icon', val)} readOnly={readOnly} />
+                    <IconPicker selected={icon} readOnly={readOnly} />
                     <PopoverContent className="w-64 p-2 grid grid-cols-5 gap-2">
                       {Object.entries(ICON_MAP).map(([name, Icon]) => (
                         <button
@@ -705,7 +696,7 @@ const PropertiesPanel: React.FC<{
     );
   }
 
-  const update = (field: string, value: any) => onUpdate({ ...activeStep, [field]: value } as any);
+  const update = (field: string, value: StepValue) => onUpdate({ ...activeStep, [field]: value } as WorkflowStep);
 
   return (
     <div className="w-80 border-l border-border bg-card flex flex-col h-full flex-shrink-0 animate-in slide-in-from-right-4 duration-300">
@@ -743,7 +734,7 @@ const PropertiesPanel: React.FC<{
                 <RequiredProp step={activeStep} update={update} readOnly={readOnly} />
               }
               {activeStep.stepType === 'number' && <NumberProps step={activeStep as NumberStep} update={update} readOnly={readOnly} />}
-              {activeStep.stepType === 'date' && <DateProps step={activeStep as DateStep} update={update} readOnly={readOnly} />}
+              {activeStep.stepType === 'date' && <DateProps />}
               {activeStep.stepType === 'file' && <FileProps step={activeStep as FileStep} update={update} readOnly={readOnly} />}
               {activeStep.stepType === 'multiple_choice' && <MultipleChoiceProps step={activeStep as MultipleChoiceStep} update={update} readOnly={readOnly} />}
               {activeStep.stepType === 'payment' && (
@@ -849,7 +840,7 @@ const SortableStepItem = ({ step, index, isActive, onSelect, onDelete, Icon, rea
 
       {step.stepType === 'payment' && !isStripeConfigured && (
         <div className="flex justify-center -mt-2 mb-4">
-          <Badge variant="destructive" className="animate-pulse flex items-center gap-1 cursor-pointer" onClick={() => (window as any).openStripeModal?.()}>
+          <Badge variant="destructive" className="animate-pulse flex items-center gap-1 cursor-pointer" onClick={() => (window as unknown as { openStripeModal?: () => void }).openStripeModal?.()}>
             <LockIcon className="w-3 h-3" /> Stripe keys missing! Click to configure.
           </Badge>
         </div>
@@ -874,8 +865,8 @@ export default function ChatFlowEditor({ services, workflows, onWorkflowsChange,
   const isStripeConfigured = !!organisation?.stripeConfig?.publishableKey;
 
   useEffect(() => {
-    (window as any).openStripeModal = () => setStripeModalOpen(true);
-    return () => { delete (window as any).openStripeModal; };
+    (window as unknown as { openStripeModal: () => void }).openStripeModal = () => setStripeModalOpen(true);
+    return () => { delete (window as unknown as { openStripeModal?: () => void }).openStripeModal; };
   }, []);
 
   // Drag and drop sensors
@@ -905,7 +896,7 @@ export default function ChatFlowEditor({ services, workflows, onWorkflowsChange,
   }, []);
 
   // Ensure selected service exists in workflow data with an end screen or external browser
-  const currentWorkflowRaw = workflows[selectedService] || [];
+  const currentWorkflowRaw = useMemo(() => workflows[selectedService] || [], [workflows, selectedService]);
 
   // Memoized standardized workflow with enforced End Screen (unless external browser exists)
   const steps = useMemo(() => {

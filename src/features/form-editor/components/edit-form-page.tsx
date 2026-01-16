@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -28,7 +27,6 @@ import { WorkflowData } from "@/lib/types";
 
 import { useUserData } from "@/features/organization/providers/user-data-provider";
 import { useTeamAccess } from "@/features/teams/hooks/use-team-access";
-import { PageShell } from "@/components/page-shell";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -65,11 +63,11 @@ export default function EditFormPage() {
           description: formData.properties?.description || "",
           contactType: formData.properties?.contactInfo?.type || "email",
           phone: formData.properties?.contactInfo?.phone || "",
-          profile: (formData.properties?.contactInfo as any)?.profile || "",
+          profile: (formData.properties?.contactInfo as { profile?: string })?.profile || "",
           website: formData.properties?.contactInfo?.website || "",
           calendarLink: formData.properties?.contactInfo?.calendarLink || "",
           socialLinks: formData.properties?.socialLinks || {},
-          tags: (formData.properties as any)?.tags || [],
+          tags: (formData.properties as { tags?: string[] })?.tags || [],
           services: formData.services || [],
         },
         workflows: formData.workflows || {},
@@ -119,7 +117,7 @@ export default function EditFormPage() {
       }
 
       await updateForm({
-        id: formData._id as any,
+        id: formData._id,
         name: formData.name,
         properties,
         services,

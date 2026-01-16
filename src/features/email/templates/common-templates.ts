@@ -6,13 +6,12 @@
  */
 
 import {
-    generateBaseEmailTemplate,
-    generateHeadingHtml,
-    generateParagraphHtml,
-    generateButtonHtml,
-    generateDividerHtml,
-    generateCalloutHtml,
-    type BaseTemplateOptions,
+  generateBaseEmailTemplate,
+  generateHeadingHtml,
+  generateParagraphHtml,
+  generateButtonHtml,
+  generateDividerHtml,
+  generateCalloutHtml,
 } from "./base-template";
 
 // ============================================================================
@@ -20,44 +19,44 @@ import {
 // ============================================================================
 
 export interface WelcomeEmailData {
-    recipientName: string;
-    brandName?: string;
-    loginUrl: string;
-    supportEmail?: string;
+  recipientName: string;
+  brandName?: string;
+  loginUrl: string;
+  supportEmail?: string;
 }
 
 export interface PasswordResetData {
-    recipientName: string;
-    brandName?: string;
-    resetUrl: string;
-    expiryMinutes?: number;
+  recipientName: string;
+  brandName?: string;
+  resetUrl: string;
+  expiryMinutes?: number;
 }
 
 export interface NotificationEmailData {
-    recipientName: string;
-    brandName?: string;
-    title: string;
-    message: string;
-    actionUrl?: string;
-    actionText?: string;
+  recipientName: string;
+  brandName?: string;
+  title: string;
+  message: string;
+  actionUrl?: string;
+  actionText?: string;
 }
 
 export interface InvoiceEmailData {
-    recipientName: string;
-    brandName?: string;
-    invoiceNumber: string;
-    amount: string;
-    dueDate: string;
-    items: Array<{ description: string; amount: string }>;
-    paymentUrl?: string;
+  recipientName: string;
+  brandName?: string;
+  invoiceNumber: string;
+  amount: string;
+  dueDate: string;
+  items: Array<{ description: string; amount: string }>;
+  paymentUrl?: string;
 }
 
 export interface TeamInviteData {
-    inviterName: string;
-    teamName: string;
-    brandName?: string;
-    inviteUrl: string;
-    expiryDays?: number;
+  inviterName: string;
+  teamName: string;
+  brandName?: string;
+  inviteUrl: string;
+  expiryDays?: number;
 }
 
 // ============================================================================
@@ -68,100 +67,100 @@ export interface TeamInviteData {
  * Generates a welcome email for new users.
  */
 export function generateWelcomeEmail(data: WelcomeEmailData): string {
-    const {
-        recipientName,
-        brandName = "Open DM",
-        loginUrl,
-        supportEmail = "support@example.com",
-    } = data;
+  const {
+    recipientName,
+    brandName = "Open DM",
+    loginUrl,
+    supportEmail = "support@example.com",
+  } = data;
 
-    const content = `
+  const content = `
     ${generateHeadingHtml(`Welcome to ${brandName}!`, { align: "center" })}
     
     ${generateParagraphHtml(`Hi ${recipientName},`, { align: "center" })}
     
     ${generateParagraphHtml(
-        `Thanks for joining ${brandName}! We're excited to have you on board. Your account is now active and ready to use.`,
-        { align: "center" }
-    )}
+    `Thanks for joining ${brandName}! We're excited to have you on board. Your account is now active and ready to use.`,
+    { align: "center" }
+  )}
     
     ${generateButtonHtml("Get Started", loginUrl)}
     
     ${generateDividerHtml()}
     
     ${generateParagraphHtml(
-        `If you have any questions, feel free to reach out to us at <a href="mailto:${supportEmail}" style="color: #6366f1;">${supportEmail}</a>.`,
-        { align: "center", muted: true }
-    )}
+    `If you have any questions, feel free to reach out to us at <a href="mailto:${supportEmail}" style="color: #6366f1;">${supportEmail}</a>.`,
+    { align: "center", muted: true }
+  )}
   `;
 
-    return generateBaseEmailTemplate({
-        content,
-        brandName,
-        preheader: `Welcome to ${brandName}! Your account is ready.`,
-    });
+  return generateBaseEmailTemplate({
+    content,
+    brandName,
+    preheader: `Welcome to ${brandName}! Your account is ready.`,
+  });
 }
 
 /**
  * Generates a password reset email.
  */
 export function generatePasswordResetEmail(data: PasswordResetData): string {
-    const {
-        recipientName,
-        brandName = "Open DM",
-        resetUrl,
-        expiryMinutes = 60,
-    } = data;
+  const {
+    recipientName,
+    brandName = "Open DM",
+    resetUrl,
+    expiryMinutes = 60,
+  } = data;
 
-    const content = `
+  const content = `
     ${generateHeadingHtml("Reset Your Password", { align: "center" })}
     
     ${generateParagraphHtml(`Hi ${recipientName},`)}
     
     ${generateParagraphHtml(
-        "We received a request to reset your password. Click the button below to create a new password:"
-    )}
+    "We received a request to reset your password. Click the button below to create a new password:"
+  )}
     
     ${generateButtonHtml("Reset Password", resetUrl)}
     
     ${generateCalloutHtml(
-        `This link will expire in ${expiryMinutes} minutes. If you didn't request a password reset, you can safely ignore this email.`,
-        { type: "warning" }
-    )}
+    `This link will expire in ${expiryMinutes} minutes. If you didn't request a password reset, you can safely ignore this email.`,
+    { type: "warning" }
+  )}
     
     ${generateDividerHtml()}
     
     ${generateParagraphHtml(
-        "If the button above doesn't work, copy and paste this link into your browser:",
-        { muted: true }
-    )}
+    "If the button above doesn't work, copy and paste this link into your browser:",
+    { muted: true }
+  )}
     
     <p style="margin: 0; font-size: 12px; color: #6b7280; word-break: break-all;">
       <a href="${resetUrl}" style="color: #6366f1;">${resetUrl}</a>
     </p>
   `;
 
-    return generateBaseEmailTemplate({
-        content,
-        brandName,
-        preheader: "Reset your password",
-    });
+  return generateBaseEmailTemplate({
+    content,
+    brandName,
+    preheader: "Reset your password",
+  });
 }
 
 /**
  * Generates a notification email.
  */
 export function generateNotificationEmail(data: NotificationEmailData): string {
-    const {
-        recipientName,
-        brandName = "Open DM",
-        title,
-        message,
-        actionUrl,
-        actionText = "View Details",
-    } = data;
+  const {
+    recipientName,
+    brandName = "Open DM",
+    title,
+    message,
+    actionUrl,
+    actionText = "View Details",
+  } = data;
 
-    const content = `
+  const content = `
     ${generateHeadingHtml(title, { align: "center" })}
     
     ${generateParagraphHtml(`Hi ${recipientName},`)}
@@ -171,30 +170,30 @@ export function generateNotificationEmail(data: NotificationEmailData): string {
     ${actionUrl ? generateButtonHtml(actionText, actionUrl) : ""}
   `;
 
-    return generateBaseEmailTemplate({
-        content,
-        brandName,
-        preheader: title,
-    });
+  return generateBaseEmailTemplate({
+    content,
+    brandName,
+    preheader: title,
+  });
 }
 
 /**
  * Generates an invoice email.
  */
 export function generateInvoiceEmail(data: InvoiceEmailData): string {
-    const {
-        recipientName,
-        brandName = "Open DM",
-        invoiceNumber,
-        amount,
-        dueDate,
-        items,
-        paymentUrl,
-    } = data;
+  const {
+    recipientName,
+    brandName = "Open DM",
+    invoiceNumber,
+    amount,
+    dueDate,
+    items,
+    paymentUrl,
+  } = data;
 
-    const itemsHtml = items
-        .map(
-            (item) => `
+  const itemsHtml = items
+    .map(
+      (item) => `
         <tr>
           <td style="padding: 12px 0; border-bottom: 1px solid #e5e7eb;">
             ${item.description}
@@ -204,10 +203,10 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
           </td>
         </tr>
       `
-        )
-        .join("");
+    )
+    .join("");
 
-    const content = `
+  const content = `
     ${generateHeadingHtml(`Invoice #${invoiceNumber}`, { align: "center" })}
     
     ${generateParagraphHtml(`Hi ${recipientName},`)}
@@ -243,53 +242,53 @@ export function generateInvoiceEmail(data: InvoiceEmailData): string {
     ${paymentUrl ? generateButtonHtml("Pay Now", paymentUrl) : ""}
   `;
 
-    return generateBaseEmailTemplate({
-        content,
-        brandName,
-        preheader: `Invoice #${invoiceNumber} - ${amount} due ${dueDate}`,
-    });
+  return generateBaseEmailTemplate({
+    content,
+    brandName,
+    preheader: `Invoice #${invoiceNumber} - ${amount} due ${dueDate}`,
+  });
 }
 
 /**
  * Generates a team invitation email.
  */
 export function generateTeamInviteEmail(data: TeamInviteData): string {
-    const {
-        inviterName,
-        teamName,
-        brandName = "Open DM",
-        inviteUrl,
-        expiryDays = 7,
-    } = data;
+  const {
+    inviterName,
+    teamName,
+    brandName = "Open DM",
+    inviteUrl,
+    expiryDays = 7,
+  } = data;
 
-    const content = `
+  const content = `
     ${generateHeadingHtml("You're Invited!", { align: "center" })}
     
     ${generateParagraphHtml(
-        `<strong>${inviterName}</strong> has invited you to join the <strong>${teamName}</strong> team on ${brandName}.`,
-        { align: "center" }
-    )}
+    `<strong>${inviterName}</strong> has invited you to join the <strong>${teamName}</strong> team on ${brandName}.`,
+    { align: "center" }
+  )}
     
     ${generateButtonHtml("Accept Invitation", inviteUrl)}
     
     ${generateCalloutHtml(
-        `This invitation will expire in ${expiryDays} days.`,
-        { type: "info" }
-    )}
+    `This invitation will expire in ${expiryDays} days.`,
+    { type: "info" }
+  )}
     
     ${generateDividerHtml()}
     
     ${generateParagraphHtml(
-        "If you weren't expecting this invitation, you can safely ignore this email.",
-        { muted: true, align: "center" }
-    )}
+    "If you weren't expecting this invitation, you can safely ignore this email.",
+    { muted: true, align: "center" }
+  )}
   `;
 
-    return generateBaseEmailTemplate({
-        content,
-        brandName,
-        preheader: `${inviterName} invited you to join ${teamName}`,
-    });
+  return generateBaseEmailTemplate({
+    content,
+    brandName,
+    preheader: `${inviterName} invited you to join ${teamName}`,
+  });
 }
 
 // ============================================================================
@@ -297,11 +296,11 @@ export function generateTeamInviteEmail(data: TeamInviteData): string {
 // ============================================================================
 
 export const emailTemplates = {
-    welcome: generateWelcomeEmail,
-    passwordReset: generatePasswordResetEmail,
-    notification: generateNotificationEmail,
-    invoice: generateInvoiceEmail,
-    teamInvite: generateTeamInviteEmail,
+  welcome: generateWelcomeEmail,
+  passwordReset: generatePasswordResetEmail,
+  notification: generateNotificationEmail,
+  invoice: generateInvoiceEmail,
+  teamInvite: generateTeamInviteEmail,
 } as const;
 
 export type EmailTemplateType = keyof typeof emailTemplates;

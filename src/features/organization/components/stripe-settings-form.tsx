@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -13,7 +12,7 @@ import { Loader2, LockIcon } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 
 interface StripeSettingsFormProps {
-    organization: any;
+    organization: { _id: Id<"organisations">; stripeConfig?: { publishableKey?: string } };
     onSuccess?: () => void;
     hideCard?: boolean;
 }
@@ -49,8 +48,8 @@ export const StripeSettingsForm = ({ organization, onSuccess, hideCard }: Stripe
             toast.success("Stripe configuration updated");
             setSecretKey(""); // Reset secret key field
             onSuccess?.();
-        } catch (error: any) {
-            toast.error(error.message || "Failed to update Stripe configuration");
+        } catch (error) {
+            toast.error((error as Error).message || "Failed to update Stripe configuration");
         } finally {
             setIsSaving(false);
         }

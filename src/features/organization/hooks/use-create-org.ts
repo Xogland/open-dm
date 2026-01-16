@@ -56,8 +56,8 @@ export function useCreateOrg() {
                 setSelectedOrganization(organizationId);
                 router.replace("/dashboard");
                 toast.success("Organization created successfully");
-            } catch (error: any) {
-                if (error.message.includes("Limit Reached")) {
+            } catch (error) {
+                if ((error as Error).message.includes("Limit Reached")) {
                     setUpgradeDialogOpen(true);
                 } else {
                     toast.error("Failed to create organization");

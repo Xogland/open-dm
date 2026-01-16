@@ -5,14 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   AlertCircle,
-  CheckCircle2,
   Loader2,
-  PencilLine,
-  XCircle,
   Check,
   ShieldAlert,
   Lock,
-  MessageSquareWarning,
   Info,
   Key,
   X,
@@ -66,13 +62,7 @@ export default function HandleInput({
   const [status, setStatus] = useState<HandleState>(HandleState.idle);
   const [checkResult, setCheckResult] = useState<CheckHandleResultType | undefined>(undefined);
 
-  // Sync with prop if it changes externally (controlled component pattern support)
-  useEffect(() => {
-    if (initialHandle !== handle) {
-      setHandle(initialHandle);
-      if (initialHandle) runCheck(initialHandle);
-    }
-  }, [initialHandle]);
+
 
   // Keep track of current request to cancel stale ones
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -142,8 +132,8 @@ export default function HandleInput({
         setCheckResult(result as CheckHandleResultType);
         onStatusChange?.(newStatus, cleaningHandle, result as CheckHandleResultType, keyToUse);
       }
-    } catch (err: any) {
-      if (err.name === "AbortError") return; // ignore cancelled requests
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") return; // ignore cancelled requests
 
       if (val === handle) {
         setStatus(HandleState.error);
@@ -151,12 +141,6 @@ export default function HandleInput({
       }
     }
   }, [handle, onStatusChange, redemptionKey, parseInput]);
-
-  useEffect(() => {
-    if (handle?.length !== 0 && status === HandleState.idle) {
-      runCheck(handle);
-    }
-  }, [handle, runCheck, status]);
 
   useEffect(() => {
     // We only trigger debounce if we are in typing state
@@ -168,6 +152,20 @@ export default function HandleInput({
     }
   }, [handle, runCheck, status]);
 
+  // Sync with prop if it changes externally (controlled component pattern support)
+  useEffect(() => {
+    if (initialHandle !== handle) {
+      setHandle(initialHandle);
+      if (initialHandle) runCheck(initialHandle);
+    }
+  }, [initialHandle, handle, runCheck]);
+
+  useEffect(() => {
+    if (handle?.length !== 0 && status === HandleState.idle) {
+      runCheck(handle);
+    }
+  }, [handle, runCheck, status]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value; // Allow typing anything, we clean on check
     setHandle(val);
@@ -176,7 +174,7 @@ export default function HandleInput({
     onStatusChange?.(HandleState.typing, val, undefined, undefined);
   };
 
-  const [parsedKey, parsedHandleDisplay] = parseInput(handle);
+  const [parsedKey] = parseInput(handle);
   const activeKey = parsedKey || redemptionKey;
 
   return (

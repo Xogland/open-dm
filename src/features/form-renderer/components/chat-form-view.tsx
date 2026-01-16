@@ -4,27 +4,18 @@ import React, { useState, useEffect } from "react";
 
 import { MessageList } from "./message-box/message-list";
 import { DynamicBottomInput } from "./message-box/dynamic-bottom-input";
-import { WorkflowData, WorkflowStep, StepType, PaymentStep, FormData } from "@/lib/types";
+import { WorkflowStep, PaymentStep, FormData } from "@/lib/types";
 import {
   ChatMessage,
-  TextInputMessage,
-  EmailInputMessage,
-  MultipleChoiceMessage,
-  UserResponseMessage,
-  ServiceSelectionMessage,
-  EndScreenMessage,
-  ExternalBrowserMessage,
-  PaymentInputMessage
+  PaymentInputMessage,
+  MultipleChoiceOption
 } from "@/lib/message-types";
 import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Inbox, InboxIcon } from "lucide-react";
+import { Id } from "@/convex/_generated/dataModel";
+import { InboxIcon } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
 import { toast } from "sonner";
-import { FormSidebar } from "./shared/form-sidebar";
-import { FormContactActions } from "./shared/form-contact-actions";
-import { FormSocialLinks } from "./shared/form-social-links";
 import { FormLayout } from "./shared/form-layout";
 
 // Import step types for type casting
@@ -47,7 +38,7 @@ interface ChatFormViewProps {
   orgName: string;
   orgImage?: string;
   orgHandle?: string;
-  onSubmit: (answers: Record<string, any>) => Promise<void>;
+  onSubmit: (answers: Record<string, unknown>) => Promise<void>;
   isSubmitting: boolean;
   limitReached?: boolean;
   formId?: string;
@@ -66,7 +57,7 @@ export default function ChatFormView({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const answersRef = React.useRef(answers);
   const [serviceSelected, setServiceSelected] = useState<boolean>(false);
 
@@ -84,11 +75,10 @@ export default function ChatFormView({
     : [];
   const currentStep = currentWorkflow[currentStepIndex] || null;
 
-  // Contact and Socials Logic
-  // ----------------------------------------------------------------------
-  const contactInfo = formData.properties?.contactInfo || {};
-  const socialLinks = formData.properties?.socialLinks || {};
+  // const contactInfo = formData.properties?.contactInfo || {};
+  // const socialLinks = formData.properties?.socialLinks || {};
 
+  /*
   const validContacts = [
     {
       type: "profile",
@@ -123,13 +113,14 @@ export default function ChatFormView({
   ].filter(
     (c) => c.value && typeof c.value === "string" && c.value.trim() !== "",
   );
+  */
 
   // const visibleContacts = validContacts.slice(0, 2); // Unused
 
   // ----------------------------------------------------------------------
 
   // Create initial message
-  const createInitialMessage = (): ChatMessage => {
+  const createInitialMessage = React.useCallback((): ChatMessage => {
     const servicesWithMetadata = formData.services.map(service => {
       const workflow = formData.workflows[service.title] || [];
       const hasPayment = workflow.some(step => step.stepType === 'payment');
@@ -146,14 +137,14 @@ export default function ChatFormView({
       question: "Hey, How can I help you?",
       services: servicesWithMetadata,
     };
-  };
+  }, [formData.services, formData.workflows]);
 
   // Initialize with service selection message
   useEffect(() => {
     if (formData.services && formData.services.length > 0) {
       setMessages([createInitialMessage()]);
     }
-  }, [formData.services]);
+  }, [formData.services, createInitialMessage]);
 
   const reset = () => {
     setMessages([createInitialMessage()]);
@@ -360,7 +351,7 @@ export default function ChatFormView({
         // Fetch client secret immediately
         createPaymentIntent({
           organisationId: organization!._id,
-          formId: formId as any,
+          formId: formId as Id<"forms">,
           amount: paymentStep.amount,
           currency: paymentStep.currency,
           description: paymentStep.description,
@@ -370,7 +361,7 @@ export default function ChatFormView({
               setMessages((prev) =>
                 prev.map((m) =>
                   m.id === paymentMsg.id
-                    ? ({ ...m, clientSecret: result.clientSecret } as any)
+                    ? ({ ...m, clientSecret: result.clientSecret } as ChatMessage)
                     : m,
                 ),
               );
@@ -402,7 +393,7 @@ export default function ChatFormView({
   };
 
   const handleTextSubmit = (value: string) => {
-    let finalValue: any = value;
+    let finalValue: string | number = value;
     const type = currentStep?.stepType as string;
     if (type === "number" || type === "number_input") {
       finalValue = parseFloat(value);
@@ -451,7 +442,7 @@ export default function ChatFormView({
     proceedToNextStep();
   };
 
-  const handleOptionSelect = (option: any) => {
+  const handleOptionSelect = (option: MultipleChoiceOption | MultipleChoiceOption[] | string | number | string[]) => {
     if (!currentStep || isSubmitting) return;
 
     setAnswers((prev) => ({
@@ -594,7 +585,6 @@ export default function ChatFormView({
       await onSubmit(submissionData);
 
       // Determine the end message based on the current step or default
-      const lastStep = currentWorkflow[currentWorkflow.length - 1]; // This might be the end_workflow step if index reached end
       // Better: check if the 'currentStep' (based on index) is an end_screen step
       // We use the step at `currentStepIndex`. If we are here because index >= length, we look at last step.
 
@@ -630,7 +620,7 @@ export default function ChatFormView({
           title: title,
           message: message,
           showConfetti: showConfetti,
-          animationType: animationType as any,
+          animationType: animationType,
         };
         setMessages((prev) => [...prev, successMessage]);
       } else if (
@@ -675,8 +665,8 @@ export default function ChatFormView({
 
   // ----------------------------------------------------------------------
 
-  const description =
-    formData.properties?.description || "Welcome! How can we help you today?";
+  // const description =
+  //   formData.properties?.description || "Welcome! How can we help you today?";
 
   // Determine if we need to show a special state for bottom input
   let overrideInputType = undefined;

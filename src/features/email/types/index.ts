@@ -5,7 +5,7 @@
  * These types provide strict type safety across the email feature.
  */
 
-import type { SESClientConfig } from "@aws-sdk/client-ses";
+
 
 // ============================================================================
 // Core Email Types

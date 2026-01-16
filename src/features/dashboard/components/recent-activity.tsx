@@ -7,8 +7,6 @@ import {
     Clock,
     MessageSquare,
     ArrowUpRight,
-    User,
-    CheckCircle2,
     CircleDashed
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +41,7 @@ export function RecentActivity({ activities, className }: RecentActivityProps) {
                     {/* Vertical Line */}
                     <div className="absolute left-[17px] top-2 bottom-2 w-0.5 bg-border lg:hidden" />
 
-                    {activities.map((activity, index) => (
+                    {activities.map((activity) => (
                         <div key={activity.id} className="relative flex gap-4 items-start group">
                             {/* Icon Wrapper */}
                             <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-background shadow-sm group-hover:border-primary transition-colors">

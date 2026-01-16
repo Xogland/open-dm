@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PaymentInputMessage } from "@/lib/message-types";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
 import {
     Elements,
     PaymentElement,
@@ -81,8 +81,7 @@ export const PaymentMessageBox = ({
     onSuccess: (paymentId: string) => void;
 }) => {
     const [showForm, setShowForm] = useState(false);
-    const [stripePromise, setStripePromise] = useState<any>(null);
-    const [hasError, setHasError] = useState(false);
+    const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {

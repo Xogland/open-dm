@@ -29,7 +29,7 @@ interface CheckoutResponse {
         type: 'checkouts';
         attributes: {
             url: string;
-            [key: string]: any;
+            [key: string]: unknown;
         };
     };
 }
@@ -41,7 +41,7 @@ interface SubscriptionUpdatePayload {
     variant_id?: string;
     pause?: {
         mode: 'void' | 'free';
-    };
+    } | null;
     cancelled?: boolean;
 }
 
@@ -151,7 +151,7 @@ export class LemonSqueezyClient {
      */
     async unpauseSubscription(subscriptionId: string): Promise<LemonSqueezySubscription> {
         return this.updateSubscription(subscriptionId, {
-            pause: undefined as any, // API expects null/undefined to unpause
+            pause: null, // API expects null to unpause
         });
     }
 

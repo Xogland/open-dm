@@ -48,7 +48,7 @@ export function PreregistrationView() {
                 </Typography>
                 <Typography variant="lead" className="max-w-2xl mx-auto">
                     Thank you for preregistering. Your organization is all set.
-                    We're putting the finishing touches on the platform.
+                    We&apos;re putting the finishing touches on the platform.
                 </Typography>
             </div>
 

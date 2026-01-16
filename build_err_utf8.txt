@@ -1,0 +1,53 @@
+﻿
+> open-dm@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.7
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+node.exe : Failed to compile.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified:  
+   (Failed to compile.:String) [], RemoteEx  
+  ception
+    + FullyQualifiedErrorId : NativeCommandE 
+   rror
+ 
+
+./src/features/form-renderer/components/chat-
+form-view.tsx
+Error:   [31mx[0m Expression expected
+    ,-[[36;1;4mW:\Astrogames\Next JS\open-dm
+\src\features\form-renderer\components\chat-f
+orm-view.tsx[0m:10:1]
+ [2m 7[0m | import { WorkflowStep, 
+PaymentStep, FormData } from "@/lib/types";
+ [2m 8[0m | ChatMessage,
+ [2m 9[0m |   PaymentInputMessage
+ [2m10[0m | } from "@/lib/message-types";
+    : [35;1m^[0m
+ [2m11[0m | import { useMutation, 
+useQuery, useAction } from "convex/react";
+ [2m12[0m | import { api } from 
+"@/convex/_generated/api";
+ [2m12[0m | import { Id } from 
+"@/convex/_generated/dataModel";
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/features/form-renderer/components/chat-
+form-view.tsx
+./src/features/form-renderer/components/form-
+view.tsx
+./src/app/[handle]/form-client.tsx
+
+
+> Build failed because of webpack errors

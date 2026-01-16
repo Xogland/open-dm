@@ -4,7 +4,6 @@ import { CheckCircle, Loader2, XCircle } from "lucide-react"; // Icons for feedb
 import { Button } from "@/components/ui/button";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
 import { Id } from "@/convex/_generated/dataModel";
 
 // Define possible states for the slug input field
@@ -18,10 +17,10 @@ type SlugState =
 
 export function FormHandleEdit({
   currentSlug,
-  formId,
+  _formId,
 }: {
   currentSlug: string;
-  formId: Id<"forms">;
+  _formId: Id<"forms">;
 }) {
   const [inputValue, setInputValue] = useState(currentSlug);
   const [slugState, setSlugState] = useState<SlugState>("idle");
@@ -166,7 +165,7 @@ export function FormHandleEdit({
       console.log("Slug updated successfully.");
       // In a real app, you'd navigate or update the currentSlug prop here
       setSlugState("idle");
-    } catch (error) {
+    } catch {
       setSlugState("error");
       setErrorMessage("Failed to save the new slug. Please try again.");
     } finally {
@@ -215,7 +214,7 @@ export function FormHandleEdit({
       {/* Input Group */}
       <div
         className={`flex items-center border rounded-lg bg-background overflow-hidden transition-all duration-200 ${(slugState === "available" &&
-            "border-green-500 focus-within:ring-green-500/50") ||
+          "border-green-500 focus-within:ring-green-500/50") ||
           ((slugState === "taken" || slugState === "error") &&
             "border-red-500 focus-within:ring-red-500/50") ||
           (slugState === "checking" && "border-primary/50")
