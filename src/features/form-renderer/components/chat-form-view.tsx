@@ -60,6 +60,7 @@ export default function ChatFormView({
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const answersRef = React.useRef(answers);
   const [serviceSelected, setServiceSelected] = useState<boolean>(false);
+  const [tempSelection, setTempSelection] = useState<(MultipleChoiceOption | string)[]>([]);
 
   // Sync ref with state
   useEffect(() => {
@@ -153,6 +154,7 @@ export default function ChatFormView({
     setAnswers({});
     setServiceSelected(false);
     setIsInputDisabled(false);
+    setTempSelection([]);
   };
 
   // Handle service selection
@@ -380,15 +382,18 @@ export default function ChatFormView({
     setMessages((prev) => [...prev, stepMessage]);
   };
 
-  const handleInputSubmit = async (value: string | Date | File) => {
+  const handleInputSubmit = async (value: string | Date | File | any[]) => {
     if (!currentStep || isSubmitting) return;
 
     if (value instanceof Date) {
       handleDateSelect(value);
     } else if (value instanceof File) {
       await handleFileUpload(value);
+    } else if (Array.isArray(value) && (currentStep.stepType === "multiple_choice")) {
+      // Handle multiple choice selection (array)
+      handleOptionSelect(value);
     } else {
-      handleTextSubmit(value);
+      handleTextSubmit(value as string);
     }
   };
 
@@ -458,7 +463,7 @@ export default function ChatFormView({
       id: `user-${Date.now()}`,
       type: "user_response",
       timestamp: Date.now(),
-      value: option,
+      value: option as any,
     };
     setMessages((prev) => [...prev, userMessage]);
 
@@ -564,6 +569,9 @@ export default function ChatFormView({
       timestamp: Date.now(),
     };
     setMessages((prev) => [...prev, typingMessage]);
+
+    // Reset temp selection for the next step
+    setTempSelection([]);
 
     setTimeout(() => {
       setMessages((prev) => prev.filter((m) => m.type !== "typing"));
@@ -722,6 +730,7 @@ export default function ChatFormView({
             onSend={handleInputSubmit}
             isSubmitting={isSubmitting || isUploading}
             overrideType={overrideInputType}
+            tempSelection={tempSelection}
           />
         )
       }
@@ -737,6 +746,8 @@ export default function ChatFormView({
         disableInteractions={
           isSubmitting || !!(currentStep?.stepType === "end_screen" || currentStep?.stepType === "external_browser")
         }
+        tempSelection={tempSelection}
+        onTempSelectionChange={setTempSelection}
       />
     </FormLayout>
   );

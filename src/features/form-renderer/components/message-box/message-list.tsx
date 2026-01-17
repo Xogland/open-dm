@@ -14,6 +14,8 @@ interface MessageListProps {
   onPaymentSuccess?: (paymentId: string) => void;
   onReset?: () => void;
   disableInteractions?: boolean;
+  tempSelection?: (MultipleChoiceOption | string)[];
+  onTempSelectionChange?: (options: (MultipleChoiceOption | string)[]) => void;
 }
 
 export function MessageList({
@@ -26,6 +28,8 @@ export function MessageList({
   onPaymentSuccess,
   onReset,
   disableInteractions = false,
+  tempSelection,
+  onTempSelectionChange,
 }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -74,6 +78,8 @@ export function MessageList({
             onPaymentSuccess={onPaymentSuccess}
             onReset={onReset}
             disabled={isDisabled}
+            selectedOptions={!isDisabled ? tempSelection : undefined}
+            onSelectionChange={!isDisabled ? onTempSelectionChange : undefined}
           />
         )
       })}

@@ -37,6 +37,7 @@ export default function PublicWorkflowRenderer({
     const [selectedService, setSelectedService] = useState<string | null>(null);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, unknown>>({});
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const { content, workflows } = data;
 
@@ -229,7 +230,7 @@ export default function PublicWorkflowRenderer({
                 return (
                     <div className="space-y-4 flex flex-col">
                         <Label className="text-lg">{step.question}</Label>
-                        <Popover>
+                        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                             <PopoverTrigger asChild>
                                 <Button
                                     variant={"outline"}
@@ -246,7 +247,10 @@ export default function PublicWorkflowRenderer({
                                 <Calendar
                                     mode="single"
                                     selected={value ? new Date(value as string) : undefined}
-                                    onSelect={(date) => handleAnswerChange(date?.toISOString())}
+                                    onSelect={(date) => {
+                                        handleAnswerChange(date?.toISOString());
+                                        if (date) setIsCalendarOpen(false);
+                                    }}
                                     initialFocus
                                 />
                             </PopoverContent>

@@ -33,17 +33,20 @@ import {
 interface DynamicBottomInputProps {
     currentStep: WorkflowStep | null;
     isSubmitting: boolean;
-    onSend: (value: string | Date | File) => void;
+    onSend: (value: string | Date | File | any[]) => void;
     overrideType?: string;
+    tempSelection?: any[];
 }
 
-export function DynamicBottomInput({ currentStep, isSubmitting, onSend, overrideType }: DynamicBottomInputProps) {
+export function DynamicBottomInput({ currentStep, isSubmitting, onSend, overrideType, tempSelection = [] }: DynamicBottomInputProps) {
     const [value, setValue] = useState("");
     const [dateValue, setDateValue] = useState<Date | undefined>();
     const [fileValue, setFileValue] = useState<File | null>(null);
     const [error, setError] = useState<string | undefined>();
     const [countryCode, setCountryCode] = useState("+1");
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     // Reset state when step changes
     useEffect(() => {
@@ -60,7 +63,7 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
         if (isSubmitting) return;
 
         let validation: { valid: boolean; error?: string } = { valid: true };
-        let finalValue: string | Date | File = value;
+        let finalValue: string | Date | File | any[] = value;
 
         switch (stepType) {
             case 'email':
@@ -94,6 +97,13 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
                 const addressStep = currentStep as AddressStep;
                 validation = validateTextInput(value, addressStep?.required ? 1 : 0);
                 break;
+            case 'multiple_choice':
+                if (!tempSelection || tempSelection.length === 0) {
+                    validation = { valid: false, error: "Please select at least one option" };
+                } else {
+                    finalValue = tempSelection;
+                }
+                break;
             case 'date':
             case 'date_input':
                 if (!dateValue) {
@@ -110,6 +120,12 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
                     validation = validateFileUpload(fileValue, fileStep?.acceptedTypes, fileStep?.maxSize);
                 }
                 finalValue = fileValue as File;
+                break;
+            case 'multiple_choice':
+                if (tempSelection.length === 0) {
+                    validation = { valid: false, error: "Please select at least one option" };
+                }
+                finalValue = tempSelection;
                 break;
             default:
                 return;
@@ -143,13 +159,17 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
     let placeholder = "Type your answer...";
     let isInteractionEnabled = true;
 
-    if (!stepType || ['service_selection', 'multiple_choice', 'end_screen'].includes(stepType)) {
+    if (!stepType || ['service_selection', 'end_screen'].includes(stepType)) {
         isDisabled = true;
         isInteractionEnabled = false;
 
         if (stepType === 'service_selection') placeholder = "Please select a service above";
-        else if (stepType === 'multiple_choice') placeholder = "Please select an option above";
         else if (stepType === 'end_screen') placeholder = "Conversation ended";
+    } else if (stepType === 'multiple_choice') {
+        // Special handling for multiple choice - not disabled, but custom UI
+        isDisabled = false;
+        isInteractionEnabled = true;
+        placeholder = "";
     } else {
         const step = currentStep as TextStep;
         placeholder = step?.placeholder || "Type your answer...";
@@ -180,7 +200,7 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
 
                 <div className="relative flex-1">
                     {(stepType === 'date' || stepType === 'date_input') ? (
-                        <Popover>
+                        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"
@@ -198,7 +218,11 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
                                 <Calendar
                                     mode="single"
                                     selected={dateValue}
-                                    onSelect={(d) => { setDateValue(d); setError(undefined); }}
+                                    onSelect={(d) => {
+                                        setDateValue(d);
+                                        setError(undefined);
+                                        if (d) setIsCalendarOpen(false);
+                                    }}
                                     disabled={(date) => {
                                         const step = currentStep as DateStep;
                                         if (step?.minDate && date < new Date(step.minDate)) return true;
@@ -232,6 +256,15 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
                                     <X className="w-4 h-4" />
                                 </Button>
                             )}
+                        </div>
+                    ) : stepType === 'multiple_choice' ? (
+                        <div className={cn(
+                            "h-12 w-full focus:border-primary focus:ring-primary/20 rounded-xl px-4 flex items-center shadow-sm text-base bg-white border border-gray-300 text-gray-900 justify-between",
+                            isDisabled && "opacity-50 cursor-not-allowed"
+                        )}>
+                            <span className="text-gray-500">
+                                {tempSelection.length === 0 ? "Select options above..." : `${tempSelection.length} selected`}
+                            </span>
                         </div>
                     ) : (stepType === 'address' || (stepType === 'text' && (currentStep as TextStep)?.multiline)) ? (
                         <Textarea
@@ -271,7 +304,7 @@ export function DynamicBottomInput({ currentStep, isSubmitting, onSend, override
                         <Button
                             size="icon"
                             onClick={handleSubmit}
-                            disabled={isSubmitting || (!value && !dateValue && !fileValue)}
+                            disabled={isSubmitting || (stepType === 'multiple_choice' ? tempSelection.length === 0 : (!value && !dateValue && !fileValue))}
                             className="absolute right-2 bottom-2 h-8 w-8 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-sm"
                         >
                             <Send className="w-4 h-4" />

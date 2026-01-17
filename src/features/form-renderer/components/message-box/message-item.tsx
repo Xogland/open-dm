@@ -166,6 +166,8 @@ interface MultipleChoiceProps {
   onSelect: (option: MultipleChoiceOption | MultipleChoiceOption[] | string | string[]) => void;
   disabled?: boolean;
   multiple?: boolean;
+  selectedOptions?: (MultipleChoiceOption | string)[];
+  onSelectionChange?: (options: (MultipleChoiceOption | string)[]) => void;
 }
 
 function MultipleChoiceMessage({
@@ -174,29 +176,44 @@ function MultipleChoiceMessage({
   onSelect,
   disabled = false,
   multiple = false,
+  selectedOptions = [],
+  onSelectionChange,
 }: MultipleChoiceProps) {
-  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
 
   const toggleOption = (index: number) => {
     if (disabled) return;
-    setSelectedIndices(prev =>
-      prev.includes(index)
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
+
+    // Determine current selection based on props
+    // We assume selectedOptions is an array of the actual option objects/strings
+    const currentSelected = selectedOptions || [];
+    const optionToToggle = options[index];
+
+    let newSelected: (MultipleChoiceOption | string)[];
+
+    // Check existence by reference or value equality if string
+    const exists = currentSelected.some(item =>
+      (typeof item === 'string' && typeof optionToToggle === 'string' && item === optionToToggle) ||
+      (typeof item === 'object' && typeof optionToToggle === 'object' && (item as any).title === (optionToToggle as any).title)
+    ); // Simple check - ideally ID based but title/ref is standard here
+
+    if (exists) {
+      newSelected = currentSelected.filter(item =>
+        !((typeof item === 'string' && typeof optionToToggle === 'string' && item === optionToToggle) ||
+          (typeof item === 'object' && typeof optionToToggle === 'object' && (item as any).title === (optionToToggle as any).title))
+      );
+    } else {
+      newSelected = [...currentSelected, optionToToggle];
+    }
+
+    if (onSelectionChange) {
+      onSelectionChange(newSelected as any[]);
+    }
   };
 
   const handleSelectSingle = (index: number) => {
     const option = options[index];
     onSelect(option);
   }
-
-  const handleConfirm = () => {
-    if (selectedIndices.length > 0) {
-      const selected = selectedIndices.map(i => options[i]);
-      onSelect(selected);
-    }
-  };
 
   return (
     <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
@@ -212,7 +229,12 @@ function MultipleChoiceMessage({
             const price = typeof option === 'object' ? option.price : null;
             const iconName = typeof option === 'object' ? option.icon : null;
 
-            const isSelected = selectedIndices.includes(index);
+            // Determine isSelected from props
+            const isSelected = selectedOptions.some(item =>
+              (typeof item === 'string' && typeof option === 'string' && item === option) ||
+              (typeof item === 'object' && typeof option === 'object' && (item as any).title === (option as any).title)
+            );
+
             const Icon = iconName && ICON_MAP[iconName] ? ICON_MAP[iconName] : null;
 
             return (
@@ -266,15 +288,6 @@ function MultipleChoiceMessage({
             );
           })}
         </div>
-        {multiple && (
-          <Button
-            onClick={handleConfirm}
-            disabled={disabled || selectedIndices.length === 0}
-            className="mt-3 w-auto px-8 h-12 rounded-2xl bg-primary text-primary-foreground font-semibold text-[17px] hover:bg-primary/90 shadow-lg transition-transform active:scale-95"
-          >
-            Confirm Selection {selectedIndices.length > 0 && `(${selectedIndices.length})`}
-          </Button>
-        )}
       </div>
     </div>
   );
@@ -469,6 +482,8 @@ interface MessageItemProps {
   onPaymentSuccess?: (paymentId: string) => void;
   onReset?: () => void;
   disabled?: boolean;
+  selectedOptions?: (MultipleChoiceOption | string)[];
+  onSelectionChange?: (options: (MultipleChoiceOption | string)[]) => void;
 }
 
 export function MessageItem({
@@ -478,6 +493,8 @@ export function MessageItem({
   onPaymentSuccess,
   onReset,
   disabled = false,
+  selectedOptions,
+  onSelectionChange,
 }: MessageItemProps) {
 
   // Interactive Selection Messages
@@ -500,6 +517,8 @@ export function MessageItem({
         onSelect={onOptionSelect || (() => { })}
         disabled={disabled}
         multiple={message.multiple}
+        selectedOptions={selectedOptions}
+        onSelectionChange={onSelectionChange}
       />
     );
   }
