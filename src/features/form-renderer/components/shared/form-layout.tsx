@@ -158,12 +158,12 @@ export function FormLayout({
                 <div className="w-full mt-2 flex flex-col items-start gap-1">
                   <div
                     className={`
-                    flex flex-wrap gap-3 mb-2 transition-all duration-300 px-2 -ml-2 py-1
+                    w-full flex flex-wrap gap-3 mb-2 transition-all duration-300 px-2 -ml-2 py-1
                     ${focusedField === "title" ? "ring-2 ring-amber-400 bg-black/5 shadow-[0_0_15px_rgba(251,191,36,0.5)]" : ""}
                   `}
                   >
                     {formData.properties?.title && (
-                      <span className="text-2xl font-medium text-gray-900">
+                      <span className="text-2xl font-medium text-gray-900 break-words w-full block">
                         {formData.properties.title.length > 40 ? `${formData.properties.title.slice(0, 40)}...` : formData.properties.title}
                       </span>
                     )}

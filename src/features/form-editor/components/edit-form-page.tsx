@@ -302,6 +302,7 @@ export default function EditFormPage() {
                 organisationId={selectedOrganization?._id}
                 readOnly={isViewer}
                 plan={selectedOrganization?.plan}
+                workflows={data.workflows}
               />
             ) : activeTab === "chat-flow" ? (
               <ChatFlowEditor

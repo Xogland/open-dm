@@ -69,6 +69,7 @@ export default function ContentSection({
   organisationId,
   readOnly,
   plan,
+  workflows,
 }: {
   data: FormContentData;
   onChange: (data: FormContentData) => void;
@@ -79,6 +80,7 @@ export default function ContentSection({
   organisationId?: string;
   readOnly?: boolean;
   plan?: string;
+  workflows?: Record<string, any[]>;
 }) {
   const properties = data;
   const generateUploadUrl = useMutation(api.attachment.generateUploadUrl);
@@ -356,8 +358,9 @@ export default function ContentSection({
               id: String(s.id),
               title: s.title,
             })),
-            workflows: {}, // Will be populated from workflow editor
+            workflows: workflows || {},
           }}
+
           orgHandle={orgHandle}
         />
       </div>
@@ -426,14 +429,17 @@ export default function ContentSection({
             placeholder="Enter a title (e.g. Senior Product Designer)"
             value={properties.title || ""}
             onChange={(e) =>
-              handleStateChange("title", e.target.value.substring(0, 50))
+              handleStateChange("title", e.target.value.substring(0, 40))
             }
             onFocus={() => setFocusedField("title")}
             onBlur={() => setFocusedField(null)}
-            maxLength={50}
-            className="bg-muted/30 border-input text-foreground mb-4"
+            maxLength={40}
+            className="bg-muted/30 border-input text-foreground"
             disabled={readOnly}
           />
+          <p className="text-right text-xs text-muted-foreground mt-1">
+            {(properties.title?.length || 0)} / 40
+          </p>
 
           <Typography variant="h4" as="h2">
             Description
