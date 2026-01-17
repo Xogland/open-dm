@@ -32,7 +32,7 @@ export async function sendTestEmailAction(prevState: SendEmailState, formData: F
         if (!validatedData.success) {
             return {
                 success: false,
-                error: "Validation failed: " + validatedData.error.errors.map(e => e.message).join(", "),
+                error: "Validation failed: " + validatedData.error.message,
             };
         }
 
