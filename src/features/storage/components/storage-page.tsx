@@ -36,12 +36,7 @@ export default function StoragePage() {
                 </div>
             ) : (
                 <div className="space-y-8 pb-12 flex-1 flex flex-col min-h-0">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        <span className="font-bold text-foreground">{visibleCount}</span>
-                        of
-                        <span className="font-bold text-foreground">{totalCount}</span>
-                        files shown
-                    </div>
+
 
                     <div className="flex-1">
                         <FileGrid attachments={visibleAttachments} />

@@ -41,7 +41,7 @@ export function useStorage() {
     return {
         attachments,
         visibleAttachments,
-        visibleCount,
+        visibleCount: visibleAttachments.length,
         handleLoadMore,
         totalCount: attachments?.length ?? 0,
         isLoading: attachments === undefined,

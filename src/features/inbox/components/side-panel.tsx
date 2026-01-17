@@ -223,7 +223,7 @@ export default function SidePanel({
         <div className="flex flex-col p-6 sm:p-8 border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-10 space-y-6">
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-1">
-              <Typography variant="heading" as="h2">
+              <Typography variant="subheading" as="h2">
                 {selectedSubmission?.formName || "Details"}
               </Typography>
               {selectedSubmission && (
@@ -303,7 +303,7 @@ export default function SidePanel({
         </div>
 
         {/* Panel Content */}
-        <ScrollArea className="flex-grow">
+        <ScrollArea className="flex-1 min-h-0">
           {selectedSubmission ? (
             <div className="p-6 sm:p-8 space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
 

@@ -49,59 +49,9 @@ export default function PreviewBox({
       });
     }
 
-    // Sample workflow steps (static preview)
-    if (formData?.workflows && Object.keys(formData.workflows).length > 0) {
-      const firstService = Object.keys(formData.workflows)[0];
-      const steps = formData.workflows[firstService];
+    // Sample workflow steps removed to avoid confusion with service selection
+    // The preview should only show the initial state (Service Selection)
 
-      if (steps && steps.length > 0) {
-        // Show first 3 steps as preview
-        steps.slice(0, 3).forEach((step, index) => {
-          const common = {
-            id: `preview-step-${index}`,
-            timestamp: Date.now() + index,
-            question: step.question,
-            stepId: step.id,
-          };
-
-          if (step.stepType === "multiple_choice") {
-            messages.push({
-              ...common,
-              type: "multiple_choice",
-              options: step.options || [],
-            });
-          } else if (step.stepType === "end_screen") {
-            // End screen isn't usually a message bubble but we can skip or show a system message
-          } else if (step.stepType === "external_browser") {
-            messages.push({
-              id: `preview-step-${index}`,
-              timestamp: Date.now() + index,
-              type: "external_browser",
-              url: (step as ExternalBrowserStep).url,
-              buttonText: (step as ExternalBrowserStep).buttonText,
-            });
-          } else {
-            // Map other inputs
-            let msgType: ChatMessage["type"] = "text_input";
-            if (step.stepType === "email") msgType = "email_input";
-            else if (step.stepType === "phone") msgType = "phone_input";
-            else if (step.stepType === "address") msgType = "address_input";
-            else if (step.stepType === "website") msgType = "website_input";
-            else if (step.stepType === "number") msgType = "number_input";
-            else if (step.stepType === "date") msgType = "date_input";
-            else if (step.stepType === "file") msgType = "file_upload";
-
-            const placeholder = (step as TextStep).placeholder;
-
-            messages.push({
-              ...common,
-              type: msgType,
-              ...(placeholder ? { placeholder } : {}),
-            } as ChatMessage);
-          }
-        });
-      }
-    }
 
     // Fallback message if no data
     if (messages.length === 0) {

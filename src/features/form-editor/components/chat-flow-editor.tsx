@@ -265,30 +265,64 @@ const DateProps = () => (
   </div>
 );
 
-const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
-  <div className="space-y-3 pt-2">
-    <div className="space-y-1.5">
-      <Label className="text-[10px] uppercase text-muted-foreground font-bold">Max Size (MB)</Label>
-      <Input
-        type="number"
-        value={(step.maxSize || 0) / (1024 * 1024)}
-        onChange={(e) => update('maxSize', (parseFloat(e.target.value) || 5) * 1024 * 1024)}
-        className="h-8 text-xs bg-transparent border-border/60"
-        disabled={readOnly}
-      />
+const FILE_TYPE_GROUPS = [
+  { label: 'Images', types: ['.jpg', '.jpeg', '.png', '.gif', '.webp'] },
+  { label: 'Documents', types: ['.pdf', '.doc', '.docx', '.txt'] },
+  { label: 'Spreadsheets', types: ['.xls', '.xlsx', '.csv'] },
+  { label: 'Archives', types: ['.zip', '.rar', '.7z'] },
+];
+
+const FileProps = ({ step, update, readOnly }: { step: FileStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => {
+  const currentTypes = new Set(step.acceptedTypes || []);
+
+  const toggleGroup = (types: string[], checked: boolean) => {
+    const newTypes = new Set(currentTypes);
+    types.forEach(t => {
+      if (checked) newTypes.add(t);
+      else newTypes.delete(t);
+    });
+    update('acceptedTypes', Array.from(newTypes));
+  };
+
+  return (
+    <div className="space-y-4 pt-2">
+      <div className="space-y-1.5">
+        <Label className="text-[10px] uppercase text-muted-foreground font-bold">Max Size (MB)</Label>
+        <Input
+          type="number"
+          value={(step.maxSize || 0) / (1024 * 1024)}
+          onChange={(e) => update('maxSize', (parseFloat(e.target.value) || 5) * 1024 * 1024)}
+          className="h-8 text-xs bg-transparent border-border/60"
+          disabled={readOnly}
+        />
+      </div>
+      <div className="space-y-3">
+        <Label className="text-[10px] uppercase text-muted-foreground font-bold">Allowed File Types</Label>
+        <div className="grid grid-cols-2 gap-3">
+          {FILE_TYPE_GROUPS.map(group => {
+            const isChecked = group.types.some(t => currentTypes.has(t));
+            return (
+              <div key={group.label} className="flex items-center space-x-2 border p-2 rounded-md bg-card/50">
+                <Switch
+                  checked={isChecked}
+                  onCheckedChange={(c) => toggleGroup(group.types, c)}
+                  disabled={readOnly}
+                  className="scale-75"
+                />
+                <span className="text-xs font-medium">{group.label}</span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="text-[10px] text-muted-foreground px-1">
+          {(step.acceptedTypes || []).length > 0
+            ? `Allowed: ${(step.acceptedTypes || []).join(', ')}`
+            : "All file types allowed"}
+        </div>
+      </div>
     </div>
-    <div className="space-y-1.5">
-      <Label className="text-[10px] uppercase text-muted-foreground font-bold">Accepted Types</Label>
-      <Input
-        placeholder="e.g. .pdf, .jpg, .png"
-        value={step.acceptedTypes?.join(', ') || ''}
-        onChange={(e) => update('acceptedTypes', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-        className="h-8 text-xs bg-transparent border-border/60"
-        disabled={readOnly}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 const EndScreenProps = ({ step, update, readOnly }: { step: EndScreenStep; update: (f: string, v: StepValue) => void; readOnly?: boolean }) => (
   <div className="space-y-5">

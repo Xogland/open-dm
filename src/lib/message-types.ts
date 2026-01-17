@@ -324,12 +324,22 @@ export function validateFileUpload(
 ): { valid: boolean; error?: string } {
     if (acceptedTypes && acceptedTypes.length > 0) {
         const fileType = file.type;
+        const fileName = file.name.toLowerCase();
+
         const isAccepted = acceptedTypes.some(type => {
-            if (type.endsWith('/*')) {
-                return fileType.startsWith(type.replace('/*', ''));
+            const normalizedType = type.toLowerCase().trim();
+            // Wildcard MIME type (e.g. image/*)
+            if (normalizedType.endsWith('/*')) {
+                return fileType.startsWith(normalizedType.replace('/*', ''));
             }
-            return fileType === type;
+            // Extension (e.g. .pdf)
+            if (normalizedType.startsWith('.')) {
+                return fileName.endsWith(normalizedType);
+            }
+            // Exact MIME type (e.g. application/pdf)
+            return fileType === normalizedType;
         });
+
         if (!isAccepted) {
             return { valid: false, error: `File type not accepted. Accepted types: ${acceptedTypes.join(', ')}` };
         }
