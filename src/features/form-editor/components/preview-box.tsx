@@ -35,10 +35,17 @@ export default function PreviewBox({
         type: "service_selection",
         timestamp: Date.now(),
         question: "Hey, How can I help you?",
-        services: formData.services.map((s) => ({
-          id: s.id,
-          title: s.title,
-        })),
+        services: formData.services.map((s) => {
+          // Check if this service workflow has a payment step
+          const workflow = formData.workflows[s.title] || [];
+          const hasPayment = workflow.some(step => step.stepType === 'payment');
+
+          return {
+            id: s.id,
+            title: s.title,
+            hasPayment
+          };
+        }),
       });
     }
 

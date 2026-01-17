@@ -155,7 +155,7 @@ export function FormLayout({
                   focusedField={focusedField}
                   isReadOnly={isReadOnly}
                 />
-                <div className="w-full mt-2 px-4 flex flex-col items-start gap-1">
+                <div className="w-full mt-2 flex flex-col items-start gap-1">
                   <div
                     className={`
                     flex flex-wrap gap-3 mb-2 transition-all duration-300 px-2 -ml-2 py-1
@@ -164,7 +164,7 @@ export function FormLayout({
                   >
                     {formData.properties?.title && (
                       <span className="text-2xl font-medium text-gray-900">
-                        {formData.properties.title}
+                        {formData.properties.title.length > 40 ? `${formData.properties.title.slice(0, 40)}...` : formData.properties.title}
                       </span>
                     )}
                   </div>

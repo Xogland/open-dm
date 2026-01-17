@@ -57,6 +57,11 @@ export function MessageList({
         // or if global interactions are disabled
         const isDisabled = disableInteractions || isAnswered || (index < filteredMessages.length - 1 && message.type !== 'system_info' && message.type !== 'typing' && message.type !== 'end_screen');
 
+        // Hide service selection if it's already answered
+        if (message.type === 'service_selection' && isAnswered) {
+          return null;
+        }
+
         return (
           <MessageItem
             key={message.id}

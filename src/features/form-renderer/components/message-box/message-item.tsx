@@ -145,7 +145,7 @@ function ServiceSelectionMessage({
                 variant="secondary"
                 onClick={() => onSelect(service.id, service.title)}
                 disabled={disabled}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-900 border-none justify-start h-auto w-auto py-2 px-5 font-medium rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-98 disabled:opacity-100"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-900 border-none justify-start h-auto w-auto py-2 px-5 font-normal rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-98 disabled:opacity-100"
               >
                 {service.title}
                 {service.hasPayment && <span className="ml-1.5 opacity-60 text-xs">$</span>}
@@ -249,7 +249,7 @@ function MultipleChoiceMessage({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center w-full gap-2">
-                    <span className="font-bold text-[13px] leading-tight truncate">{title}</span>
+                    <span className="font-normal text-[13px] leading-tight truncate">{title}</span>
                     {price && (
                       <div className="flex flex-col items-end shrink-0">
                         <span className={cn("font-bold text-[13px]", isSelected ? "text-white" : "text-primary")}>{price}</span>
@@ -297,11 +297,13 @@ function DateInputMessage({
   maxDate,
 }: DateInputProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [open, setOpen] = useState(false);
 
   const handleSelect = (date: Date | undefined) => {
     if (date) {
       setSelectedDate(date);
       onSelect(date);
+      setOpen(false); // Close popover on selection
     }
   };
 
@@ -309,7 +311,7 @@ function DateInputMessage({
     <div className="flex justify-start mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
       <div className="max-w-[90%]">
         <Typography variant="body" className="font-semibold mb-3 text-sm">{question}</Typography>
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="secondary"

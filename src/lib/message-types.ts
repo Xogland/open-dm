@@ -288,13 +288,19 @@ export function validateWebsite(value: string, required: boolean = true): { vali
         if (!required) return { valid: true };
         return { valid: false, error: 'Website is required' };
     }
-    // Simple URL regex
-    try {
-        new URL(value.startsWith('http') ? value : `https://${value}`);
-        return { valid: true };
-    } catch {
-        return { valid: false, error: 'Please enter a valid website URL' };
+
+    // specific regex to ensure domain structure (e.g. example.com)
+    // 1. Optional protocol (http:// or https://)
+    // 2. Domain name (including subdomains)
+    // 3. TLD (at least 2 chars)
+    // 4. Optional port and path
+    const urlRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/;
+
+    if (!urlRegex.test(value)) {
+        return { valid: false, error: 'Please enter a valid website (e.g. example.com)' };
     }
+
+    return { valid: true };
 }
 
 export function validateNumberInput(value: string, min?: number, max?: number): { valid: boolean; error?: string } {
