@@ -27,22 +27,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tags = form.properties?.tags?.join(" | ") || "";
 
   return {
-    title: organisation.name,
+    title: {
+      absolute: organisation.name,
+    },
     description: form.properties?.description || `Contact ${organisation.name}`,
     keywords: tags,
     icons: {
-      icon: "/opendm.png",
+      icon: organisation.image ? organisation.image : "/opendm.png",
     },
     openGraph: {
       title: organisation.name,
       description: form.properties?.description || `Contact ${organisation.name}`,
       images: organisation.image ? [organisation.image] : ["/opendm.png"],
+      siteName: "OpenDM",
+      type: "website",
+      url: `https://opendm.com/${handle}`,
     },
     twitter: {
       card: "summary_large_image",
       title: organisation.name,
       description: form.properties?.description || `Contact ${organisation.name}`,
       images: organisation.image ? [organisation.image] : ["/opendm.png"],
+      site: "https://opendm.io",
+      siteId: "https://opendm.io",
     },
   };
 }
